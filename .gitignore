@@ -7,9 +7,15 @@ CompleteData/AMPSphere_v.2021-03.locations.tsv
 CompleteData/AMPSphere_v.2021-03.hosts.tsv
 CompleteData/AMPSphere_v.2021-03.origin_samples.tsv
 CompleteData/AMPSphere_v.2021-03.microontology.tsv
-AMPSphereDB.sqlite
+Backend/AMPSphereDB.sqlite
 CompleteData/AMPSphere_v.2021-03.faa
 CompleteData/AMPSphere_v.2021-03.species.tsv
 CompleteData/DRAMP_anno_AMPSphere_v.2021-03.parsed.tsv
 CompleteData/SPHERE_v.2021-03.levels_assessment.tsv
 *.nwk
+.idea/AMPSphereWebsite.iml
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.DS_Store
