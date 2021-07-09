@@ -19,3 +19,4 @@ completeData/SPHERE_v.2021-03.levels_assessment.tsv
 .idea/modules.xml
 .idea/vcs.xml
 .DS_Store
+*.pyc

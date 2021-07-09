@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 
 from .database import Base
 
-
+'''
 class AMP(Base):
     __tablename__ = "AMP"
 
@@ -14,18 +14,18 @@ class AMP(Base):
     environments = Column(String)
     alignment = Column(String)
     phylogeny_tree = Column(String)
-
+'''
 
 class Hosts(Base):
     __tablename__ = "Hosts"
 
     taxon_id = Column(Integer, primary_key=True, index=True)
-    related_amp = relationship("AMP", back_populates="hosts")
+    #related_amp = relationship("AMP", back_populates="hosts")
     common_name = Column(String)
     sci_name = Column(String, index=True)
     counts = Column(Integer)
 
-
+'''
 class Species(Base):
     __tablename__ = "Species"
 
@@ -34,6 +34,7 @@ class Species(Base):
     common_name = Column(String)
     sci_name = Column(String, index=True)
     counts = Column(Integer)
+'''
 
 # class Env(Base):
 

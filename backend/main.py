@@ -1,14 +1,24 @@
-from typing import List
+from typing import List, Text
 
 from fastapi import Depends, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from starlette.responses import RedirectResponse
 
 from . import models, crud, schemas
 from .database import SessionLocal, engine
 
-models.Base.metadata.create_all(bind=engine)
 
+models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+    allow_credentials=True,
+)
 
 # to be updated
 
@@ -21,36 +31,26 @@ def get_db():
         db.close()
 
 
-@app.post("/users/", response_model=schemas.User)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    db_user = crud.get_user_by_email(db, email=user.email)
-    if db_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    return crud.create_user(db=db, user=user)
+@app.get("/")
+def main():
+    return RedirectResponse(url="/docs/")
 
 
-@app.get("/users/", response_model=List[schemas.User])
-def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    users = crud.get_users(db, skip=skip, limit=limit)
-    return users
+'''
+def read_hosts(skip: int = 0, taxon_id: int = None, page_size: int = 100, db: Session = Depends(get_db)):
+    if taxon_id:
+        hosts = crud.get_hosts(db, taxon_id=taxon_id)
+    else:
+        hosts = crud.get_hosts(db, skip=skip, page_size=page_size)
+    return hosts
+'''
+
+@app.get("/hosts/", response_model=List[schemas.Host])
+def read_hosts(skip: int = 0, page_size: int = 100, db: Session = Depends(get_db)):
+    hosts = crud.get_hosts(db, skip=skip, page_size=page_size)
+    return hosts
 
 
-@app.get("/users/{user_id}", response_model=schemas.User)
-def read_user(user_id: int, db: Session = Depends(get_db)):
-    db_user = crud.get_user(db, user_id=user_id)
-    if db_user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return db_user
-
-
-@app.post("/users/{user_id}/items/", response_model=schemas.Item)
-def create_item_for_user(
-    user_id: int, item: schemas.ItemCreate, db: Session = Depends(get_db)
-):
-    return crud.create_user_item(db=db, item=item, user_id=user_id)
-
-
-@app.get("/items/", response_model=List[schemas.Item])
-def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    items = crud.get_items(db, skip=skip, limit=limit)
-    return items
+@app.get("/example-host/", response_model=Text)
+def example_hosts(skip: int = 0, taxon_id: int = None, page_size: int = 100, db: Session = Depends(get_db)):
+    return "this is an example host"
