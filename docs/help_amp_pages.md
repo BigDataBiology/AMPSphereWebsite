@@ -8,6 +8,8 @@ sequence.
 This information can be divided into numerical values and graphical. Bellow 
 it is detailed point by point how they were obtained and why to use them.
 
+---
+
 ## The AMP info cards
 
 AMPSphere brings several analysis in the antimicrobial peptides cards, such as:
@@ -135,6 +137,8 @@ This value is given as percent of the total length of the protein.
  + It is not taken in account the effects of post-translational modifications.
  + The molar extinction calculus assumes that no [other] chromophores that absorb at 280 nm are present in the protein.
  + Molar extinction can have more than 10% error for proteins without Trp residues.
+
+---
 
 ## Graphs in AMP cards
 
@@ -349,9 +353,17 @@ fixed window of 9.
     <figcaption class="figure-caption">Fig. 7. Profile of flexibility of residues of AMP10.000_000.</figcaption>
 </figure>
 
+---
 
+## References
 
+Authors of AMPSphere claim no authorship over the methods here cited and attributes 
+merit who deserves it. The methods here referenced can be found further explained
+in the links bellow:
 
-
-
-
+ + [Expasy](https://web.expasy.org/)
+ + [ProtParam tool](https://web.expasy.org/protparam/)
+ + [Bio.SeqUtils.ProParam](https://biopython.org/docs/1.75/api/Bio.SeqUtils.ProtParam.html)
+ + [Peptides R Package](https://cran.r-project.org/web/packages/Peptides/Peptides.pdf)
+ + [modlAMP documentation](https://modlamp.org/)
+ + [Macrel](macrel.readthedocs.io/)
