@@ -141,9 +141,12 @@ This value is given as percent of the total length of the protein.
 The amino acids compositional deviation was calculated using the Z-score calculated from two different groups (AMPs and non-AMPs) previously
 used in the trainingset of Macrel models (**Fig. 1**).
 
-![**Fig. 1. Amino acids compositional deviation of AMP10.000_000.**]('figures/aa_composition_deviation_AMP10.000_000.png')
+<figure class="figure">
+    <img style="float: center;" src="figures/aa_composition_deviation_AMP10.000_000.png" width="450" height="300">
+    <figcaption class="figure-caption">Fig. 1. Amino acids compositional deviation of AMP10.000_000.<br></figcaption>
+</figure>
 
-This method consists in calculating the average percent composition of AMPs and non-AMPs separatedly per amino acid. Then using the Z-score:
+<br/>This method consists in calculating the average percent composition of AMPs and non-AMPs separatedly per amino acid. Then using the Z-score:
 
 
 ```
@@ -172,14 +175,17 @@ this given background in mind. To that we calculated the average of the entire t
 and non-AMPs, plotting them for each feature and also as different groups by color (black and gray, respectively). We can observe several 
 different features, some of them calculated as above mentioned.
 
-![**Fig. 2. Z-score comparison of (a) aliphatic index, (b) boman index,
+<figure class="figure">
+    <img style="float: center;" src="figures/zscore_comparison.png" width="700" height="1000">
+    <figcaption class="figure-caption">Fig. 2. Z-score comparison of (a) aliphatic index, (b) boman index,
             (c) hydrophobic moment, (d) instability index - instaindex,
             (e) isoelectric point, and (f) charge using the average of
             complete training set separated by non-antimicrobial peptides
             (gray), antimicrobial peptides (black) and dots representing
-            the peptide as a red start - in this example, AMP10.000_000.**]('figures/zscore_comparison.png')
+            the peptide as a red start - in this example, AMP10.000_000.</figcaption>
+</figure>
 
-The aliphatic index (AI) consists in the relative volume occupied by aliphatic side chains from Ala, Val, Leu/Ile.
+<br/>The aliphatic index (AI) consists in the relative volume occupied by aliphatic side chains from Ala, Val, Leu/Ile.
 It is positively correlated with increasing thermostability of globular proteins. Then, it is possible to compare
 this parameter with the population of AMPs and non-AMPs sorted by length and again using the same rationale for Z-scores (**Fig. 2a**)
 AI can be calculated using the method from [Ikai (1980)](https://pubmed.ncbi.nlm.nih.gov/7462208/):
@@ -231,9 +237,12 @@ against AMP and non-AMP sets using Z-score as shown in the **Fig. 2d-f**.
 The helical wheel (**Fig. 3**) is useful to illustrate the properties of alpha-helices, such as the concentration of 
 hydrophobic amino acids on one side of the helix, with polar or hydrophilic amino acids on the other. 
 
-![**Fig. 3. Amino acids helical wheel with the hydrophobic moment indicated.**]('figures/helicalwheel_AMP10.000_000.png')
+<figure class="figure">
+    <img style="float: center;" src="figures/helicalwheel_AMP10.000_000.png" width="300" height="300">
+    <figcaption class="figure-caption">Fig. 3. Amino acids helical wheel with the hydrophobic moment indicated.</figcaption>
+</figure>
 
-The helical wheel is drawn in a rotating manner where the angle of rotation between consecutive amino acids is 100°.
+<br/>The helical wheel is drawn in a rotating manner where the angle of rotation between consecutive amino acids is 100°.
 This is usually found in globular proteins, where one face of the helix is oriented toward the hydrophobic core and 
 the another is solvent-exposed. The H-moment and direction is shown inside the wheel pointing to its maximum. 
 The function used in this graph as well as its color codes were taken from [modlAMP](https://doi.org/10.1093/bioinformatics/btx285).
@@ -285,9 +294,12 @@ HPLC retention times of peptide libraries. It presents two adjacent copies of a 
 exposed located toward the N-terminus of the peptide and one packed between the other copy of the residue and a Leucine residue
 (Ac–GXXLLLKK–amide).
 
-![**Fig. 4. Profile of hydrophobicity of residues of AMP10.000_000 using relative scale of Parker.**]('figures/hydrophobicity_Parker_AMP10.000_000.png')
+<figure class="figure">
+    <img style="float: center;" src="figures/hydrophobicity_Parker_AMP10.000_000.png" width="500" height="300">
+    <figcaption class="figure-caption">Fig. 4. Profile of hydrophobicity of residues of AMP10.000_000 using relative scale of Parker.</figcaption>
+</figure>
 
-This scale is interesting to understand whether hydrophobic or hydrophylic stretches are present in the peptide.
+<br/>This scale is interesting to understand whether hydrophobic or hydrophylic stretches are present in the peptide.
 If the hydrophobicity is above 0.5, it is considered hydrophobic ([Pane et al., 2017](https://doi.org/10.1016/j.jtbi.2017.02.012)).
 
 The profile of residues free energy of transfer from water to membrane lipid (Ez) in **Fig. 5** was conceived initially by 
@@ -295,9 +307,12 @@ The profile of residues free energy of transfer from water to membrane lipid (Ez
 allowing them to insert theirselves easily in the lipid membranes, triggiring their effects. The scale adopted in this graph
 was adapted from [modlAMP](https://doi.org/10.1093/bioinformatics/btx285).
     
-![**Fig. 5. Profile of AMP10.000_000 residues free energy of transfer from water to membrane lipid.**]('figures/EZenergy_AMP10.000_000.png')
+<figure class="figure">
+    <img style="float: center;" src="figures/EZenergy_AMP10.000_000.png" width="500" height="300">
+    <figcaption class="figure-caption">Fig. 5. Profile of AMP10.000_000 residues free energy of transfer from water to membrane lipid.</figcaption>
+</figure>
 
-The free energy of transfer was estimated as the by a reverse-Boltzman relationship of potential calculated from the 
+<br/>The free energy of transfer was estimated as the by a reverse-Boltzman relationship of potential calculated from the 
 propensities for occurrence of each residue as a function of depth in the lipid bilayer
 [Senes et al. (2007)](https://pubmed.ncbi.nlm.nih.gov/17174324/).
 
@@ -317,19 +332,22 @@ as shown in **Fig. 6**. It is calculated using the Emini Surface fractional prob
 
 Values greater than 1.0 indicate an increased probability for being found on the surface.
 
-![**Fig. 6. Profile of solvent accessibility of residues of AMP10.000_000.**]('figures/SA_AMP10.000_000.png')
+<figure class="figure">
+    <img style="float: center;" src="figures/SA_AMP10.000_000.png" width="500" height="300">
+    <figcaption class="figure-caption:bold">Fig. 6. Profile of solvent accessibility of residues of AMP10.000_000.</figcaption>
+</figure>
 
-The calculated flexibility profile (**Fig. 7**) is important to show if regions submitted to higher free energies of transfer could
+<br/>The calculated flexibility profile (**Fig. 7**) is important to show if regions submitted to higher free energies of transfer could
 actually bend theirselves into a more favorable conformation. Other important conclusions could rise from flexibility and insights 
 from the amino acids sequences trend to form secondary structures. Therefore, an accurate analysis of the peptide flexibility can lead
 to valuable ideas of how the peptide can behave. The scale adopted in the profile calculation was obtained from normalized flexibility
 parameters (B-values), average [Vihinen, 1994](https://onlinelibrary.wiley.com/doi/10.1002/prot.340190207) optimized to be used in a
 fixed window of 9.
 
-![**Fig. 7. Profile of flexibility of residues of AMP10.000_000.**]('figures/flexibility_AMP10.000_000.png')
-
-
-
+<figure class="figure">
+    <img style="float: center;" src="figures/flexibility_AMP10.000_000.png" width="500" height="300">
+    <figcaption class="figure-caption">Fig. 7. Profile of flexibility of residues of AMP10.000_000.</figcaption>
+</figure>
 
 
 
