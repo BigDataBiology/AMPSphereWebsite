@@ -34,7 +34,7 @@
         },
 
         mounted() {
-            this.axios.post('/home/index').then(function (response) {
+            this.axios.post('/home/').then(function (response) {
                 if (response.status === 200) {
                     console.log('你在电脑前看这段文字，\n' +
                         '写文字的人在百度等你。\n' +

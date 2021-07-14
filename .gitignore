@@ -21,3 +21,5 @@ completeData/SPHERE_v.2021-03.levels_assessment.tsv
 .DS_Store
 *.pyc
 DB.sqlite
+frontend/node_modules/*
+exampleData&Scripts/*

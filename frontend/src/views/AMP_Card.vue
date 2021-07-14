@@ -731,7 +731,7 @@
 
             search() {
                 let self = this;
-                this.axios.get('/amp_card/index', {
+                this.axios.get('/amp/', {
                     params: {
                         ampId: this.ampId,
                     }
@@ -743,6 +743,7 @@
                         self.AMP_Prediction = response.data['AMP_Prediction'];
                         self.AMP_Country = response.data['AMP_Country'];
                         self.AMP_Environment = response.data['AMP_Environment'];
+                        self.AMP_Graphs = response.data['AMP_Graphs'];
                         self.isNull = false;
                         self.drawCountryChart();
                         self.drawEnvironmentChart();

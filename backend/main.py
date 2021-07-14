@@ -31,19 +31,22 @@ def get_db():
         db.close()
 
 
-@app.get("/")
+@app.post("/home/")
 def main():
-    return RedirectResponse(url="/docs/")
+    return None
 
 
-'''
-def read_hosts(skip: int = 0, taxon_id: int = None, page_size: int = 100, db: Session = Depends(get_db)):
-    if taxon_id:
-        hosts = crud.get_hosts(db, taxon_id=taxon_id)
-    else:
-        hosts = crud.get_hosts(db, skip=skip, page_size=page_size)
-    return hosts
-'''
+@app.get("/amp/", response_model=schemas.AMP)
+def read_amp_list(accession: str, db: Session = Depends(get_db)):
+    amp = crud.get_amp(accession, db)
+    return amp
+
+
+@app.get("/amps/", response_model=List[schemas.AMP])
+def read_amp_list(db: Session = Depends(get_db)):
+    amp_list = crud.get_amp_list(db)
+    return amp_list
+
 
 @app.get("/hosts/", response_model=List[schemas.Host])
 def read_hosts(skip: int = 0, page_size: int = 100, db: Session = Depends(get_db)):
@@ -51,6 +54,22 @@ def read_hosts(skip: int = 0, page_size: int = 100, db: Session = Depends(get_db
     return hosts
 
 
-@app.get("/example-host/", response_model=Text)
-def example_hosts(skip: int = 0, taxon_id: int = None, page_size: int = 100, db: Session = Depends(get_db)):
-    return "this is an example host"
+@app.get("/families/", response_model=List[schemas.Family])
+def read_families(db: Session = Depends(get_db)):
+    families = crud.get_families(db, skip=skip, page_size=page_size)
+    return families
+
+
+@app.get("/envs/", response_model=List[schemas.Env])
+def read_envs(db: Session = Depends(get_db)):
+    envs = crud.get_envs(db, skip=skip, page_size=page_size)
+    return envs
+
+
+@app.get("/downloads/", response_model=List[schemas.Download])
+def read_downloads(db: Session = Depends(get_db)):
+    downloads = crud.get_downloads(db, skip=skip, page_size=page_size)
+    return downloads
+
+
+

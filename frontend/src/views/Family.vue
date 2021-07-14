@@ -647,7 +647,7 @@
 
             search() {
                 let self = this;
-                this.axios.get('/family/index', {
+                this.axios.get('/families/', {
                     params: {
                         familyId: this.familyId,
                     }

@@ -238,7 +238,7 @@
 
             search() {
                 let self = this;
-                this.axios.get('/amp/index', {
+                this.axios.get('/amp/', {
                     params: {
                         pageSize: this.pageSize,
                         currentPage: this.currentPage,
