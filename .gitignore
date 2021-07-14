@@ -20,3 +20,4 @@ completeData/SPHERE_v.2021-03.levels_assessment.tsv
 .idea/vcs.xml
 .DS_Store
 *.pyc
+DB.sqlite
