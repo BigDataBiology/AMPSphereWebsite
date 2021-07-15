@@ -1,18 +1,16 @@
 # Help for AMP pages
 
-AMPSphere has different pages with information, the simplest level is the
-AMP which contains information about its biochemistry and sequence organization
-in different scenarios to allow the user obtain the best insights for each
-sequence.
-
-This information can be divided into numerical values and graphical. Bellow 
-it is detailed point by point how they were obtained and why to use them.
+AMPSphere has different pages with information of AMPs about
+their biochemistry and sequence organization to obtain the best
+insights from each sequence. This information is divided into
+numerical values and graphical. Below, we detailed point by point
+their meaning, origin, and how to use them.
 
 ---
 
 ## The AMP info cards
 
-AMPSphere brings several analysis in the antimicrobial peptides cards, such as:
+AMPSphere brings analyses for each AMP sequence organized as cards, for example:
 
 ```
         ---------------------------------------------------------
@@ -37,16 +35,20 @@ AMPSphere brings several analysis in the antimicrobial peptides cards, such as:
         ---------------------------------------------------------
 ```
 
-These results are obtained using ProtParam including the molecular weight, theoretical pI, instability index, aliphatic index and
-grand average of hydropathicity (GRAVY).
+These results obtained using ProtParam include the molecular weight,
+theoretical pI, instability index, aliphatic index, and grand average
+of hydropathicity (GRAVY).
 
-The molar extinction comes from the Lambert-Beer law and indicates how much light a protein absorbs at a given wavelength.
-This can be used to the determination of the protein concentration in a given solution from its absorbance.
-The molar extinction coefficient takes in consideration the contents of specific amino acids in the native protein in water,
-specially tyrosine, tryptophan and cystine (because cysteine does not absorb light considerably at wavelengths >260 nm).
-Protein extinction coefficients used the Edelhoch method ([Edelhoch (1967)](https://pubmed.ncbi.nlm.nih.gov/6049437/)),
-with the extinction coefficients for Trp and Tyr determined by [Pace et al. (1995)](https://pubmed.ncbi.nlm.nih.gov/8563639/).
-The calculus can be simplified by:
+The molar extinction comes from the Lambert-Beer law and indicates how
+much light a protein absorbs at a given wavelength. It helps in the
+determination of protein concentration in water or diluted solutions
+from its absorbance. The molar extinction coefficient assesses the protein
+contents of tyrosine, tryptophan, and cystine (because cysteine does not
+absorb light considerably at wavelengths >260 nm). Protein molar extinction
+coefficients used the Edelhoch method ([Edelhoch (1967)](https://pubmed.ncbi.nlm.nih.gov/6049437/)),
+with the extinction coefficients for Trp and Tyr determined by
+[Pace et al. (1995)](https://pubmed.ncbi.nlm.nih.gov/8563639/). The calculus
+can be simplified by:
 
 ```
 	Extinction coefficient = (#Tyr)*Ext(Tyr) + (#Trp)*Ext(Trp) + (#Cystine)*Ext(Cystine)
@@ -58,29 +60,30 @@ The calculus can be simplified by:
 		Ext(Cystine) = 125
 ```
 
-
-The absorbance (optical density) can be calculated using the following formula:
-
+The absorbance (optical density) is calculated using the following formula:
 
 ```
 	Absorb(Prot) = extinction coefficient / molecular weight
 
 ```
 
-Two values are produced by ProtParam, one assuming all cysteine residues appear as half cystines, and the second assuming that
-no cysteine appears as half cystine.
+ProtParam produces two values: one assuming all cysteine residues appear as
+half cystines, and the second, that no cysteine appears as half cystine.
 
-The aromaticity is calculated as described by [Lobry, 1994]() and is the relative frequency of Phe + Trp + Tyr.
+The aromaticity is calculated as described by [Lobry, 1994](https://pubmed.ncbi.nlm.nih.gov/8065933/)
+and is the relative frequency of Phe + Trp + Tyr in the entire sequence.
+Higher values of this parameter can lead to less soluble proteins.
 
-The Grand Average of Hydropathy (GRAVY) value for a peptide or protein is calculated as in
-[Kyte and Doolittle (1982)](https://pubmed.ncbi.nlm.nih.gov/7108955/). It consists in the sum of hydropathy values of each
-residues in the peptide and divided by the total length of the sequence.
+The Grand Average of Hydropathy (GRAVY) value for a peptide or protein described in
+[Kyte and Doolittle (1982)](https://pubmed.ncbi.nlm.nih.gov/7108955/) consists of
+summing the hydropathy values of each residue in the peptide and dividing by its length.
 
-The instability index (II) is an estimate of the peptide stability in a test tube at 4°C. This technique considers the
-statistical analysis of 12 unstable and 32 stable proteins ([Guruprasad, et al. 1990](https://pubmed.ncbi.nlm.nih.gov/2075190/)).
-The analysis revealed certain dipeptides significantly happening in the unstable proteins when compared with stable ones. Then,
-it was assigned a weight value of instability to each of the 400 different dipeptides (DIWV). Therefore, the II is defined as:
-
+The instability index (II) measures the peptide stability in a test tube considering the
+statistical analysis of 12 unstable and 32 stable proteins
+([Guruprasad et al., 1990](https://pubmed.ncbi.nlm.nih.gov/2075190/)). The analysis revealed
+certain dipeptides significantly happening in the unstable proteins when compared with
+stable ones. Thus, the 400 different dipeptides (DIWV) assigned to values measuring their
+instability take place in the II calculus as follows:
 
 ```
               i=L-1
@@ -89,22 +92,21 @@ II = (10/L) * Sum  DIWV(x[i]x[i+1])
 
 where:
 
-	L is the length of sequence
+	L is the length of the sequence
 
 	DIWV(x[i]x[i+1]) is the instability weight
                          value for the dipeptide
                          starting in position i.
-
 ```
 
-II of a protein when smaller than 40 predicts it as stable.
+II less than 40 predicts a protein as stable.
 
-Protein isoelectric point (pI) is calculated using pK values of amino acids described in Bjellqvist
-et al.([1993](https://pubmed.ncbi.nlm.nih.gov/8125050/) and [1994](https://pubmed.ncbi.nlm.nih.gov/8055880/))
-under pH 7.0 at 25°C. Molecular weight (MW) values are given in x10^3 Daltons (kDa). This MW is obtained by
-adding the average isotopic masses of amino acids in the protein and the mass of one water molecule.
-
-The charge of a protein at given pH is calculated as a derivation of Henderson Hasselbalch equation:
+Protein isoelectric point (pI) calculated using pK values of amino acids described in
+Bjellqvist et al.([1993](https://pubmed.ncbi.nlm.nih.gov/8125050/) and
+[1994](https://pubmed.ncbi.nlm.nih.gov/8055880/)) in pH 7.0 at 25°C. This method is
+from [Bio.SeqUtils.ProtParam](https://biopython.org/docs/1.75/api/Bio.SeqUtils.ProtParam.html).
+The charge of a protein at given pH is calculated as a derivation of Henderson-
+Hasselbalch equation:
 
 ```
 	pH = pKa + log([A-]/[HA])
@@ -124,34 +126,38 @@ The charge of a protein at given pH is calculated as a derivation of Henderson H
 
 ```
 
-This method is derived from [Bio.SeqUtils.ProtParam](https://biopython.org/docs/1.75/api/Bio.SeqUtils.ProtParam.html)
+Molecular weight (MW) values are in thousands of Daltons (kDa) and was obtained by
+adding the average isotopic masses of amino acids in the protein and one water molecule.
 
-The secondary structure of the peptide was given as a simple fraction of amino acids which tend to be in Helix, Turn or Sheet. 
-It follows the groups of amino acids belonging to helix (V, I, Y, F, W, L), turns (N, P, G, S) and sheets (E, M, A, L). 
-This value is given as percent of the total length of the protein.
+The secondary structure of the peptide, in AMPSphere, is a percent composition of a
+protein taking amino acids which tend to be in Helix, Turn, or Sheet. It follows the groups
+of amino acids belonging to helix (V, I, Y, F, W, L), turns (N, P, G, S), and
+sheets (E, M, A, L).
 
 **Be aware that:**
 
- + Prediction of protein pI for highly basic proteins is yet to be studied and possibly the current predictions may not be adequate.
- + pI predictions for small proteins can be problematic.
- + It is not taken in account the effects of post-translational modifications.
- + The molar extinction calculus assumes that no [other] chromophores that absorb at 280 nm are present in the protein.
- + Molar extinction can have more than 10% error for proteins without Trp residues.
+  + The current predictions may not be adequate for very alkaline proteins.
+  + pI predictions for small proteins can be problematic.
+  + It is not taken into account the effects of post-translational modifications.
+  + The molar extinction calculus assumes that no other chromophores that absorb at 280 nm are present in the protein.
+  + Molar extinction can have more than 10% error for proteins without Trp residues.
 
 ---
 
 ## Graphs in AMP cards
 
-The amino acids compositional deviation was calculated using the Z-score calculated from two different groups (AMPs and non-AMPs) previously
-used in the trainingset of Macrel models (**Fig. 1**).
+The amino acids compositional deviation was calculated using the Z-score calculated from
+two different groups (AMPs and non-AMPs) previously used in the training set of Macrel
+models (**Fig. 1**).
 
 <figure class="figure">
     <img style="float: center;" src="figures/aa_composition_deviation_AMP10.000_000.png" width="450" height="300">
-    <figcaption class="figure-caption">Fig. 1. Amino acids compositional deviation of AMP10.000_000.<br></figcaption>
+    <figcaption class="figure-caption">Fig. 1. Compositional deviation of peptide AMP10.000_000
+	    from Macrel's training set of AMPs and non-AMPs.<br></figcaption>
 </figure>
 
-<br/>This method consists in calculating the average percent composition of AMPs and non-AMPs separatedly per amino acid. Then using the Z-score:
-
+<br/>This method consists of calculating the average percent composition of AMPs
+and non-AMPs separately per amino acid. Then using the Z-score:
 
 ```
 
@@ -162,37 +168,42 @@ used in the trainingset of Macrel models (**Fig. 1**).
 		X% - amino acid X percent composition in the protein
 
 		Xstd - standard deviation of amino acid X percent composition
-                       of the set of AMPs or NAMPs in the trainingset used in
+                       of the set of AMPs or NAMPs in the training set used in
                        Macrel models
 
 		Xmu - average amino acid X percent composition of the set of
-                      AMPs or NAMPs in the trainingset used in Macrel models 
+                      AMPs or NAMPs in the training set used in Macrel models 
 
 ``` 
 
-A negative Z score means a negative variation in relation to the average, therefore, a reduction in comparison to the average behavior.
-By the other side, a positive Z-score means the gropwth of that variable in relation to the tested group's average.
-Then, when Z-score is close to zero, then we can tell that the peptide is actually close to the tested group's average.
 
-Similarly, in **Fig. 2**, we produced Z-score graphs to keep comparing the AMPs and non-AMPs behavior and also to place a given peptide having
-this given background in mind. To that we calculated the average of the entire trainingset used in Macrel and then the Z-scores for AMPs
-and non-AMPs, plotting them for each feature and also as different groups by color (black and gray, respectively). We can observe several 
-different features, some of them calculated as above mentioned.
+A negative Z score means that a specific amino acid decreased compared with the average training
+set for AMPs or non-AMPs. On the other side, a positive Z-score means the opposite, the increment
+of some amino acid compared to the average training set. Whether the Z-score is around zero, then
+the peptide composition is close to the average training set.
+
+We produced Z-score graphs to compare AMPs with the training set used by Macrel of AMPs and
+non-AMPs, placing a given peptide in this background (**Fig. 2**). The average and standard
+deviation for each of the features calculated from Macrel's training set were used to derive
+the Z-scores for AMPs and non-AMPs. These Z-scores were plotted for each variable and grouped
+by color (black for AMPs and gray for non-AMPs, respectively). Among the several different
+tested features, some of them were already above mentioned in detail.
 
 <figure class="figure">
     <img style="float: center;" src="figures/zscore_comparison.png" width="700" height="1000">
-    <figcaption class="figure-caption">Fig. 2. Z-score comparison of (a) aliphatic index, (b) boman index,
-            (c) hydrophobic moment, (d) instability index - instaindex,
-            (e) isoelectric point, and (f) charge using the average of
-            complete training set separated by non-antimicrobial peptides
-            (gray), antimicrobial peptides (black) and dots representing
-            the peptide as a red start - in this example, AMP10.000_000.</figcaption>
+    <figcaption class="figure-caption">Fig. 2. Z-score comparison of (a) aliphatic index,
+	    (b) Boman index, (c) hydrophobic moment, (d) instability index - instaindex,
+	    (e) isoelectric point, and (f) charge using the average of complete training
+	    set separated by non-antimicrobial peptides (gray), antimicrobial peptides
+	    (black) and dots representing the peptide as a red star - in this example,
+	    AMP10.000_000.</figcaption>
 </figure>
 
-<br/>The aliphatic index (AI) consists in the relative volume occupied by aliphatic side chains from Ala, Val, Leu/Ile.
-It is positively correlated with increasing thermostability of globular proteins. Then, it is possible to compare
-this parameter with the population of AMPs and non-AMPs sorted by length and again using the same rationale for Z-scores (**Fig. 2a**)
-AI can be calculated using the method from [Ikai (1980)](https://pubmed.ncbi.nlm.nih.gov/7462208/):
+<br/>The aliphatic index (AI) consists of the relative volume occupied by aliphatic side chains from
+Ala, Val, Leu/Ile. It correlates positively with the increasing thermostability of globular proteins.
+Then, it is possible to compare this parameter with the population of AMPs and non-AMPs sorted by length
+and again using the same rationale for Z-scores (**Fig. 2a**) AI can be calculated using the method from
+[Ikai (1980)](https://pubmed.ncbi.nlm.nih.gov/7462208/), as follows:
 
 ```
   AI = X(Ala) + a * X(Val) + b * ( X(Ile) + X(Leu) )  
@@ -200,23 +211,25 @@ AI can be calculated using the method from [Ikai (1980)](https://pubmed.ncbi.nlm
   where
   
         X(Ala), X(Val), X(Ile), and X(Leu) are mole percent of those amino acids (100 X mole fraction) 
-        a (= 2.9) represents the relative volume of side chain of valine in relation to alanine
-        b (= 3.9) represents the relative volume of side chain of leucine/isoleucine in relation to alanine 
-
+        a (= 2.9) represents the relative volume of the side chain of valine to alanine
+        b (= 3.9) represents the relative volume of the side chain of leucine/isoleucine to alanine 
 ```
 
-In **Fig. 2b** it is possible to observe the placement of the tested sequence among AMPs and non-AMPs using the Boman index.
-This index measures the potential protein interaction and was initially proposed by [Boman (2003)](https://pubmed.ncbi.nlm.nih.gov/12930229/).
-Its calculus consists in the sum of the solubility values for all residues in a sequence divided by the number of residues.
-In this way, Boman index can give us the idea of how probable is the interaction of that protein with membranes or other proteins as receptors.
-For reference, indices above than 2.48 mean that the protein has high binding potential. 
+In **Fig. 2b** it is possible to observe the placement of the tested sequence among AMPs and non-AMPs using
+the Boman index. This index, proposed by [Boman (2003)](https://pubmed.ncbi.nlm.nih.gov/12930229/), is the
+propensity of a peptide interacting with protein receptors or membranes. Boman index is the sum of the
+solubility values for all residues in a sequence divided by the number of residues. For reference, indices
+above 2.48 mean that the protein has high binding potential.
 
-The hydrophobic moment (H-moment) distribution is shown in the **Fig. 2c** and detects periodicity in protein hydrophobicity.
-In a more technical way, it measures of the amphiphilicity perpendicular to the axis of any periodic peptide structure,
-such as the a-helix or b-sheet. That is interesting because it is expected for AMPs that the hydrophobic residues arrange in a
-side of these structures. For its calculus the standardized [Eisenberg (1984)](https://pubmed.ncbi.nlm.nih.gov/6582470/)
-hydrophobicity scale is used and the hydrophobicity of residues is multiplied by their unit vector derived from the angular arrangement
-in relation to the nucleus of the alpha-carbon toward the geometric center of the side chain:
+The hydrophobic moment (H-moment) distribution in **Fig. 2c** detects the periodicity of hydrophobic residues
+of a protein. It measures the amphiphilicity perpendicular to the axis of any periodic peptide structure
+(a-helix or b-sheet). H-moment is especially useful to characterize AMPs, as their hydrophobic residues
+usually are arranged in a side of these structures.
+
+The standardized hydrophobicity scale developed by [Eisenberg (1984)](https://pubmed.ncbi.nlm.nih.gov/6582470/)
+is used to calculate the H-moment. The hydrophobicity of each residue in a protein window multiplied by their
+unit vector sums up the final H-moment. The unit vectors are the angular momentum to the nucleus of the alpha-
+carbon toward the geometric center of the side chain. Simplifying, it is obtained as follows:
 
 ```
     H-moment = sum(Hn*Sn)
@@ -228,29 +241,31 @@ in relation to the nucleus of the alpha-carbon toward the geometric center of th
 
             sin(delta) is the sine of the angle delta in radians
                        having the periodic structure divided into
-                       windows (for this calculus it is 100)
+                       windows (100°)
 
             cos(delta) is the cosine of the angle delta in radians
                        having the periodic structure divided into
-                       windows (for this calculus it is 100)
+                       windows (100°)
 ```
 
-The charge, instability index and isoelectric point were calculated as mentioned in the previous section and can be compared 
-against AMP and non-AMP sets using Z-score as shown in the **Fig. 2d-f**.
+The charge, instability index, and isoelectric point were calculated as mentioned
+in the previous section and compared against AMP and non-AMP sets using Z-score as
+shown in **Fig. 2d-f**.
 
-The helical wheel (**Fig. 3**) is useful to illustrate the properties of alpha-helices, such as the concentration of 
-hydrophobic amino acids on one side of the helix, with polar or hydrophilic amino acids on the other. 
+Usually, in globular proteins, helices have one face oriented toward the hydrophobic
+core and the other is solvent-exposed. The helical wheel (**Fig. 3**) illustrates this
+property of alpha-helices, through the concentration of hydrophobic amino acids on one
+side of the helix, with polar or hydrophilic amino acids on the other. 
 
 <figure class="figure">
     <img style="float: center;" src="figures/helicalwheel_AMP10.000_000.png" width="300" height="300">
-    <figcaption class="figure-caption">Fig. 3. Amino acids helical wheel with the hydrophobic moment indicated.</figcaption>
+    <figcaption class="figure-caption">Fig. 3. Amino acids helical wheel with the H-moment indicated.</figcaption>
 </figure>
 
-<br/>The helical wheel is drawn in a rotating manner where the angle of rotation between consecutive amino acids is 100°.
-This is usually found in globular proteins, where one face of the helix is oriented toward the hydrophobic core and 
-the another is solvent-exposed. The H-moment and direction is shown inside the wheel pointing to its maximum. 
-The function used in this graph as well as its color codes were taken from [modlAMP](https://doi.org/10.1093/bioinformatics/btx285).
-The residues are colored by the amphipathic scale:
+<br/>Helical wheels draw the protein residues in a rotation of 100° between consecutive amino acids.
+The H-moment and direction showed inside the wheel point to its maximum momentum. **Fig. 3** plotted
+using [modlAMP](https://doi.org/10.1093/bioinformatics/btx285) has a color code for amphiphilicity
+of residues available in the module as it follows:
 
 ```
 The amphipatic color code from modlAMP uses 8 colors:
@@ -260,19 +275,20 @@ N, Q                        Purple
 S, T                        Pink
 K, R                        Blue
 H                           Light blue
-D, E                        Red bordeaux
+D, E                        Bordeaux
 P                           Green
 F, L, W, M, V, I, C, Y      Yellow
 ```
 
-**Figures 4-7** compute a profile by residues using a scanning with a fixed window size and different scale parameters.
-An amino acid scale is a numerical value assigned to each type of amino acid according to some specific feature in which 
-they are classified or measured. To make a profile we also can use sequence positions or even the amino acids sequence
-colored by amino acids properties. In these figures we used the Lesk's color scale to code sequences in the X-axis
-as follows:
+**Figures 4-7** compute a profile by residues using scanning with fixed window size and different
+scale parameters. An amino acid scale is a numerical value assigned to each type of amino acid
+according to some specific feature in which they are classified or measured. To make a profile we
+also can use sequence positions or even the amino acids sequence colored by amino acids properties.
+In the above-mentioned figures we used Lesk's color scale to code sequences in the X-axis as follows:
 
 ```
 The colour scheme from Lesk
+
 It uses 5 groups (note Histidine): 
 
     Small nonpolar        G, A, S, T                    Orange
@@ -283,47 +299,43 @@ It uses 5 groups (note Histidine):
     
 ```
 
-Similarly to the expasy’s [ProtScale](http://www.expasy.org/cgi-bin/protscale.pl), we set parameters for the
-computation of a scale profile:
+Our calculations used the algorithm implemented in [ProtScale](http://www.expasy.org/cgi-bin/protscale.pl),
+in which for a window size n, we use the i-(n-1)/2 neighboring residues on each side to compute the score
+for i.
 
- + WindowSize:        The length of the interval to use for the profile computation.
-                      For a window size n, we use the i-(n-1)/2 neighboring residues on each side to compute the score for residue i.
-                      
- + Edge:              The central amino acid of the window always has a weight of 1.
-                      By default, the amino acids at the remaining window positions have the same weight.
-                       
-The most frequently used scales are the hydrophobicity scales (**Fig. 4**) and the adopted by the AMPSphere was established by
-[Parker et al. (1986)](https://pubmed.ncbi.nlm.nih.gov/2430611/). Parker is an experimental hydrophobicity scale derived by measuring
-HPLC retention times of peptide libraries. It presents two adjacent copies of a variable residue in a random coil peptide, one more
-exposed located toward the N-terminus of the peptide and one packed between the other copy of the residue and a Leucine residue
+The hydrophobicity scale adopted in the AMPSphere ([Parker et al., 1986](https://pubmed.ncbi.nlm.nih.gov/2430611/))
+and used in **Fig. 4**. is derived by measuring HPLC retention times of peptide libraries. It presents two
+adjacent copies of a variable residue in a random coil peptide, one more exposed located toward the N-terminus
+of the peptide and one packed between the other copy of the tested residue and a Leucine residue
 (Ac–GXXLLLKK–amide).
 
 <figure class="figure">
     <img style="float: center;" src="figures/hydrophobicity_Parker_AMP10.000_000.png" width="500" height="300">
-    <figcaption class="figure-caption">Fig. 4. Profile of hydrophobicity of residues of AMP10.000_000 using relative scale of Parker.</figcaption>
+    <figcaption class="figure-caption">Fig. 4. Profile of hydrophobicity of residues of AMP10.000_000 using the
+	    relative scale of Parker.</figcaption>
 </figure>
 
-<br/>This scale is interesting to understand whether hydrophobic or hydrophylic stretches are present in the peptide.
-If the hydrophobicity is above 0.5, it is considered hydrophobic ([Pane et al., 2017](https://doi.org/10.1016/j.jtbi.2017.02.012)).
+<br/>This scale is interesting to understand whether hydrophobic or hydrophilic stretches are present in the
+peptide. If the hydrophobicity is above 0.5, it is considered hydrophobic
+([Pane et al., 2017](https://doi.org/10.1016/j.jtbi.2017.02.012)).
 
-The profile of residues free energy of transfer from water to membrane lipid (Ez) in **Fig. 5** was conceived initially by 
-[Senes et al. (2007)](https://pubmed.ncbi.nlm.nih.gov/17174324/). It is important for AMPs to have a low energy of transfer
-allowing them to insert theirselves easily in the lipid membranes, triggiring their effects. The scale adopted in this graph
-was adapted from [modlAMP](https://doi.org/10.1093/bioinformatics/btx285).
-    
+The profile of residues free energy of transfer from water to membrane lipid (Ez) in **Fig. 5** was conceived
+initially by [Senes et al. (2007)](https://pubmed.ncbi.nlm.nih.gov/17174324/). Ez estimated by a reverse-Boltzman
+relationship of potential can be calculated from the propensities for the occurrence of each residue as a function
+of their depth in the lipid bilayer [Senes et al. (2007)](https://pubmed.ncbi.nlm.nih.gov/17174324/).AMPs need to
+have low free energy for transfer to easily insert themselves in the lipid membranes, triggering their effects. 
+The scale adopted in **Fig. 5** is the same as in [modlAMP](https://doi.org/10.1093/bioinformatics/btx285).
+  
 <figure class="figure">
     <img style="float: center;" src="figures/EZenergy_AMP10.000_000.png" width="500" height="300">
-    <figcaption class="figure-caption">Fig. 5. Profile of AMP10.000_000 residues free energy of transfer from water to membrane lipid.</figcaption>
+    <figcaption class="figure-caption">Fig. 5. Profile of AMP10.000_000 residues free energy of transfer from water
+	    to membrane lipid.</figcaption>
 </figure>
 
-<br/>The free energy of transfer was estimated as the by a reverse-Boltzman relationship of potential calculated from the 
-propensities for occurrence of each residue as a function of depth in the lipid bilayer
-[Senes et al. (2007)](https://pubmed.ncbi.nlm.nih.gov/17174324/).
-
-Complementary to the hydrophobicity, the solvent accessibility (SA) can tell us which residues are exposed or buried,
-as shown in **Fig. 6**. It is calculated using the Emini Surface fractional probability (EM) scale in the
-[Bio.SeqUtils.ProtParam](https://biopython.org/wiki/ProtParam) module. The scale was proposed by
-[Emini et al. (1987)](https://pubmed.ncbi.nlm.nih.gov/2991600/) based on the formulae:
+<br/>In a complementary way to hydrophobicity, solvent accessibility (SA) can show which residues are exposed or buried,
+as shown in **Fig. 6**. It uses the Emini Surface fractional probability (EM) scale in the
+[Bio.SeqUtils.ProtParam](https://biopython.org/wiki/ProtParam) module. The scale used is that in
+[Emini et al. (1987)](https://pubmed.ncbi.nlm.nih.gov/2991600/) based on the formula:
 
 ```
   Sn = (n+4+i)*(0.37)-6
@@ -331,22 +343,24 @@ as shown in **Fig. 6**. It is calculated using the Emini Surface fractional prob
   where
         Sn is the surface probability of residue n
         dn is the fractional surface probability value of the amino acid n
-        i vary from 1 to 6 depending of its position in the window
+        i vary from 1 to 6 depending on its position in the window
 ```
 
-Values greater than 1.0 indicate an increased probability for being found on the surface.
+SA values greater than 1.0 indicate an increased probability of being found on the surface. AMPs present an interesting
+periodicity of exposed and buried motifs, which arguments in the sense that they can form secondary structures and
+possibly interact with membranes and the extra/intra-cellular milleu.
 
 <figure class="figure">
     <img style="float: center;" src="figures/SA_AMP10.000_000.png" width="500" height="300">
     <figcaption class="figure-caption:bold">Fig. 6. Profile of solvent accessibility of residues of AMP10.000_000.</figcaption>
 </figure>
 
-<br/>The calculated flexibility profile (**Fig. 7**) is important to show if regions submitted to higher free energies of transfer could
-actually bend theirselves into a more favorable conformation. Other important conclusions could rise from flexibility and insights 
-from the amino acids sequences trend to form secondary structures. Therefore, an accurate analysis of the peptide flexibility can lead
-to valuable ideas of how the peptide can behave. The scale adopted in the profile calculation was obtained from normalized flexibility
-parameters (B-values), average [Vihinen, 1994](https://onlinelibrary.wiley.com/doi/10.1002/prot.340190207) optimized to be used in a
-fixed window of 9.
+<br/>The calculated flexibility profile (**Fig. 7**) shows regions submitted to higher tensions in the molecule
+and those able to move the rigid structure into a more favorable conformation. Therefore, accurate analysis of
+the peptide flexibility can lead to valuable ideas of how the peptide can fold and conformationally adjust. The
+normalized flexibility parameters (B-values) from
+[Vihinen (1994)](https://onlinelibrary.wiley.com/doi/10.1002/prot.340190207) was the scale adopted in the
+profile calculation.
 
 <figure class="figure">
     <img style="float: center;" src="figures/flexibility_AMP10.000_000.png" width="500" height="300">
@@ -357,9 +371,8 @@ fixed window of 9.
 
 ## References
 
-Authors of AMPSphere claim no authorship over the methods here cited and attributes 
-merit who deserves it. The methods here referenced can be found further explained
-in the links bellow:
+Authors of AMPSphere claim no authorship over the methods here cited and attributes merit who deserves it.
+The methods here referenced can be found further explained in the links below:
 
  + [Expasy](https://web.expasy.org/)
  + [ProtParam tool](https://web.expasy.org/protparam/)
