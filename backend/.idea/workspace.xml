@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="b60bba51-5645-48cf-b242-3987d1e4bf96" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../frontend-new/public/favicon.ico" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../frontend-new/public/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../frontend-new/src/router/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../frontend-new/src/store/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../frontend-new/src/style/config.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../frontend-new/src/style/theme/fonts/element-icons.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../frontend-new/src/style/theme/fonts/element-icons.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../frontend-new/src/style/theme/index.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../frontend-new/src/views/AMP_card.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../frontend-new/src/views/AMP_list.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../frontend-new/src/views/Browse_data.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../frontend-new/src/views/Contact.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../frontend-new/src/views/Download.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../frontend-new/src/views/Family_card.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../frontend-new/src/views/Home.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crud.py" beforeDir="false" afterPath="$PROJECT_DIR$/crud.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/DemoDB.sqlite" beforeDir="false" afterPath="$PROJECT_DIR$/data/DemoDB.sqlite" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/schemas.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/views/AMP_Card.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/views/AMP_Card.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/vue.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/vue.config.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1vTweyxWe4lwsOJWIbORhOJBnRR" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenDatabaseViewOnStart" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+</project>

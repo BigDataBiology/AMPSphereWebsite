@@ -10,7 +10,9 @@ from .database import SessionLocal, engine
 
 
 models.Base.metadata.create_all(bind=engine)
-app = FastAPI()
+app = FastAPI(docs_url='/api/docs',
+              redoc_url='/api/redoc',
+              openapi_url='/api/openapi.json')
 
 app.add_middleware(
     CORSMiddleware,
@@ -31,14 +33,19 @@ def get_db():
         db.close()
 
 
-@app.post("/home/")
+@app.get("/")
+def main():
+    return None
+
+
+@app.get("/home")
 def main():
     return None
 
 
 @app.get("/amp/", response_model=schemas.AMP)
-def read_amp_list(accession: str, db: Session = Depends(get_db)):
-    amp = crud.get_amp(accession, db)
+def read_amp_list(ampId: str, db: Session = Depends(get_db)):
+    amp = crud.get_amp(ampId, db)
     return amp
 
 

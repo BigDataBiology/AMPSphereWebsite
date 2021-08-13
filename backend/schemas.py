@@ -1,5 +1,4 @@
-from typing import List, Optional
-
+from typing import List, Optional, Dict
 from pydantic import BaseModel
 
 
@@ -76,13 +75,16 @@ class AMP_Environment(BaseModel):
 
 class AMP(BaseModel):
     AMP_Accession: str
+    AMP_Family: List[AMP_BasicInfo]
     AMP_Metagenome: List[str]
-    AMP_Feature: AMP_Feature
-    AMP_Prediction: AMP_Prediction
-    AMP_Country: AMP_Country
-    AMP_Environment: AMP_Environment
+    AMP_Feature: List[AMP_Feature]
+    AMP_Prediction: List[AMP_Prediction]
+    AMP_Country: List[AMP_Country]
+    AMP_Environment: List[AMP_Environment]
     class Config:
         orm_mode = True
+
+
 # Object for Host page ------------------------------------------------
 class Host(BaseModel):
     Host_Taxon_Id: int
