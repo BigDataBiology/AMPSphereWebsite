@@ -1,4 +1,4 @@
-# gas-frontend
+# app
 
 ## Project setup
 ```

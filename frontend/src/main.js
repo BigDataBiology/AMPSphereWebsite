@@ -1,30 +1,37 @@
-import Vue from 'vue'
-import ElementUI from 'element-ui';
-import './style/theme/index.css';
-import locale from 'element-ui/lib/locale/lang/en'
+import { createApp, h } from 'vue'
 import App from './App.vue'
+import ElementPLus from 'element-plus'
+import './style/theme/index.css'
+import locale from 'element-plus/lib/locale/lang/en'
 import router from './router'
-import store from './store'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-import echarts from 'echarts'
-import qs from 'qs'
+import imageZoom from 'vue-image-zoomer'
+import { Download, More } from '@element-plus/icons'
 
-Vue.config.productionTip = false
 
-Vue.use(ElementUI, {locale})
+router.beforeEach((to, from, next) => {
+    if (to.meta.title) {
+        document.title = to.meta.title
+    }
+    next()
+})
 
-Vue.use(VueAxios, axios)
-axios.defaults.baseURL = 'http://127.0.0.1:8000';
+const app = createApp(
+    {
+        render: () => h(App),
+        imageZoom
+    }
+)
 
-Vue.prototype.$baseURL = axios.defaults.baseURL;
 
-Vue.prototype.$echarts = echarts
-
-Vue.prototype.$qs = qs
-
-new Vue({
-    router,
-    store,
-    render: h => h(App)
-}).$mount('#app')
+app.use(router)
+app.use(ElementPLus, {locale})
+app.use(VueAxios, axios)
+//app.use(VueSidebarMenu)
+const ImageZoom = require('vue-image-zoomer').default
+app.component('image-zoom', ImageZoom)
+app.component(More.name, More)
+app.component(Download.name, Download)
+axios.defaults.baseURL = 'http://127.0.0.1:8080'
+app.mount('#app')
