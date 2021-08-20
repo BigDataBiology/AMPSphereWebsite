@@ -85,15 +85,36 @@ class AMP(BaseModel):
         orm_mode = True
 
 
-# Object for Host page ------------------------------------------------
-class Host(BaseModel):
-    Host_Taxon_Id: int
-    Host_Common_Name: str
-    Host_Sci_Name: str
-    Host_Counts = int
+class LinePlotData(BaseModel):
+    x: List[str]
+    y: List[float]
 
-    class Config:
-        orm_mode = True
+
+class SunburstPlotData(BaseModel):
+    labels: List[str]
+    parents: List[str]
+    values: List[float]
+    colorway: List[str]
+
+
+class BubbleMapData(BaseModel):
+    latitudes: List[float]
+    longitudes: List[float]
+    sizes: List[float]
+    colors: List[str]
+
+
+class Features(BaseModel):
+    MW: float
+    Length: float
+    Molar_extinction: List[float]
+    Aromaticity: float
+    GRAVY: float
+    Instability_index: float
+    Isoeletric_point: float
+    Charget_at_pH_7: float
+    Secondary_structure: List[float]
+
 
 # Object for Family page ------------------------------------------------
 class Family(BaseModel):
@@ -105,12 +126,6 @@ class Family(BaseModel):
     class Config:
         orm_mode = True
 
-# Object for Environment page ------------------------------------------------
-class Env(BaseModel):
-    pass
-
-    class Config:
-        orm_mode = True
 
 # Object for Download page ------------------------------------------------
 class Download(BaseModel):

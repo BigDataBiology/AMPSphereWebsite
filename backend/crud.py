@@ -34,10 +34,6 @@ def get_amp(accession: str, db: Session):
     )
 
 
-def get_amps_by_fam(fam_accession):
-    pass
-
-
 def get_families(db: Session, skip: int = 0, page_size: int = 100):
     pass
 
