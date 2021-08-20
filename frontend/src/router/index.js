@@ -6,7 +6,6 @@ import Downloads from '../views/Downloads.vue'
 import Help from '../views/Help.vue'
 import AMP_card from '../views/AMP_card'
 import About from '../views/About'
-import Tools from '../views/Tools'
 import Contact from '../views/Contact'
 
 
@@ -77,14 +76,6 @@ const routes = [
         component: About,
         meta: {
             title: 'AMPSphere: About'
-        }
-    },
-    {
-        path: '/tools',
-        name: 'Tools',
-        component: Tools,
-        meta:{
-            title: 'AMPSphere: Tools'
         }
     }
 ]

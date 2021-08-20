@@ -87,7 +87,8 @@
                       <Plotly :data="methods.SecStructurePieData()"
                               :layout="{title: {text: 'Secondary Structure'},
                               margin: {l: 10, r: 10, t: 70, b: 30, pad: 0},
-                              showlegend: false, height: 300}"/>
+                              showlegend: false, height: 300}"
+                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>
                     </div>
                   </el-col>
                 </div>
@@ -98,12 +99,18 @@
             <el-card class="box-card">
               <el-row>
                 <h4 id="global-distribution">Global distribution</h4>
-                <Plotly :data="methods.GeoPlotData()" :layout="methods.GeoPlotLayout()"></Plotly>
+                <Plotly :data="methods.GeoPlotData()"
+                        :layout="methods.GeoPlotLayout()"
+                        :toImageButtonOptions="{format: 'svg', scale: 1}"/>
               </el-row>
               <el-row>
                 <el-col :span="12">
                   <h4 id="distribution-across-habitats">Across habitats</h4>
-                  <div><Plotly :data="methods.EnvPlotData()" :layout="methods.EnvPlotLayout()"/></div>
+                  <div>
+                    <Plotly :data="methods.EnvPlotData()"
+                            :layout="methods.EnvPlotLayout()"
+                            :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                  </div>
 <!--                  <div id="myModal" class="modal">-->
 <!--                    <div class="modal-content">-->
 <!--                      <span class="close">&times;</span>-->
@@ -113,7 +120,11 @@
                 </el-col>
                 <el-col :span="12">
                   <h4 id="distribution-across-hosts">Across hosts</h4>
-                  <div><Plotly :data="methods.HostPlotData()" :layout="methods.HostPlotLayout()"/></div>
+                  <div>
+                    <Plotly :data="methods.HostPlotData()"
+                            :layout="methods.HostPlotLayout()"
+                            :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                  </div>
                 </el-col>
               </el-row>
             </el-card>
@@ -151,10 +162,11 @@
                 </div>
                 <div style="align-content: center; text-align: center;">
                   <el-image :src="AMP.helicalwheel"></el-image>
+<!--                  TODO directly include svg file here, not inplace generation-->
 <!--                  TODO https://observablehq.com/@smsaladi/helical-wheel-visualization-wip-2019_05_10-->
-<!--                    TODO inplacely generate helicalwheel using echarts-->
-<!--                    https://github.com/ecomfe/vue-echarts/blob/5.x/README.zh_CN.md-->
-<!--                    https://echarts.apache.org/examples/zh/editor.html?c=graph-circular-layout-->
+<!--                  TODO inplacely generate helicalwheel using echarts-->
+<!--                  https://github.com/ecomfe/vue-echarts/blob/5.x/README.zh_CN.md-->
+<!--                  https://echarts.apache.org/examples/zh/editor.html?c=graph-circular-layout-->
                 </div>
               </el-col>
               </el-card>
@@ -165,7 +177,11 @@
               <el-row>
                 <el-col>
                   <h4 id="features">Features</h4>
-                  <div><Plotly :data="methods.featureGraphData()" :layout="methods.featureGraphLayout()"></Plotly></div>
+                  <div>
+                    <Plotly :data="methods.featureGraphData()"
+                            :layout="methods.featureGraphLayout()"
+                            :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                  </div>
                   EZenergy.  xxxxx. Flexibility.  xxxxx.  Hydrophobicity Parker. xxxxx.
                 </el-col>
               </el-row>
@@ -454,6 +470,32 @@ export default {
           }
           return [0, 1, 2, 3].map(makeTrace)
         },
+        // featureGraphDataNew(){
+        //   function EnzymeEnergyData (){
+        //     this.axios.get('/enzyme-energy?seq=').then((response) => {
+        //       if (response.status === '200') {return response.data}
+        //       else {console.log(response.status)}
+        //     })
+        //   }
+        //   function EnzymeEnergyData (){
+        //     this.axios.get('/flexibility?seq=').then((response) => {
+        //       if (response.status === '200') {return response.data}
+        //       else {console.log(response.status)}
+        //     })
+        //   }
+        //   function EnzymeEnergyData (){
+        //     this.axios.get('/hydrophobicity-parker?seq=').then((response) => {
+        //       if (response.status === '200') {return response.data}
+        //       else {console.log(response.status)}
+        //     })
+        //   }
+        //   function EnzymeEnergyData (){
+        //     this.axios.get('/surface-accessibility?seq=' + this.AMP.Info.Sequence).then((response) => {
+        //       if (response.status === '200') {return response.data}
+        //       else {console.log(response.status)}
+        //     })
+        //   }
+        // },
         featureGraphLayout(){
           return {
             height: 400, margin: {l: 40, r: 40, b: 40, t: 40},
@@ -540,6 +582,17 @@ export default {
           else{
             console.log('please set the `kind` option for color palette.')
             return null
+          }
+        },
+        exportSVG(){
+          return {
+            toImageButtonOptions: {
+              format: 'svg', // one of png, svg, jpeg, webp
+              filename: 'custom_image',
+              height: 500,
+              width: 700,
+              scale: 1 // Multiply title/legend/axis/canvas sizes by this factor
+            }
           }
         },
         makeTraceVisible(index, totalTrace){
