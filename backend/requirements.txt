@@ -1,0 +1,5 @@
+sqlalchemy~=1.4.20
+fastapi~=0.65.3
+starlette~=0.14.2
+pydantic~=1.8.2
+uvicorn~=0.14.0
