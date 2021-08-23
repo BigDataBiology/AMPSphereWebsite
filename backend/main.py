@@ -8,7 +8,7 @@ import crud
 import models
 import schemas
 import utils
-from .database import SessionLocal, engine
+from database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
 app = FastAPI(docs_url='/api/docs',
@@ -35,14 +35,14 @@ def get_db():
         db.close()
 
 
-@app.get("/")
+@app.get("/", response_model=str)
 def main():
-    return None
+    return "Hello world"
 
 
-@app.get("/home")
+@app.get("/home", response_model=str)
 def main():
-    return None
+    return "Hello"
 
 
 @app.get("/amp/", response_model=schemas.AMP)

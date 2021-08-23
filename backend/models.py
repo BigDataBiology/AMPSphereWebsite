@@ -1,6 +1,6 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Float
 from sqlalchemy.orm import relationship
-from .database import Base
+from database import Base
 
 
 class AMP(Base):
@@ -19,7 +19,7 @@ class Metadata(Base):
 
     """
     __tablename__ = "Metadata"
-    GMGC = Column(String, primary_key=True, index=True)
+    GMSC = Column(String, primary_key=True, index=True)
     AMPSphere_code = Column(String, ForeignKey(AMP.accession))
     sample = Column(String)
     microontology = Column(String)
@@ -35,4 +35,5 @@ class Family(Base):
 
     """
     __tablename__ = "Family"
-    pass
+    accession = Column(String, primary_key=True, index=True)
+
