@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
-from . import models, schemas
-from . import utils
+import models
+import schemas
+import utils
 
 
 #
