@@ -60,38 +60,45 @@
 
             <h3 id="general_info">General information</h3>
             <el-card class="box-card">
-                <div style="text-align: left">
-                  <el-col :span="16">
-                    <ul>
-                      <li><span class="info-item" id="family">Family</span>: {{ AMP.Info.Family }}</li>
-                      <li><span class="info-item" id="length">Length</span>: {{ AMP.Info.Length }}</li>
-                      <li><span class="info-item" id="molecular-weight">Molecular weight</span>: {{ AMP.Info.MW }}</li>
-                      <li><span class="info-item" id="sequence">Sequence</span>: {{ AMP.Info.Sequence }}</li>
-                      <li><span class="info-item" id="relationships">Relationships</span>
-                        <el-tooltip class="item" content="Download relationships table" placement="right">
-                          <el-button @click="methods.downloadRelationshipsTable()" type="text"
-                                    icon="el-icon-download" circle></el-button>
-                        </el-tooltip>
-                      </li>
-                      <el-table :data="AMP.relationships" height="250" style="width: 100%">
-                        <el-table-column prop="GMSC" label="Genes"/>
-                        <el-table-column prop="Source" label="Sample/Genome"/>
-                        <el-table-column prop="taxid" label="Taxonomy id"/>
-                        <el-table-column prop="sciname" label="Scientific name"/>
-                      </el-table>
-                    </ul>
-                  </el-col>
-                  <el-col :span="8">
-                    <div id="secondary-structure" style="height: 300px;">
+              <el-row style="text-align: left">
+                <el-col :span="16">
+                  <ul>
+                    <li><span class="info-item" id="family">Family</span>: {{ AMP.Info.Family }}</li>
+                    <br/>
+                    <li><span class="info-item" id="length">Length</span>: {{ AMP.Info.Length }}</li>
+                    <br/>
+                    <li><span class="info-item" id="molecular-weight">Molecular weight</span>: {{ AMP.Info.MW }}</li>
+                    <br/>
+                    <li><span class="info-item" id="sequence">Sequence</span>: {{ AMP.Info.Sequence }}</li>
+                  </ul>
+                </el-col>
+                <el-col :span="6">
+                  <div id="secondary-structure" style="height: 180px;">
 <!--                    <Plotly :data="methods.SecStructureData()" :layout="methods.SecStructureLayout()"/>-->
-                      <Plotly :data="methods.SecStructurePieData()"
-                              :layout="{title: {text: 'Secondary Structure'},
-                              margin: {l: 10, r: 10, t: 70, b: 30, pad: 0},
-                              showlegend: false, height: 300}"
-                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>
-                    </div>
-                  </el-col>
-                </div>
+                    <Plotly :data="methods.SecStructurePieData()"
+                            :layout="{title: {text: 'Secondary Structure'},
+                            margin: {l: 0, r: 0, t: 0, b: 0, pad: 0},
+                            showlegend: false, height: 180}"
+                            :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                  </div>
+                </el-col>
+              </el-row>
+              <el-row style="text-align: left">
+                <ul>
+                  <li><span class="info-item" id="relationships">Relationships</span>
+                    <el-tooltip class="item" content="Download relationships table" placement="right">
+                      <el-button @click="methods.downloadRelationshipsTable()" type="text"
+                                 icon="el-icon-download" circle></el-button>
+                    </el-tooltip>
+                  </li>
+                  <el-table :data="AMP.relationships" height="250" style="width: 100%">
+                    <el-table-column prop="GMSC" label="Genes" width="250%"/>
+                    <el-table-column prop="Source" label="Sample/Genome" width="150%"/>
+                    <el-table-column prop="taxid" label="Taxon id" width="100%"/>
+                    <el-table-column prop="sciname" label="Name" width="250%"/>
+                  </el-table>
+                </ul>
+                </el-row>
             </el-card>
 
             <br/>
@@ -104,28 +111,33 @@
                         :toImageButtonOptions="{format: 'svg', scale: 1}"/>
               </el-row>
               <el-row>
-                <el-col :span="12">
-                  <h4 id="distribution-across-habitats">Across habitats</h4>
-                  <div>
-                    <Plotly :data="methods.EnvPlotData()"
-                            :layout="methods.EnvPlotLayout()"
-                            :toImageButtonOptions="{format: 'svg', scale: 1}"/>
-                  </div>
-<!--                  <div id="myModal" class="modal">-->
-<!--                    <div class="modal-content">-->
-<!--                      <span class="close">&times;</span>-->
-<!--                      <iframe height="800px" width="100%" src="../assets/kronaTest.html" style="border:none;"></iframe>-->
-<!--                    </div>-->
+<!--                <el-col :span="12">-->
+<!--                  <h4 id="distribution-across-habitats">Across habitats</h4>-->
+<!--                  <div>-->
+<!--                    <Plotly :data="methods.EnvPlotData()"-->
+<!--                            :layout="methods.EnvPlotLayout()"-->
+<!--                            :toImageButtonOptions="{format: 'svg', scale: 1}"/>-->
 <!--                  </div>-->
-                </el-col>
-                <el-col :span="12">
-                  <h4 id="distribution-across-hosts">Across hosts</h4>
-                  <div>
-                    <Plotly :data="methods.HostPlotData()"
-                            :layout="methods.HostPlotLayout()"
-                            :toImageButtonOptions="{format: 'svg', scale: 1}"/>
-                  </div>
-                </el-col>
+<!--&lt;!&ndash;                  <div id="myModal" class="modal">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <div class="modal-content">&ndash;&gt;-->
+<!--&lt;!&ndash;                      <span class="close">&times;</span>&ndash;&gt;-->
+<!--&lt;!&ndash;                      <iframe height="800px" width="100%" src="../assets/kronaTest.html" style="border:none;"></iframe>&ndash;&gt;-->
+<!--&lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                  </div>&ndash;&gt;-->
+<!--                </el-col>-->
+<!--                <el-col :span="12">-->
+<!--                  <h4 id="distribution-across-hosts">Across hosts</h4>-->
+<!--                  <div>-->
+<!--                    <Plotly :data="methods.HostPlotData()"-->
+<!--                            :layout="methods.HostPlotLayout()"-->
+<!--                            :toImageButtonOptions="{format: 'svg', scale: 1}"/>-->
+<!--                  </div>-->
+<!--                </el-col>-->
+                <div>
+                  <Plotly :data="methods.DistributionGraphData()"
+                          :layout="methods.DistributionGraphLayout()"
+                          :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                </div>
               </el-row>
             </el-card>
 
@@ -419,13 +431,13 @@ export default {
           //   branchvalues: 'total',
           // },
             {
-              "type": "sunburst",
-              "labels": ["Eve", "Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
-              "parents": ["", "Eve", "Eve", "Seth", "Seth", "Eve", "Eve", "Awan", "Eve" ],
-              "values":  [65, 14, 12, 10, 2, 6, 6, 4, 4],
-              "leaf": {"opacity": 0.4},
-              "marker": {"line": {"width": 2}},
-              "branchvalues": 'total'
+              type: "sunburst",
+              labels: ["Eve", "Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
+              parents: ["", "Eve", "Eve", "Seth", "Seth", "Eve", "Eve", "Awan", "Eve" ],
+              values:  [65, 14, 12, 10, 2, 6, 6, 4, 4],
+              leaf: {opacity: 0.4},
+              marker: {line: {"width": 2}},
+              branchvalues: 'total'
           }]
         },
         EnvPlotLayout(){
@@ -441,7 +453,7 @@ export default {
               "cellular organisms", "Bacteria", "Terrabacteria group", "Actinobacteria"],
             parents: ["", 'Viruses', "Anelloviridae", "unclassified Anelloviridae",
               "", "cellular organisms", "Bacteria", "Terrabacteria group"],
-            values:  [0, 0, 0, 14, 0, 0, 0, 6],
+            values:  [14, 14, 14, 14, 6, 6, 6, 6],
             outsidetextfont: {size: 20, color: "#377eb8"},
             leaf: {opacity: 0.4},
             marker: {
@@ -449,6 +461,7 @@ export default {
                 width: 2
               }
             },
+            branchvalues: 'total'
           }]
         },
         HostPlotLayout(){
@@ -456,6 +469,49 @@ export default {
             margin: {l: 40, r: 40, b: 40, t: 40},
             sunburstcolorway: this.ColorPalette('quanlitative')
          };
+        },
+        DistributionGraphData(){
+          let env_data = {
+            type: "sunburst",
+            labels: ["Eve", "Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
+            parents: ["", "Eve", "Eve", "Seth", "Seth", "Eve", "Eve", "Awan", "Eve" ],
+            values:  [65, 14, 12, 10, 2, 6, 6, 4, 4],
+            leaf: {opacity: 0.4},
+            marker: {line: {"width": 2}},
+            branchvalues: 'total'
+          }
+          let host_data = {
+            type: "sunburst",
+            labels: ['Viruses', "Anelloviridae", "unclassified Anelloviridae", "Small anellovirus",
+              "cellular organisms", "Bacteria", "Terrabacteria group", "Actinobacteria"],
+            parents: ["", 'Viruses', "Anelloviridae", "unclassified Anelloviridae",
+              "", "cellular organisms", "Bacteria", "Terrabacteria group"],
+            values:  [14, 14, 14, 14, 6, 6, 6, 6],
+            outsidetextfont: {size: 20, color: "#377eb8"},
+            leaf: {opacity: 0.4},
+            marker: {line: {width: 2}},
+            branchvalues: 'total',
+            visible: false,
+          }
+          return [env_data, host_data]
+        },
+        DistributionGraphLayout(){
+          return {
+            height: 400, margin: {l: 40, r: 40, b: 40, t: 40},
+            sunburstcolorway: this.ColorPalette('quanlitative'),
+            updatemenus: [{
+              direction: 'left', type: 'buttons', pad: {r: 10, t: 10},
+              showactive: true, x: 0.5, y: 1.2, yanchor: 'top', xanchor: 'center',
+              buttons: [{
+                method: 'update',
+                args: [{'visible': this.makeTraceVisible(0, 2)}],
+                label: 'Habitats'
+              }, {
+                method: 'update',
+                args: [{'visible': this.makeTraceVisible(1, 2)}],
+                label: 'Hosts'},
+              ]}
+            ]}
         },
         featureGraphData(){
           function makeTrace(i) {
@@ -510,14 +566,6 @@ export default {
                   {method: 'restyle', args: ['visible', this.makeTraceVisible(3, 12)], label: 'Surface Accessibility'}
                 ]
               }],
-            // annotations: [{
-            //   text: '<b>Features:</b>', x: 0, y: 1.15,
-            //   yref: 'paper', align: 'left', showarrow: false, font: {size: 14}
-            // },
-            //   {
-            //   text: '<b>Comparisons:</b>', x: button_groups_xpos, y: button_group_2_ypos - annotation_offset,
-            //   yref: 'paper', align: 'left', showarrow: false, font: {size: 14}
-            // }]
           }
         },
         comparisonGraphData(){
