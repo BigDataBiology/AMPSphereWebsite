@@ -52,3 +52,8 @@ df[['GMGC', 'AMPSphere_code', 'sample', 'microontology', 'environmental_features
 .sep \t
 .import --skip 1 AMPSphere_metadata.tsv Metadata
 ```
+
+-Test
+```sql
+select AMPSphere_code, latitude, longitude from Metadata where AMPSphere_code == 'AMP10.000_000';
+```
