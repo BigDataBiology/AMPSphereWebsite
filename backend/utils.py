@@ -104,7 +104,7 @@ def get_transfer_energy(seq):
     xval, xcolors = [], []
     
     for i in range(0, len(val)):
-        s = sequence[i]
+        s = seq[i]
         c = colorpallete[s]
         xcolors.append(c)
         s = f'{s}{i}'
@@ -139,7 +139,7 @@ def get_hydrophobicity_parker(seq):
     xval, xcolors = [], []
     
     for i in range(0, len(val)):
-        s = sequence[i]
+        s = seq[i]
         c = colorpallete[s]
         xcolors.append(c)
         s = f'{s}{i}'
@@ -174,7 +174,7 @@ def get_surface_accessibility(seq):
     xval, xcolors = [], []
     
     for i in range(0, len(val)):
-        s = sequence[i]
+        s = seq[i]
         c = colorpallete[s]
         xcolors.append(c)
         s = f'{s}{i}'
@@ -209,7 +209,7 @@ def get_flexibility(seq):
     xval, xcolors = [], []
     
     for i in range(0, len(val)):
-        s = sequence[i]
+        s = seq[i]
         c = colorpallete[s]
         xcolors.append(c)
         s = f'{s}{i}'
