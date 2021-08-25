@@ -62,6 +62,8 @@ def get_features(seq):
     """
     analyzed_seq = ProteinAnalysis(str(seq))
 
+    print(type(analyzed_seq.isoelectric_point()))
+    print(type(analyzed_seq.charge_at_pH(7.0)))
     out = {'Secondary_structure': analyzed_seq.secondary_structure_fraction(),  # helix, turn, sheet
            'Length': analyzed_seq.length,
            'Molar_extinction': analyzed_seq.molar_extinction_coefficient(),
@@ -71,7 +73,6 @@ def get_features(seq):
            'Charge_at_pH_7': analyzed_seq.charge_at_pH(7.0),
            'Instability_index': analyzed_seq.instability_index(),
            'Isoelectric_point': analyzed_seq.isoelectric_point()}
-
     return out
 
 
