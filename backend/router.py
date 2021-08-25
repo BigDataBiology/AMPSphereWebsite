@@ -22,6 +22,13 @@ router = APIRouter()
 
 @router.get("/amp", response_model=schemas.AMP)
 def amp(accession: str, db: Session = Depends(get_db)):
+    """
+    **tested**.
+
+    - :param accession:
+    - :param db:
+    - :return:
+    """
     amp = crud.get_amp(accession, db)
     return amp
 
@@ -29,77 +36,152 @@ def amp(accession: str, db: Session = Depends(get_db)):
 @router.get("/amps", response_model=List[schemas.AMP])
 def amps(page: int = 0, page_size: int = 20, db: Session = Depends(get_db)):
     """
+    **tested**.
+
     Get a list of amps.
-    :param page:
-    :param page_size:
-    :param db:
-    :return:
+    - :param page:
+    - :param page_size:
+    - :param db:
+    - :return:
     """
     return crud.get_amp_list(db, page=page, page_size=page_size)
 
 
 @router.get("/distribution/geo", response_model=schemas.BubbleMapData)
 def geo_distribution(accession):
+    """
+    TODO **test this**.
+
+    - :param accession: 
+    - :return: 
+    """
     data = crud.get_geo_data(accession)
     return utils.get_geo_distribution(data)
 
 
 @router.get("/distribution/habitat", response_model=schemas.SunburstPlotData)
 def distribution_across_habitats(accession):
+    """
+    TODO **test this**.
+
+    - :param accession:
+    - :return:
+    """
     data = crud.get_habitat_data(accession)
     return utils.get_distribution_across_habitats(data)
 
 
 @router.get("/distribution/host", response_model=schemas.SunburstPlotData)
 def distribution_across_hosts(accession):
+    """
+    TODO **test this**.
+
+    - :param accession:
+    - :return:
+    """
     data = crud.get_hosts_data(accession)
     return utils.get_distribution_across_hosts(data)
 
 
 @router.get("/distribution/origin", response_model=schemas.SunburstPlotData)
 def distribution_across_origins(accession):
+    """
+    TODO **test this**.
+
+    - :param accession:
+    - :return:
+    """
     data = crud.get_origins_data(accession)
     return utils.get_distribution_across_origins(data)
 
 
 @router.get("/features", response_model=schemas.Features)
 def features(seq):
+    """
+    **tested**.
+
+    - :param seq:
+    - :return:
+    """
     return utils.get_features(seq)
 
 
 @router.get("/feature/enzyme-energy", response_model=schemas.LinePlotData)
 def enzyme_energy(seq):
+    """
+    **tested**.
+
+    - :param seq:
+    - :return:
+    """
     return utils.get_transfer_energy(seq)
 
 
 @router.get("/feature/hydrophobicity_parker", response_model=schemas.LinePlotData)
 def hydrophobicity_parker(seq):
+    """
+    **tested**.
+
+    - :param seq:
+    - :return:
+    """
     return utils.get_hydrophobicity_parker(seq)
 
 
 @router.get("/feature/flexibility/", response_model=schemas.LinePlotData)
 def flexibility(seq):
+    """
+    **tested**.
+
+    - :param seq:
+    - :return:
+    """
     return utils.get_flexibility(seq)
 
 
 @router.get("/feature/surface-accessibility", response_model=schemas.LinePlotData)
 def surface_accessibility(seq):
+    """
+    **tested**.
+
+    - :param seq:
+    - :return:
+    """
     return utils.get_surface_accessibility(seq)
 
 
 @router.get("/family/", response_model=schemas.Family)
 def families(accession, db: Session = Depends(get_db)):
+    """
+    TODO **test this**.
+
+    - :param accession:
+    - :param db:
+    - :return:
+    """
     families = crud.get_family(accession, db)
     return families
 
 
 @router.get("/families", response_model=List[schemas.Family])
 def families(db: Session = Depends(get_db)):
+    """
+    TODO **test this**.
+
+    - :param db:
+    - :return:
+    """
     families = crud.get_families(db, skip=skip, page_size=page_size)
     return families
 
 
 @router.get("/downloads", response_model=List[schemas.Download])
 def read_downloads(db: Session = Depends(get_db)):
+    """
+    TODO **test this**.
+    
+    - :param db:
+    - :return:
+    """
     downloads = crud.get_downloads(db, skip=skip, page_size=page_size)
     return downloads
