@@ -1,15 +1,17 @@
+from Bio.SeqUtils.ProtParam import ProtParamData
+from Bio.SeqUtils.ProtParam import ProteinAnalysis
+
 # Protparam scales:
 # kd → Kyte & Doolittle Index of Hydrophobicity
 # Flex → Normalized average flexibility parameters (B-values)
 # hw → Hopp & Wood Index of Hydrophilicity
 # em → Emini Surface fractional probability (Surface Accessibility)
 
-aalist = ['A','C', 'D','E',
-          'F','G', 'H','I',
-          'K','L', 'M','N',
-          'P','Q', 'R','S',
-          'T','V', 'Y','W']
-
+aalist = ['A', 'C', 'D', 'E',
+          'F', 'G', 'H', 'I',
+          'K', 'L', 'M', 'N',
+          'P', 'Q', 'R', 'S',
+          'T', 'V', 'Y', 'W']
 
 # Colour scheme in Lesk (Introduction to Bioinformatics)
 # Uses 5 groups (note Histidine): 
@@ -22,8 +24,7 @@ colorpallete = {'G': 'orange', 'A': 'orange', 'S': 'orange', 'T': 'orange',
                 'C': 'g', 'V': 'g', 'I': 'g', 'L': 'g',
                 'P': 'g', 'F': 'g', 'Y': 'g', 'M': 'g',
                 'W': 'g', 'N': 'm', 'Q': 'm', 'H': 'm',
-            	'D': 'r', 'E': 'r', 'K': 'b', 'R': 'b'}
-
+                'D': 'r', 'E': 'r', 'K': 'b', 'R': 'b'}
 
 # these hydrophobicity scales are minmax organized
 # the higher the value, more hydrophobic the aa is
@@ -59,27 +60,19 @@ def get_features(seq):
             Secondary_structure: [..., ..., ...],
         }
     """
-    import sys
-    import os
-    from Bio import SeqIO
-    from Bio.SeqUtils.ProtParam import ProteinAnalysis
-    from Bio.SeqUtils.ProtParam import ProtParamData
-    
     analyzed_seq = ProteinAnalysis(str(seq))
-    
-    out = { 'Secondary_structure': analyzed_seq.secondary_structure_fraction(), # helix, turn, sheet
-            'Length': analyzed_seq.length,
-            'Molar_extinction': analyzed_seq.molar_extinction_coefficient(),
-            'Aromaticity': analyzed_seq.aromaticity(),
-            'GRAVY': analyzed_seq.gravy(),
-            'MW': analyzed_seq.molecular_weight(),              
-            'Charge_at_pH_7': analyzed_seq.charge_at_pH(7.0),
-            'Instability_index': analyzed_seq.instability_index(),
-            'Isoelectric_point': analyzed_seq.isoelectric_point() }
-    
+
+    out = {'Secondary_structure': analyzed_seq.secondary_structure_fraction(),  # helix, turn, sheet
+           'Length': analyzed_seq.length,
+           'Molar_extinction': analyzed_seq.molar_extinction_coefficient(),
+           'Aromaticity': analyzed_seq.aromaticity(),
+           'GRAVY': analyzed_seq.gravy(),
+           'MW': analyzed_seq.molecular_weight(),
+           'Charge_at_pH_7': analyzed_seq.charge_at_pH(7.0),
+           'Instability_index': analyzed_seq.instability_index(),
+           'Isoelectric_point': analyzed_seq.isoelectric_point()}
+
     return out
-    
-    pass
 
 
 def get_transfer_energy(seq):
@@ -92,29 +85,21 @@ def get_transfer_energy(seq):
             c: [..., ..., ..., ...] # color of axis X characters
         }
     """
-    import sys
-    import os
-    from Bio import SeqIO
-    from Bio.SeqUtils.ProtParam import ProteinAnalysis
-    from Bio.SeqUtils.ProtParam import ProtParamData
-
-    wd=5
+    wd = 5
     analyzed_seq = ProteinAnalysis(str(seq))
     val = analyzed_seq.protein_scale(window=wd, param_dict=scales['ez'])
     xval, xcolors = [], []
-    
+
     for i in range(0, len(val)):
         s = seq[i]
         c = colorpallete[s]
         xcolors.append(c)
         s = f'{s}{i}'
         xval.append(s)
-    
-    out = {'x': xval,'y': val,'c': xcolors}
-    
-    return out
 
-    pass
+    out = {'x': xval, 'y': val, 'c': xcolors}
+
+    return out
 
 
 def get_hydrophobicity_parker(seq):
@@ -127,29 +112,21 @@ def get_hydrophobicity_parker(seq):
             c: [..., ..., ..., ...] # color of axis X characters
         }
     """
-    import sys
-    import os
-    from Bio import SeqIO
-    from Bio.SeqUtils.ProtParam import ProteinAnalysis
-    from Bio.SeqUtils.ProtParam import ProtParamData
-
-    wd=5
+    wd = 5
     analyzed_seq = ProteinAnalysis(str(seq))
     val = analyzed_seq.protein_scale(window=wd, param_dict=scales['Parker'])
     xval, xcolors = [], []
-    
+
     for i in range(0, len(val)):
         s = seq[i]
         c = colorpallete[s]
         xcolors.append(c)
         s = f'{s}{i}'
         xval.append(s)
-    
-    out = {'x': xval,'y': val,'c': xcolors}
-    
-    return out
 
-    pass
+    out = {'x': xval, 'y': val, 'c': xcolors}
+
+    return out
 
 
 def get_surface_accessibility(seq):
@@ -162,29 +139,21 @@ def get_surface_accessibility(seq):
             c: [..., ..., ..., ...] # color of axis X characters
         }
     """
-    import sys
-    import os
-    from Bio import SeqIO
-    from Bio.SeqUtils.ProtParam import ProteinAnalysis
-    from Bio.SeqUtils.ProtParam import ProtParamData
-
-    wd=5    
+    wd = 5
     analyzed_seq = ProteinAnalysis(str(seq))
     val = analyzed_seq.protein_scale(window=wd, param_dict=ProtParamData.em)
     xval, xcolors = [], []
-    
+
     for i in range(0, len(val)):
         s = seq[i]
         c = colorpallete[s]
         xcolors.append(c)
         s = f'{s}{i}'
         xval.append(s)
-    
-    out = {'x': xval,'y': val,'c': xcolors}
-    
-    return out
 
-    pass
+    out = {'x': xval, 'y': val, 'c': xcolors}
+
+    return out
 
 
 def get_flexibility(seq):
@@ -197,29 +166,21 @@ def get_flexibility(seq):
             c: [..., ..., ..., ...] # color of axis X characters
         }
     """
-    import sys
-    import os
-    from Bio import SeqIO
-    from Bio.SeqUtils.ProtParam import ProteinAnalysis
-    from Bio.SeqUtils.ProtParam import ProtParamData
-
-    wd=5    
+    wd = 5
     analyzed_seq = ProteinAnalysis(str(seq))
     val = analyzed_seq.protein_scale(window=wd, param_dict=ProtParamData.Flex)
     xval, xcolors = [], []
-    
+
     for i in range(0, len(val)):
         s = seq[i]
         c = colorpallete[s]
         xcolors.append(c)
         s = f'{s}{i}'
         xval.append(s)
-    
-    out = {'x': xval,'y': val,'c': xcolors}
-    
-    return out
 
-    pass
+    out = {'x': xval, 'y': val, 'c': xcolors}
+
+    return out
 
 
 def get_geo_distribution(data):
@@ -245,4 +206,3 @@ def get_search_results(seq, search_using):
     :return:
     """
     pass
-
