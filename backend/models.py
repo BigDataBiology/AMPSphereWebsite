@@ -10,8 +10,18 @@ class AMP(Base):
     __tablename__ = "AMP"
     accession = Column(String, primary_key=True, index=True)
     sequence = Column(String)
-    family = Column(String)
+    family = Column(String, index=True)
     helical_wheel_path = Column(String)
+
+
+class GMSC(Base):
+    """
+
+    """
+    __tablename__ = "GMSC"
+    accession = Column(String, primary_key=True, index=True)
+    AMP = Column(String, ForeignKey(AMP.accession), index=True)
+    sequence = Column(String)
 
 
 class Metadata(Base):
@@ -20,7 +30,7 @@ class Metadata(Base):
     """
     __tablename__ = "Metadata"
     GMSC = Column(String, primary_key=True, index=True)
-    AMPSphere_code = Column(String, ForeignKey(AMP.accession))
+    AMPSphere_code = Column(String, ForeignKey(AMP.accession), index=True)
     sample = Column(String)
     microontology = Column(String)
     environmental_features = Column(String)
@@ -28,12 +38,8 @@ class Metadata(Base):
     host_scientific_name = Column(String)
     latitude = Column(Float)
     longitude = Column(Float)
+    origin_tax_id = Column(Integer)
+    origin_scientific_name = Column(String)
 
 
-class Family(Base):
-    """
-
-    """
-    __tablename__ = "Family"
-    accession = Column(String, primary_key=True, index=True)
 
