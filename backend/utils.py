@@ -76,6 +76,22 @@ def get_features(seq):
     return out
 
 
+def get_graph_points(seq):
+    graphs = ['transfer_energy', 'hydrophobicity_parker', 'surface_accessibility', 'flexibility']
+    param_dict_list = [scales['ez'], scales['Parker'], ProtParamData.em, ProtParamData.Flex]
+    wd = 5
+    analyzed_seq = ProteinAnalysis(str(seq))
+    graph_points = {}
+    for graph, param_dict in zip(graphs, param_dict_list):
+        val = analyzed_seq.protein_scale(window=wd, param_dict=param_dict)
+        xval, xcolors = [], []
+        for i in range(0, len(val)):
+            xcolors.append(colorpallete[seq[i]])
+            xval.append(f'{seq[i]}{i}')
+        graph_points[graph] = {'type': 'line plot', 'x': xval, 'y': val, 'c': xcolors}
+    return graph_points
+
+
 def get_transfer_energy(seq):
     """
     :param seq:
@@ -182,22 +198,6 @@ def get_flexibility(seq):
     out = {'x': xval, 'y': val, 'c': xcolors}
 
     return out
-
-
-def get_geo_distribution(data):
-    pass
-
-
-def get_habitat_distribution(data):
-    pass
-
-
-def get_host_distribution(data):
-    pass
-
-
-def get_origin_distribution(data):
-    pass
 
 
 def get_search_results(seq, search_using):
