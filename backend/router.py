@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from database import SessionLocal
 from typing import List
 from fastapi import Depends
+from fastapi.responses import RedirectResponse
 import schemas
 import utils
 import crud
@@ -16,12 +17,19 @@ def get_db():
         db.close()
 
 
+# Change here.
+default_route_summary = ' '
+version = '/v1'
+
 browse_router = APIRouter(
-    prefix="/browse",
+    prefix=version + "/browse",
+    tags=['browse']
 )
 
 
-@browse_router.get("/amp/{accession}", response_model=schemas.AMP)
+@browse_router.get("/amp/{accession}",
+                   response_model=schemas.AMP,
+                   summary=default_route_summary)
 def amp(accession: str, db: Session = Depends(get_db), include_feature_graph: bool = True):
     """
     **tested**.
@@ -33,7 +41,10 @@ def amp(accession: str, db: Session = Depends(get_db), include_feature_graph: bo
     return crud.get_amp(accession, db, include_feature_graph=include_feature_graph)
 
 
-@browse_router.get("/amps", response_model=List[schemas.AMPMetadata])
+# TODO define consistent schema for AMP object.
+@browse_router.get("/amps",
+                   response_model=List[schemas.AMPMetadata],
+                   summary=default_route_summary)
 def amps(db: Session = Depends(get_db),
          family: str = None, habitat: str = None, host: str = None,
          gene: str = None, sample: str = None, origin: str = None,
@@ -53,7 +64,9 @@ def amps(db: Session = Depends(get_db),
     )
 
 
-@browse_router.get("/family/{accession}", response_model=schemas.Family)
+@browse_router.get("/family/{accession}",
+                   response_model=schemas.Family,
+                   summary=default_route_summary)
 def families(accession, db: Session = Depends(get_db)):
     """
     TODO **test this**.
@@ -66,7 +79,9 @@ def families(accession, db: Session = Depends(get_db)):
     return families
 
 
-@browse_router.get("/families", response_model=List[schemas.Family])
+@browse_router.get("/families",
+                   response_model=List[schemas.Family],
+                   summary=default_route_summary)
 def families(db: Session = Depends(get_db)):
     """
     TODO **test this**.
@@ -78,7 +93,9 @@ def families(db: Session = Depends(get_db)):
     return families
 
 
-@browse_router.get("/downloads", response_model=List[schemas.Download])
+@browse_router.get("/downloads",
+                   response_model=List[schemas.Download],
+                   summary=default_route_summary)
 def read_downloads(db: Session = Depends(get_db)):
     """
     TODO **test this**.
@@ -91,11 +108,14 @@ def read_downloads(db: Session = Depends(get_db)):
 
 
 compute_router = APIRouter(
-    prefix="/compute",
+    prefix=version + "/compute",
+    tags=['compute'],
 )
 
 
-@compute_router.get("/features/{seq}", response_model=schemas.Features)
+@compute_router.get("/features/{seq}",
+                    response_model=schemas.Features,
+                    summary=default_route_summary)
 def features(seq):
     """
     **tested**.
@@ -106,8 +126,10 @@ def features(seq):
     return utils.get_features(seq)
 
 
-@compute_router.get("/distributions/{accession}", response_model=schemas.Distributions)
-def distributions(accession, db: Session = Depends(get_db)):
+@compute_router.get("/distributions/{accession}",
+                    response_model=schemas.Distributions,
+                    summary=default_route_summary)
+def distributions(accession: str, db: Session = Depends(get_db)):
     """
     **tested**.
 
@@ -115,6 +137,38 @@ def distributions(accession, db: Session = Depends(get_db)):
     - :return:
     """
     return crud.get_distributions(accession=accession, db=db)
+
+
+# ---------------------------------------------------------------
+search_router = APIRouter(
+    prefix=version + "/search",
+    tags=['search'],
+)
+
+
+@search_router.get("/text",
+                   response_model=schemas.SearchResults,
+                   summary=default_route_summary)
+def text_search(query: str):
+    """
+
+    - :param query:
+    - :return:
+    """
+    return crud.search_by_text(query)
+
+
+@search_router.get("/sequence",
+                   response_model=schemas.SearchResults,
+                   summary=default_route_summary)
+def sequence_search(query: str, method: str):
+    """
+
+    - :param query:
+    - :param method:
+    - :return:
+    """
+    return utils.search_by_sequence(query, method=method)
 
 ## --------------------------Deprecated----------------------------------
 

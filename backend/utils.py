@@ -200,10 +200,10 @@ def get_flexibility(seq):
     return out
 
 
-def get_search_results(seq, search_using):
+def search_by_sequence(seq, method: str = 'mmSeqs'):
     """
     :param seq: sequence
-    :param search_using: {mmSeqs, HMMsearch}
+    :param method: {mmSeqs, HMMsearch}
     :return:
     """
     pass

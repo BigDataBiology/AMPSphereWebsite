@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import models
 from database import engine
-from router import browse_router, compute_router
+from router import browse_router, compute_router, search_router
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -37,6 +37,13 @@ app.add_middleware(
     allow_credentials=True,
 )
 
-app.include_router(router=browse_router)
-app.include_router(router=compute_router)
+app.include_router(
+    router=browse_router
+)
+app.include_router(
+    router=compute_router
+)
+app.include_router(
+    router=search_router
+)
 

@@ -132,3 +132,10 @@ class Download(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class SearchResults(BaseModel):
+    pass
+
+    class Config:
+        orm_mode = True

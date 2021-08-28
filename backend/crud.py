@@ -101,3 +101,7 @@ def get_distributions(accession: str, db: Session):
     data['hosts'].fillna('Unknown', inplace=True)
     print(data)
     return
+
+
+def search_by_text(query):
+    pass
