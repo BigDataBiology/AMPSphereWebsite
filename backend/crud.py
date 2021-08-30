@@ -5,31 +5,20 @@ import schemas
 import utils
 from pprint import pprint
 import livingTree as lt
+from sqlalchemy import distinct
 
 
 def get_amp_list(db: Session, page: int = 0, page_size: int = 20, **kwargs):
-    query = db.query(
-        models.AMP.accession, models.AMP.family, models.AMP.sequence,
-        models.Metadata.GMSC, models.Metadata.sample,
-        models.Metadata.microontology, models.Metadata.environmental_features,
-        models.Metadata.host_tax_id, models.Metadata.host_scientific_name,
-        models.Metadata.latitude, models.Metadata.longitude,
-        models.Metadata.origin_tax_id, models.Metadata.origin_scientific_name
-    ).outerjoin(
-        models.Metadata
-    ).outerjoin(
-        models.GMSC
-    )
+    query = db.query(distinct(models.AMP.accession)).outerjoin(models.Metadata)
 
     # Mapping from filter keys to table columns
     metadata_cols = {
         'habitat': 'microontology',
         'host': 'host_scientific_name',
         'origin': 'origin_scientific_name',
-        'gene': 'GMSC',
         'sample': 'sample'}
     for key, value in kwargs.items():
-        if key in {'habitat', 'host', 'origin', 'gene', 'sample'}:
+        if key in {'habitat', 'host', 'origin', 'sample'}:
             if value:
                 query = query.filter(getattr(models.Metadata, metadata_cols[key]) == value)
         elif key == 'family':
@@ -37,17 +26,33 @@ def get_amp_list(db: Session, page: int = 0, page_size: int = 20, **kwargs):
                 query = query.filter(getattr(models.AMP, key) == value)
         else:
             pass
-    return query.offset(page * page_size).limit(page_size).all()
+    accessions = query.offset(page * page_size).limit(page_size).all()
+    print(accessions)
+    return [get_amp(accession, db) for accession, in accessions]
 
 
-def get_amp(accession: str, db: Session, include_feature_graph: bool):
+def get_amp(accession: str, db: Session):
     amp_obj = db.query(models.AMP).filter(models.AMP.accession == accession).first()
-    features = utils.get_features(amp_obj.sequence)
-    if include_feature_graph:
-        feature_graph_points = utils.get_graph_points(amp_obj.sequence)
-        features["graph_points"] = feature_graph_points
+
+    features = utils.get_amp_features(amp_obj.sequence)
+    feature_graph_points = utils.get_graph_points(amp_obj.sequence)
+    features["graph_points"] = feature_graph_points
+
+    metadata = get_amp_metadata(accession, db, page=0, page_size=20)
     setattr(amp_obj, "features", features)
+    setattr(amp_obj, "metadata", metadata)
     return amp_obj
+
+
+def get_amp_metadata(accession: str, db: Session, page: int, page_size: int):
+    m = db.query(models.Metadata).filter(models.Metadata.AMPSphere_code == accession). \
+        offset(page * page_size).limit(page_size).all()
+    return [row.__dict__ for row in m]
+
+
+def get_amp_features(accession: str, db: Session):
+    seq, = db.query(models.AMP.sequence).filter(models.AMP.accession == accession).first()
+    return utils.get_amp_features(seq)
 
 
 def get_families(db: Session, skip: int = 0, page_size: int = 100):
@@ -68,7 +73,7 @@ def get_distributions(accession: str, db: Session):
         print('error')  # better handle this.
     metadata = pd.DataFrame([obj.__dict__ for obj in raw_data]).drop(columns='_sa_instance_state')
     print(metadata)
-    color_map = {} ##### supply here
+    color_map = {}  ##### supply here
     metadata['latitude'] = metadata['latitude'].replace('', None).astype(float).round(1)
     metadata['longitude'] = metadata['longitude'].replace('', None).astype(float).round(1)
     metadata['habitat_type'] = pd.Categorical(metadata['microontology'].apply(lambda x: x.split(':')[0]))
@@ -97,7 +102,7 @@ def get_distributions(accession: str, db: Session):
     # Fix id inconsistency.
     data['hosts']['host_tax_id'] = data['hosts']['host_tax_id'].apply(lambda x: x if x != 2116673.0 else 85678.0)
     pd.DataFrame(lt.LineageTracker(ids=data['hosts']['host_tax_id'].astype(int)).paths_sp,
-                     columns=['sk', 'k', 'p', 'c', 'o', 'f', 'g', 's'])
+                 columns=['sk', 'k', 'p', 'c', 'o', 'f', 'g', 's'])
     data['hosts'].fillna('Unknown', inplace=True)
     print(data)
     return

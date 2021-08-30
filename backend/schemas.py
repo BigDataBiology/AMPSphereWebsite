@@ -52,7 +52,7 @@ class Distributions(BaseModel):
 
 
 # Object for AMP_card page ------------------------------------------------
-class Features(BaseModel):
+class AMPFeatures(BaseModel):
     MW: float
     Length: float
     Molar_extinction: List[float]
@@ -68,27 +68,39 @@ class Features(BaseModel):
         orm_mode = True
 
 
-class AMP(BaseModel):
-    accession: str
-    sequence: str
-    family: str
-    helical_wheel_path: str
-    features: Optional[Features]
-
-    class Config:
-        orm_mode = True
-
-
 class AMPMetadata(BaseModel):
-    accession: str
-    sequence: str
-    family: str
+    """
+  'AMPSphere_code': 'AMP10.000_000',
+  'GMSC': 'GMSC10.SMORF.000_036_899_109',
+  '_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f852d890e50>,
+  'environmental_features': 'human-associated habitat [ENVO:00009003]',
+  'host_scientific_name': 'Homo sapiens',
+  'host_tax_id': 9606,
+  'latitude': 23.1271,
+  'longitude': 113.2828,
+  'microontology': 'host-associated:animal host:digestive tract:intestine',
+  'origin_scientific_name': 'Phocaeicola vulgatus',
+  'origin_tax_id': 238,
+  'sample': 'SAMEA104142074
+    """
+    # AMPSphere_code: str
+    # GMSC: str
+    # environmental_features: Optional[str]
+    # host_scientific_name: Optional[str]
+    # host_tax_id: Optional[int]
+    # latitude: Optional[float]
+    # longitude: Optional[float]
+    # microontology: Optional[str]
+    # origin_scientific_name: Optional[str]
+    # origin_tax_id: Optional[int]
+    # sample: Optional[str]
+    AMPSphere_code: str
     GMSC: str
     sample: str
     microontology: str
     environmental_features: str
     host_tax_id: Optional[int]
-    host_scientific_name: str
+    host_scientific_name: Optional[str]
     latitude: Optional[float]
     longitude: Optional[float]
     origin_tax_id: Optional[int]
@@ -106,6 +118,10 @@ class AMPMetadata(BaseModel):
     def host_tax_id_blank_string(value, field):
         return None if value == "" else value
 
+    @validator('host_scientific_name', pre=True)
+    def host_sci_name_blank_string(value, field):
+        return None if value == "" else value
+
     @validator('latitude', pre=True)
     def latitude_blank_string(value, field):
         return None if value == "" else value
@@ -115,12 +131,33 @@ class AMPMetadata(BaseModel):
         return None if value == "" else value
 
 
+class AMP(BaseModel):
+    accession: str
+    sequence: str
+    family: str
+    helical_wheel_path: str
+    features: AMPFeatures
+    metadata: List[AMPMetadata]
+
+    class Config:
+        orm_mode = True
+
+
 # Object for Family page ------------------------------------------------
+class FamilyFeatures(BaseModel):
+    pass
+
+
+class FamilyDownloads(BaseModel):
+    pass
+
+
 class Family(BaseModel):
-    Family_AMP: List[str]
-    Family_Environment: List[str]
-    Family_Avg_Feature: List[float]
-    Family_Std_Feature: List[float]
+    accession: str
+    consensus_sequence: str
+    num_amps: int
+    features: FamilyFeatures
+    downloads: FamilyDownloads
 
     class Config:
         orm_mode = True
@@ -135,7 +172,17 @@ class Download(BaseModel):
 
 
 class SearchResults(BaseModel):
-    pass
+    target_sequence_id: str
+    sequence_identity: float
+    alignment_length: int
+    number_of_mismatches: int
+    number_of_gap_openings: int
+    domain_start_index_query: int
+    domain_end_index_query: int
+    domain_start_index_target: int
+    domain_end_index_target: int
+    e_value: float
+    bit_score: int
 
     class Config:
         orm_mode = True
