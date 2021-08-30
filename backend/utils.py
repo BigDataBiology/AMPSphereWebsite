@@ -1,5 +1,24 @@
+import configparser
+import pathlib
+import subprocess
+
 from Bio.SeqUtils.ProtParam import ProtParamData
 from Bio.SeqUtils.ProtParam import ProteinAnalysis
+from datetime import datetime
+from pprint import pprint
+import uuid
+import pandas as pd
+from Bio import SearchIO
+
+
+def parse_config():
+    parser = configparser.ConfigParser()
+    parser.read('config.ini')
+    return parser['DEFAULT']
+
+
+cfg = parse_config()
+
 
 # Protparam scales:
 # kd → Kyte & Doolittle Index of Hydrophobicity
@@ -44,7 +63,7 @@ scales = {'Parker': {'W': 1.0, 'F': 0.96, 'L': 0.96,
                  'R': 14.92, 'P': 0.0}}
 
 
-def get_features(seq):
+def get_amp_features(seq):
     """
     :param seq:
     :return:
@@ -62,8 +81,6 @@ def get_features(seq):
     """
     analyzed_seq = ProteinAnalysis(str(seq))
 
-    print(type(analyzed_seq.isoelectric_point()))
-    print(type(analyzed_seq.charge_at_pH(7.0)))
     out = {'Secondary_structure': analyzed_seq.secondary_structure_fraction(),  # helix, turn, sheet
            'Length': analyzed_seq.length,
            'Molar_extinction': analyzed_seq.molar_extinction_coefficient(),
@@ -72,7 +89,8 @@ def get_features(seq):
            'MW': analyzed_seq.molecular_weight(),
            'Charge_at_pH_7': analyzed_seq.charge_at_pH(7.0),
            'Instability_index': analyzed_seq.instability_index(),
-           'Isoelectric_point': analyzed_seq.isoelectric_point()}
+           'Isoelectric_point': analyzed_seq.isoelectric_point(),
+           'graph_points': get_graph_points(seq)}
     return out
 
 
@@ -200,10 +218,58 @@ def get_flexibility(seq):
     return out
 
 
-def search_by_sequence(seq, method: str = 'mmSeqs'):
+def search_by_sequence(seq, method: str = 'mmseqs'):
     """
+    FIXME 
     :param seq: sequence
     :param method: {mmSeqs, HMMsearch}
     :return:
     """
-    pass
+    query_id = str(uuid.uuid4())
+    query_time_now = datetime.now()
+    tmp_dir = pathlib.Path(cfg['tmp_dir'])
+    input_seq_file = tmp_dir.joinpath(query_id + '.input')
+    output_file = tmp_dir.joinpath(query_id + '.output')
+
+    if not tmp_dir.exists():
+        tmp_dir.mkdir(parents=True)
+    with open(input_seq_file, 'w') as f:
+        f.write(f'>input_sequence\n{seq}')
+
+    if method == 'mmseqs':
+        command_base = 'mmseqs easy-search {query_seq} {database_fasta} {out} {tmp_dir}'
+        command = command_base.format_map({
+            'query_seq': input_seq_file,
+            'database_fasta': cfg['mmseqs_database_file'],
+            'out': output_file,
+            'tmp_dir': str(tmp_dir)
+        })
+    elif method == 'hmmsearch':
+        command_base = 'hmmsearch --domtblout {out} {hmm_profiles} {query_seq}'
+        command = command_base.format_map({
+            'out': output_file,
+            'hmm_profiles': cfg['hmm_profile_file'],
+            'query_seq': input_seq_file,
+            # 'out_tmp': tmp_dir.joinpath(query_id + '.tmp')
+        })
+        ## TODO parse the
+        ## FIXME
+        h = SearchIO.read('/root/AMPSphere/tmp/82808b92-812d-44ff-8b2c-2a941fbf1a5a.tmp', 'hmmsearch3-domtab')
+    else:
+        print('Unsupported search method received, please use either hmmsearch or mmseqs')
+        return None
+
+    results = subprocess.run(command, shell=True, check=True)
+    if results.returncode == 0:
+        df = pd.read_table(output_file, sep='\t')
+        print(df)
+        records = df.to_dict(orient='records')
+        print(records)
+        return records
+    else:
+        print('error when executing the command (code {}): {}'.format(results.returncode, results.stderr))
+        return None
+
+
+def obj_to_dict(obj):
+    return {key: value for key, value in obj.__dict__.items() if key != '_sa_instance'}
