@@ -21,34 +21,24 @@ def get_db():
 default_route_summary = ' '
 version = '/v1'
 
-browse_router = APIRouter(
-    prefix=version + "/browse",
-    tags=['browse']
+amp_router = APIRouter(
+    prefix=version + "/amps",
+    tags=['amp']
 )
 
 
-@browse_router.get("/amp/{accession}",
-                   response_model=schemas.AMP,
-                   summary=default_route_summary)
-def amp(accession: str, db: Session = Depends(get_db), include_feature_graph: bool = True):
-    """
-    **tested**.
-
-    - :param accession:
-    - :param db:
-    - :return:
-    """
-    return crud.get_amp(accession, db, include_feature_graph=include_feature_graph)
-
-
 # TODO define consistent schema for AMP object.
-@browse_router.get("/amps",
-                   response_model=List[schemas.AMPMetadata],
-                   summary=default_route_summary)
+@amp_router.get(path="",
+                response_model=List[schemas.AMP],
+                summary=default_route_summary)
 def amps(db: Session = Depends(get_db),
-         family: str = None, habitat: str = None, host: str = None,
-         gene: str = None, sample: str = None, origin: str = None,
-         page_size: int = 20, page: int = 0):
+         family: str = None,
+         habitat: str = None,
+         host: str = None,
+         sample: str = None,
+         origin: str = None,
+         page_size: int = 20,
+         page: int = 0):
     """
     **tested**.
 
@@ -60,16 +50,96 @@ def amps(db: Session = Depends(get_db),
     """
     return crud.get_amp_list(
         db, page=page, page_size=page_size,
-        family=family, habitat=habitat, host=host, origin=origin, gene=gene, sample=sample
+        family=family, habitat=habitat, host=host, origin=origin, sample=sample
     )
 
 
-@browse_router.get("/family/{accession}",
+@amp_router.get(path="/{accession}",
+                response_model=schemas.AMP,
+                summary=default_route_summary)
+def amp(accession: str,
+        db: Session = Depends(get_db)):
+    """
+    **tested**.
+
+    - :param accession:
+    - :param db:
+    - :return:
+    """
+    return crud.get_amp(accession, db)
+
+
+@amp_router.get("/{accession}/features",
+                response_model=schemas.AMPFeatures,
+                summary=default_route_summary)
+def amp_features(accession: str,
+                 db: Session = Depends(get_db)):
+    """
+    **tested**.
+
+    - :param seq:
+    - :return:
+    """
+    # TODO get sequence here.
+    return crud.get_amp_features(accession, db)
+
+
+@amp_router.get("/{accession}/distributions",
+                response_model=schemas.Distributions,
+                summary=default_route_summary)
+def distributions(accession: str,
+                  db: Session = Depends(get_db)):
+    """
+    TODO: implement me, medium PRIORITY
+
+    - :param accession:
+    - :return:
+    """
+    return crud.get_distributions(accession=accession, db=db)
+
+
+@amp_router.get("/{accession}/metadata",
+                response_model=List[schemas.AMPMetadata],
+                summary=default_route_summary)
+def metadata(accession: str,
+             db: Session = Depends(get_db),
+             page: int = 0,
+             page_size: int = 20):
+    """
+    **tested**.
+
+    - :param accession:
+    - :return:
+    """
+    return crud.get_amp_metadata(accession=accession, db=db, page=page, page_size=page_size)
+
+
+family_router = APIRouter(
+    prefix=version + '/families',
+    tags=['family']
+)
+
+
+@family_router.get(path="",
+                   response_model=List[schemas.Family],
+                   summary=default_route_summary)
+def families(db: Session = Depends(get_db)):
+    """
+    TODO: implement me, medium PRIORITY
+
+    - :param db:
+    - :return:
+    """
+    families = crud.get_families(db, skip=skip, page_size=page_size)
+    return families
+
+
+@family_router.get(path="/{accession}",
                    response_model=schemas.Family,
                    summary=default_route_summary)
 def families(accession, db: Session = Depends(get_db)):
     """
-    TODO **test this**.
+    TODO: implement me, medium PRIORITY
 
     - :param accession:
     - :param db:
@@ -79,59 +149,26 @@ def families(accession, db: Session = Depends(get_db)):
     return families
 
 
-@browse_router.get("/families",
-                   response_model=List[schemas.Family],
+@family_router.get(path="/{accession}/features",
+                   response_model=schemas.FamilyFeatures,
                    summary=default_route_summary)
-def families(db: Session = Depends(get_db)):
+def fam_features(accession):
     """
-    TODO **test this**.
-
-    - :param db:
-    - :return:
-    """
-    families = crud.get_families(db, skip=skip, page_size=page_size)
-    return families
-
-
-@browse_router.get("/downloads",
-                   response_model=List[schemas.Download],
-                   summary=default_route_summary)
-def read_downloads(db: Session = Depends(get_db)):
-    """
-    TODO **test this**.
-
-    - :param db:
-    - :return:
-    """
-    downloads = crud.get_downloads(db)
-    return downloads
-
-
-compute_router = APIRouter(
-    prefix=version + "/compute",
-    tags=['compute'],
-)
-
-
-@compute_router.get("/features/{seq}",
-                    response_model=schemas.Features,
-                    summary=default_route_summary)
-def features(seq):
-    """
-    **tested**.
+    TODO: implement me, medium PRIORITY
 
     - :param seq:
     - :return:
     """
-    return utils.get_features(seq)
+    # TODO get sequence here.
+    return utils.get_features(accession)
 
 
-@compute_router.get("/distributions/{accession}",
-                    response_model=schemas.Distributions,
-                    summary=default_route_summary)
-def distributions(accession: str, db: Session = Depends(get_db)):
+@family_router.get(path="/{accession}/distributions",
+                   response_model=schemas.Distributions,
+                   summary=default_route_summary)
+def fam_distributions(accession: str, db: Session = Depends(get_db)):
     """
-    **tested**.
+    TODO: implement me, low PRIORITY
 
     - :param accession:
     - :return:
@@ -139,36 +176,63 @@ def distributions(accession: str, db: Session = Depends(get_db)):
     return crud.get_distributions(accession=accession, db=db)
 
 
-# ---------------------------------------------------------------
-search_router = APIRouter(
-    prefix=version + "/search",
-    tags=['search'],
+@family_router.get("/{accession}/downloads",
+                   response_model=schemas.FamilyDownloads,
+                   summary=default_route_summary)
+def fam_downloads(accession: str, db: Session = Depends(get_db)):
+    """
+    **TODO test me**.
+    TODO: implement me, medium PRIORITY
+    - :param accession:
+    - :return:
+    """
+    return crud.get_fam_downloads(accession=accession, db=db)
+
+
+default_router = APIRouter(
+    prefix=version + '',
+    tags=['default']
 )
 
 
-@search_router.get("/text",
-                   response_model=schemas.SearchResults,
-                   summary=default_route_summary)
+@default_router.get("/downloads",
+                    response_model=List[schemas.Download],
+                    summary=default_route_summary)
+def read_downloads(db: Session = Depends(get_db)):
+    """
+    TODO **test this**.
+    TODO: implement me, low PRIORITY
+    - :param db:
+    - :return:
+    """
+    downloads = crud.get_downloads(db)
+    return downloads
+
+
+@default_router.get("/search/text",
+                    response_model=schemas.SearchResults,
+                    summary=default_route_summary)
 def text_search(query: str):
     """
-
+    TODO: implement me, high PRIORITY
     - :param query:
     - :return:
     """
     return crud.search_by_text(query)
 
 
-@search_router.get("/sequence",
-                   response_model=schemas.SearchResults,
-                   summary=default_route_summary)
+@default_router.get("/search/sequence",
+                    response_model=List[schemas.SearchResults],
+                    summary=default_route_summary)
 def sequence_search(query: str, method: str):
     """
-
+    TODO: implement me, high PRIORITY
     - :param query:
     - :param method:
     - :return:
     """
     return utils.search_by_sequence(query, method=method)
+
 
 ## --------------------------Deprecated----------------------------------
 
