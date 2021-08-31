@@ -82,13 +82,13 @@ def get_amp_features(seq):
 
     out = {'Secondary_structure': analyzed_seq.secondary_structure_fraction(),  # helix, turn, sheet
            'Length': analyzed_seq.length,
-           'Molar_extinction': analyzed_seq.molar_extinction_coefficient(),
-           'Aromaticity': analyzed_seq.aromaticity(),
-           'GRAVY': analyzed_seq.gravy(),
-           'MW': analyzed_seq.molecular_weight(),
-           'Charge_at_pH_7': analyzed_seq.charge_at_pH(7.0),
-           'Instability_index': analyzed_seq.instability_index(),
-           'Isoelectric_point': analyzed_seq.isoelectric_point(),
+           'Molar_extinction': list(map(round_3, analyzed_seq.molar_extinction_coefficient())),
+           'Aromaticity': round_3(analyzed_seq.aromaticity()),
+           'GRAVY': round_3(analyzed_seq.gravy()),
+           'MW': round_3(analyzed_seq.molecular_weight()),
+           'Charge_at_pH_7': round_3(analyzed_seq.charge_at_pH(7.0)),
+           'Instability_index': round_3(analyzed_seq.instability_index()),
+           'Isoelectric_point': round_3(analyzed_seq.isoelectric_point()),
            'graph_points': get_graph_points(seq)}
     return out
 
@@ -271,8 +271,6 @@ def hmmscan_search(seq: str):
         'query_seq': input_seq_file,
         # 'out_tmp': tmp_dir.joinpath(query_id + '.tmp')
     })
-    ## TODO parse the
-    ## FIXME
     results = subprocess.run(command, shell=True, check=True)
 
     if results.returncode == 0:
@@ -310,3 +308,7 @@ def hmmscan_search(seq: str):
 
 def obj_to_dict(obj):
     return {key: value for key, value in obj.__dict__.items() if key != '_sa_instance'}
+
+
+def round_3(num: float):
+    return round(num, 3)
