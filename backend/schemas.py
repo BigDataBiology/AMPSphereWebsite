@@ -68,7 +68,7 @@ class AMPFeatures(BaseModel):
         orm_mode = True
 
 
-class AMPMetadata(BaseModel):
+class Metadata(BaseModel):
     """
   'AMPSphere_code': 'AMP10.000_000',
   'GMSC': 'GMSC10.SMORF.000_036_899_109',
@@ -137,27 +137,34 @@ class AMP(BaseModel):
     family: str
     helical_wheel_path: str
     features: AMPFeatures
-    metadata: List[AMPMetadata]
+    metadata: List[Metadata]
 
     class Config:
         orm_mode = True
 
 
 # Object for Family page ------------------------------------------------
-class FamilyFeatures(BaseModel):
-    pass
-
-
 class FamilyDownloads(BaseModel):
-    pass
+    alignment: str
+    sequences: str
+    hmm_logo: str
+    hmm_profile: str
+    sequence_logo: str
+    tree_figure: str
+    tree_nwk: str
+
+    class Config:
+        orm_mode = True
 
 
 class Family(BaseModel):
     accession: str
     consensus_sequence: str
     num_amps: int
-    features: FamilyFeatures
+    #features: Dict[str, AMPFeatures]
+    #metadata: List[Metadata]
     downloads: FamilyDownloads
+    associated_amps: List[str]
 
     class Config:
         orm_mode = True

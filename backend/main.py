@@ -38,9 +38,5 @@ app.add_middleware(
 )
 
 
-for router in [amp_router,
-               family_router,
-               default_router]:
-    app.include_router(
-        router=router
-    )
+for router in [amp_router, family_router, default_router]:
+    app.include_router(router=router)

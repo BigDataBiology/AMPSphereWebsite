@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from database import SessionLocal
-from typing import List
+from typing import List, Dict
 from fastapi import Depends
 from fastapi.responses import RedirectResponse
 import schemas
@@ -48,7 +48,7 @@ def amps(db: Session = Depends(get_db),
     - :param db:
     - :return:
     """
-    return crud.get_amp_list(
+    return crud.get_amps(
         db, page=page, page_size=page_size,
         family=family, habitat=habitat, host=host, origin=origin, sample=sample
     )
@@ -99,7 +99,7 @@ def distributions(accession: str = 'AMP10.000_000',
 
 
 @amp_router.get("/{accession}/metadata",
-                response_model=List[schemas.AMPMetadata],
+                response_model=List[schemas.Metadata],
                 summary=default_route_summary)
 def metadata(accession: str = 'AMP10.000_000',
              db: Session = Depends(get_db),
@@ -124,25 +124,33 @@ family_router = APIRouter(
                    response_model=List[schemas.Family],
                    summary=default_route_summary)
 def families(db: Session = Depends(get_db),
-             page_size: int = 20,
+             habitat: str = None,
+             host: str = None,
+             sample: str = None,
+             origin: str = None,
+             page_size: int = 5,
              page: int = 0):
     """
-    TODO: implement me, medium PRIORITY
+    **tested**
 
     - :param db:
     - :return:
     """
-    families = crud.get_families(db, page=page, page_size=page_size)
+    families = crud.get_families(
+        db, page=page, page_size=page_size,
+        habitat=habitat, host=host, origin=origin, sample=sample
+    )
     return families
 
 
 @family_router.get(path="/{accession}",
                    response_model=schemas.Family,
                    summary=default_route_summary)
-def families(accession: str = 'SPHERE-III.001_396', db: Session = Depends(get_db)):
+def family(accession: str = 'SPHERE-III.001_396', db: Session = Depends(get_db)):
     """
-    TODO: implement me, medium PRIORITY
+    **tested**
 
+    FIXME how to get and return features and distribution.
     - :param accession:
     - :param db:
     - :return:
@@ -152,17 +160,18 @@ def families(accession: str = 'SPHERE-III.001_396', db: Session = Depends(get_db
 
 
 @family_router.get(path="/{accession}/features",
-                   response_model=schemas.FamilyFeatures,
+                   response_model=Dict[str, schemas.AMPFeatures],
                    summary=default_route_summary)
-def fam_features(accession: str = 'SPHERE-III.001_396'):
+def fam_features(accession: str = 'SPHERE-III.001_396', db: Session = Depends(get_db)):
     """
-    TODO: implement me, medium PRIORITY
+    **tested**
 
+    FIXME how to present and effectively get features of an AMP family
     - :param seq:
     - :return:
     """
     # TODO get sequence here.
-    return utils.get_features(accession)
+    return crud.get_fam_features(accession, db=db)
 
 
 @family_router.get(path="/{accession}/distributions",
@@ -181,14 +190,14 @@ def fam_distributions(accession: str = 'SPHERE-III.001_396', db: Session = Depen
 @family_router.get("/{accession}/downloads",
                    response_model=schemas.FamilyDownloads,
                    summary=default_route_summary)
-def fam_downloads(accession: str = 'SPHERE-III.001_396', db: Session = Depends(get_db)):
+def fam_downloads(accession: str = 'SPHERE-III.001_396'):
     """
-    **TODO test me**.
-    TODO: implement me, medium PRIORITY
+    **tested**
+
     - :param accession:
     - :return:
     """
-    return crud.get_fam_downloads(accession=accession, db=db)
+    return crud.get_fam_downloads(accession=accession)
 
 
 default_router = APIRouter(
@@ -243,7 +252,7 @@ def mmseqs_search(query: str = 'KKVKSIFKKALAMMGENEVKAWGIGIK'):
                     summary=default_route_summary)
 def hmmscan_search(query: str = 'KKVKSIFKKALAMMGENEVKAWGIGIK'):
     """
-    ** tested**
+    **tested**
 
     - :param query:
     - :param method:

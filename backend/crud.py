@@ -1,14 +1,14 @@
 import pandas as pd
 from sqlalchemy.orm import Session
 import models
-import schemas
 import utils
 from pprint import pprint
 import livingTree as lt
-from sqlalchemy import distinct
+from sqlalchemy import distinct, func
+import pathlib
 
 
-def get_amp_list(db: Session, page: int = 0, page_size: int = 20, **kwargs):
+def get_amps(db: Session, page: int = 0, page_size: int = 20, **kwargs):
     query = db.query(distinct(models.AMP.accession)).outerjoin(models.Metadata)
 
     # Mapping from filter keys to table columns
@@ -55,8 +55,66 @@ def get_amp_features(accession: str, db: Session):
     return utils.get_amp_features(seq)
 
 
-def get_families(db: Session, skip: int = 0, page_size: int = 100):
-    pass
+def get_families(db: Session, page: int, page_size: int, **kwargs):
+    query = db.query(distinct(models.AMP.family)).outerjoin(models.Metadata)
+
+    # Mapping from filter keys to table columns
+    metadata_cols = {
+        'habitat': 'microontology',
+        'host': 'host_scientific_name',
+        'origin': 'origin_scientific_name',
+        'sample': 'sample'}
+    for key, value in kwargs.items():
+        if value:
+            query = query.filter(getattr(models.Metadata, metadata_cols[key]) == value)
+    accessions = query.offset(page * page_size).limit(page_size).all()
+    print(accessions)
+    return [get_family(accession, db) for accession, in accessions]
+
+
+def get_family(accession: str, db: Session):
+    family = dict(
+        accession=accession,
+        consensus_sequence='',   # FIXME calculate consensus sequence.
+        num_amps=db.query(func.count(models.AMP.accession).filter(models.AMP.family == accession)).scalar(),
+        #features=get_fam_features(accession, db),
+        #metadata=get_fam_metadata(accession, db, page=0, page_size=20),
+        associated_amps=get_associated_amps(accession, db),
+        downloads=get_fam_downloads(accession)
+    )
+    return family
+
+
+def get_fam_metadata(accession: str, db: Session, page: int, page_size: int):
+    amp_accessions = db.query(models.AMP.accession).filter(models.AMP.family == accession).all()
+    amp_accessions = [accession for accession, in amp_accessions]
+    m = db.query(models.Metadata).filter(models.Metadata.AMPSphere_code.in_(amp_accessions)). \
+        offset(page * page_size).limit(page_size).all()
+    return [row.__dict__ for row in m]
+
+
+def get_fam_features(accession: str, db: Session):
+    amps = db.query(models.AMP).filter(models.AMP.family == accession).all()
+    return {amp.accession: utils.get_amp_features(amp.sequence) for amp in amps}
+
+
+def get_fam_downloads(accession):
+    prefix = pathlib.Path(utils.cfg['family_data_dir'])
+    path_bases = dict(
+        alignment=str(prefix.joinpath('{}.aln')),
+        sequences=str(prefix.joinpath('{}.faa')),
+        hmm_logo=str(prefix.joinpath('{}.png')),
+        hmm_profile=str(prefix.joinpath('{}.hmm')),
+        sequence_logo=str(prefix.joinpath('{}.pdf')),
+        tree_figure=str(prefix.joinpath('{}.ascii')),
+        tree_nwk=str(prefix.joinpath('{}.nwk'))
+    )
+    return {key: item.format(accession) for key, item in path_bases.items()}
+
+
+def get_associated_amps(accession, db):
+    amp_accessions = db.query(models.AMP.accession).filter(models.AMP.family == accession).all()
+    return [accession for accession, in amp_accessions]
 
 
 def get_downloads(db: Session, skip: int = 0, page_size: int = 100):
