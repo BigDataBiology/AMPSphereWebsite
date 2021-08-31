@@ -57,7 +57,7 @@ def amps(db: Session = Depends(get_db),
 @amp_router.get(path="/{accession}",
                 response_model=schemas.AMP,
                 summary=default_route_summary)
-def amp(accession: str,
+def amp(accession: str = 'AMP10.000_000',
         db: Session = Depends(get_db)):
     """
     **tested**.
@@ -72,7 +72,7 @@ def amp(accession: str,
 @amp_router.get("/{accession}/features",
                 response_model=schemas.AMPFeatures,
                 summary=default_route_summary)
-def amp_features(accession: str,
+def amp_features(accession: str = 'AMP10.000_000',
                  db: Session = Depends(get_db)):
     """
     **tested**.
@@ -87,7 +87,7 @@ def amp_features(accession: str,
 @amp_router.get("/{accession}/distributions",
                 response_model=schemas.Distributions,
                 summary=default_route_summary)
-def distributions(accession: str,
+def distributions(accession: str = 'AMP10.000_000',
                   db: Session = Depends(get_db)):
     """
     TODO: implement me, medium PRIORITY
@@ -101,7 +101,7 @@ def distributions(accession: str,
 @amp_router.get("/{accession}/metadata",
                 response_model=List[schemas.AMPMetadata],
                 summary=default_route_summary)
-def metadata(accession: str,
+def metadata(accession: str = 'AMP10.000_000',
              db: Session = Depends(get_db),
              page: int = 0,
              page_size: int = 20):
@@ -123,21 +123,23 @@ family_router = APIRouter(
 @family_router.get(path="",
                    response_model=List[schemas.Family],
                    summary=default_route_summary)
-def families(db: Session = Depends(get_db)):
+def families(db: Session = Depends(get_db),
+             page_size: int = 20,
+             page: int = 0):
     """
     TODO: implement me, medium PRIORITY
 
     - :param db:
     - :return:
     """
-    families = crud.get_families(db, skip=skip, page_size=page_size)
+    families = crud.get_families(db, page=page, page_size=page_size)
     return families
 
 
 @family_router.get(path="/{accession}",
                    response_model=schemas.Family,
                    summary=default_route_summary)
-def families(accession, db: Session = Depends(get_db)):
+def families(accession: str = 'SPHERE-III.001_396', db: Session = Depends(get_db)):
     """
     TODO: implement me, medium PRIORITY
 
@@ -152,7 +154,7 @@ def families(accession, db: Session = Depends(get_db)):
 @family_router.get(path="/{accession}/features",
                    response_model=schemas.FamilyFeatures,
                    summary=default_route_summary)
-def fam_features(accession):
+def fam_features(accession: str = 'SPHERE-III.001_396'):
     """
     TODO: implement me, medium PRIORITY
 
@@ -166,7 +168,7 @@ def fam_features(accession):
 @family_router.get(path="/{accession}/distributions",
                    response_model=schemas.Distributions,
                    summary=default_route_summary)
-def fam_distributions(accession: str, db: Session = Depends(get_db)):
+def fam_distributions(accession: str = 'SPHERE-III.001_396', db: Session = Depends(get_db)):
     """
     TODO: implement me, low PRIORITY
 
@@ -179,7 +181,7 @@ def fam_distributions(accession: str, db: Session = Depends(get_db)):
 @family_router.get("/{accession}/downloads",
                    response_model=schemas.FamilyDownloads,
                    summary=default_route_summary)
-def fam_downloads(accession: str, db: Session = Depends(get_db)):
+def fam_downloads(accession: str = 'SPHERE-III.001_396', db: Session = Depends(get_db)):
     """
     **TODO test me**.
     TODO: implement me, medium PRIORITY
@@ -210,28 +212,47 @@ def read_downloads(db: Session = Depends(get_db)):
 
 
 @default_router.get("/search/text",
-                    response_model=schemas.SearchResults,
+                    response_model=schemas.mmSeqsSearchResult,
                     summary=default_route_summary)
-def text_search(query: str):
+def text_search(query: str = 'AMP10.000_000'):
     """
     TODO: implement me, high PRIORITY
+
     - :param query:
     - :return:
     """
     return crud.search_by_text(query)
 
 
-@default_router.get("/search/sequence",
-                    response_model=List[schemas.SearchResults],
+@default_router.get("/search/mmseqs",
+                    response_model=List[schemas.mmSeqsSearchResult],
                     summary=default_route_summary)
-def sequence_search(query: str, method: str):
+def mmseqs_search(query: str = 'KKVKSIFKKALAMMGENEVKAWGIGIK'):
     """
-    TODO: implement me, high PRIORITY
+    **tested**
+
+    TODO: accelerate me by creating and indexing the db in advance.
+    - :param query: sequence
+    - :return:
+    """
+    return utils.mmseqs_search(query)
+
+
+@default_router.get("/search/hmmer",
+                    response_model=List[schemas.HMMERSearchResult],
+                    summary=default_route_summary)
+def hmmscan_search(query: str = 'KKVKSIFKKALAMMGENEVKAWGIGIK'):
+    """
+    ** tested**
+
     - :param query:
     - :param method:
     - :return:
     """
-    return utils.search_by_sequence(query, method=method)
+    return utils.hmmscan_search(query)
+
+
+
 
 
 ## --------------------------Deprecated----------------------------------
