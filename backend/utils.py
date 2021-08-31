@@ -19,7 +19,6 @@ def parse_config():
 
 cfg = parse_config()
 
-
 # Protparam scales:
 # kd → Kyte & Doolittle Index of Hydrophobicity
 # Flex → Normalized average flexibility parameters (B-values)
@@ -218,13 +217,7 @@ def get_flexibility(seq):
     return out
 
 
-def search_by_sequence(seq, method: str = 'mmseqs'):
-    """
-    FIXME 
-    :param seq: sequence
-    :param method: {mmSeqs, HMMsearch}
-    :return:
-    """
+def mmseqs_search(seq: str):
     query_id = str(uuid.uuid4())
     query_time_now = datetime.now()
     tmp_dir = pathlib.Path(cfg['tmp_dir'])
@@ -234,41 +227,85 @@ def search_by_sequence(seq, method: str = 'mmseqs'):
     if not tmp_dir.exists():
         tmp_dir.mkdir(parents=True)
     with open(input_seq_file, 'w') as f:
-        f.write(f'>input_sequence\n{seq}')
+        f.write(f'>submitted_sequence\n{seq}')
 
-    if method == 'mmseqs':
-        command_base = 'mmseqs easy-search {query_seq} {database_fasta} {out} {tmp_dir}'
-        command = command_base.format_map({
-            'query_seq': input_seq_file,
-            'database_fasta': cfg['mmseqs_database_file'],
-            'out': output_file,
-            'tmp_dir': str(tmp_dir)
-        })
-    elif method == 'hmmsearch':
-        command_base = 'hmmsearch --domtblout {out} {hmm_profiles} {query_seq}'
-        command = command_base.format_map({
-            'out': output_file,
-            'hmm_profiles': cfg['hmm_profile_file'],
-            'query_seq': input_seq_file,
-            # 'out_tmp': tmp_dir.joinpath(query_id + '.tmp')
-        })
-        ## TODO parse the
-        ## FIXME
-        h = SearchIO.read('/root/AMPSphere/tmp/82808b92-812d-44ff-8b2c-2a941fbf1a5a.tmp', 'hmmsearch3-domtab')
-    else:
-        print('Unsupported search method received, please use either hmmsearch or mmseqs')
-        return None
-
+    command_base = 'mmseqs easy-search {query_seq} {database_fasta} {out} {tmp_dir}'
+    command = command_base.format_map({
+        'query_seq': input_seq_file,
+        'database_fasta': cfg['mmseqs_database_file'],
+        'out': output_file,
+        'tmp_dir': str(tmp_dir)
+    })
     results = subprocess.run(command, shell=True, check=True)
     if results.returncode == 0:
-        df = pd.read_table(output_file, sep='\t')
+        df = pd.read_table(output_file, sep='\t', header=None)
+        df.columns = ['query_identifier', 'target_identifier', 'sequence_identity', 'alignment_length',
+                      'number_mismatches', 'number_gap_openings', 'domain_start_position_query',
+                      'domain_end_position_query', 'domain_start_position_target',
+                      'domain_end_position_target', 'E_value', 'bit_score']
         print(df)
         records = df.to_dict(orient='records')
-        print(records)
+        pprint(records)
         return records
     else:
         print('error when executing the command (code {}): {}'.format(results.returncode, results.stderr))
         return None
+
+
+def hmmscan_search(seq: str):
+    query_id = str(uuid.uuid4())
+    query_time_now = datetime.now()
+    tmp_dir = pathlib.Path(cfg['tmp_dir'])
+    input_seq_file = tmp_dir.joinpath(query_id + '.input')
+    output_file = tmp_dir.joinpath(query_id + '.output')
+
+    if not tmp_dir.exists():
+        tmp_dir.mkdir(parents=True)
+    with open(input_seq_file, 'w') as f:
+        f.write(f'>submitted_sequence\n{seq}')
+
+    command_base = 'hmmscan --domtblout {out} {hmm_profiles} {query_seq}'
+    command = command_base.format_map({
+        'out': output_file,
+        'hmm_profiles': cfg['hmm_profile_file'],
+        'query_seq': input_seq_file,
+        # 'out_tmp': tmp_dir.joinpath(query_id + '.tmp')
+    })
+    ## TODO parse the
+    ## FIXME
+    results = subprocess.run(command, shell=True, check=True)
+
+    if results.returncode == 0:
+        df = pd.read_table(output_file, header=2, skipfooter=10, sep='\s+', engine='python')
+        df.columns = [
+            'target_name', 'target_accession', 'target_length', 'query_name',
+            'query_accession', 'query_length', 'E_value', 'score', 'bias',
+            'domain_index', 'num_domain', 'c_Evalue', 'i_Evalue', 'score',
+            'bias', 'from_hmm', 'to_hmm', 'from_ali', 'to_ali', 'from_env',
+            'to_env', 'acc', 'description_of_target']
+        print(df)
+        records = df.to_dict(orient='records')
+        pprint(records)
+        return records
+    else:
+        print('error when executing the command (code {}): {}'.format(results.returncode, results.stderr))
+        return None
+
+
+# --- deprecated
+# with pyhmmer.plan7.HMMFile('./database/hmmsearch_model/AMPSphere_v2021-03.hmm') as hmms:
+#     alphabet = pyhmmer.easel.Alphabet.amino()
+#     background = pyhmmer.plan7.Background(alphabet)
+#     pipeline = pyhmmer.plan7.Pipeline(alphabet, background=background)
+#     with pyhmmer.easel.SequenceFile("/root/AMPSphere/tmp/343598dd-f03a-4555-b0e5-9fe68eed7ae5.input") as seq_file:
+#         seq_file.set_digital(alphabet)
+#         hits = pipeline.search_hmm(query=hmms, sequences=seq_file)
+#
+# with pyhmmer.plan7.HMMFile('./database/hmmsearch_model/AMPSphere_v2021-03.hmm') as hmms:
+#     alphabet = pyhmmer.easel.Alphabet.amino()
+#     with pyhmmer.easel.SequenceFile("/root/AMPSphere/tmp/343598dd-f03a-4555-b0e5-9fe68eed7ae5.input") as seq_file:
+#         seq_file.set_digital(alphabet)
+#         all_hits = list(pyhmmer.hmmsearch(hmms, list(seq_file), cpus=1))
 
 
 def obj_to_dict(obj):

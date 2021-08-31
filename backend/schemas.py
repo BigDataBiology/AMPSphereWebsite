@@ -171,18 +171,46 @@ class Download(BaseModel):
         orm_mode = True
 
 
-class SearchResults(BaseModel):
-    target_sequence_id: str
+class mmSeqsSearchResult(BaseModel):
+    query_identifier: str
+    target_identifier: str
     sequence_identity: float
     alignment_length: int
-    number_of_mismatches: int
-    number_of_gap_openings: int
-    domain_start_index_query: int
-    domain_end_index_query: int
-    domain_start_index_target: int
-    domain_end_index_target: int
-    e_value: float
+    number_mismatches: int
+    number_gap_openings: int
+    domain_start_position_query: int
+    domain_end_position_query: int
+    domain_start_position_target: int
+    domain_end_position_target: int
+    E_value: float
     bit_score: int
+
+    class Config:
+        orm_mode = True
+
+
+class HMMERSearchResult(BaseModel):
+    query_accession: str
+    query_length: int
+    query_name: str
+    target_accession: str
+    target_length: int
+    target_name: str
+    E_value: float
+    acc: float
+    bias: float
+    c_Evalue: float
+    i_Evalue: float
+    num_domain: int
+    domain_index: int
+    score: float
+    from_ali: int
+    from_env: int
+    from_hmm: int
+    to_ali: int
+    to_env: int
+    to_hmm: int
+    description_of_target: str
 
     class Config:
         orm_mode = True
