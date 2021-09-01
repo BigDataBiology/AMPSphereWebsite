@@ -62,7 +62,7 @@ scales = {'Parker': {'W': 1.0, 'F': 0.96, 'L': 0.96,
                  'R': 14.92, 'P': 0.0}}
 
 
-def get_amp_features(seq):
+def get_amp_features(seq, include_graph_points=True):
     """
     :param seq:
     :return:
@@ -80,16 +80,17 @@ def get_amp_features(seq):
     """
     analyzed_seq = ProteinAnalysis(str(seq))
 
-    out = {'Secondary_structure': analyzed_seq.secondary_structure_fraction(),  # helix, turn, sheet
+    out = {'Secondary_structure': dict(zip(['helix', 'turn', 'sheet'], analyzed_seq.secondary_structure_fraction())),
            'Length': analyzed_seq.length,
-           'Molar_extinction': list(map(round_3, analyzed_seq.molar_extinction_coefficient())),
+           'Molar_extinction': dict(zip(['cysteines_reduced', 'cystines_residues'],
+                                        analyzed_seq.molar_extinction_coefficient())),
            'Aromaticity': round_3(analyzed_seq.aromaticity()),
            'GRAVY': round_3(analyzed_seq.gravy()),
            'MW': round_3(analyzed_seq.molecular_weight()),
            'Charge_at_pH_7': round_3(analyzed_seq.charge_at_pH(7.0)),
            'Instability_index': round_3(analyzed_seq.instability_index()),
            'Isoelectric_point': round_3(analyzed_seq.isoelectric_point()),
-           'graph_points': get_graph_points(seq)}
+           'graph_points': get_graph_points(seq) if include_graph_points else None}
     return out
 
 
@@ -229,27 +230,34 @@ def mmseqs_search(seq: str):
     with open(input_seq_file, 'w') as f:
         f.write(f'>submitted_sequence\n{seq}')
 
-    command_base = 'mmseqs easy-search {query_seq} {database_fasta} {out} {tmp_dir}'
+    command_base = 'mmseqs createdb {query_seq} {query_seq}.mmseqsdb && ' \
+                   'mmseqs search {query_seq}.mmseqsdb  {database} {out}.mmseqsdb {tmp_dir} && ' \
+                   'mmseqs convertalis {query_seq}.mmseqsdb {database} {out}.mmseqsdb {out}'
     command = command_base.format_map({
         'query_seq': input_seq_file,
-        'database_fasta': cfg['mmseqs_database_file'],
+        'database': cfg['mmseqs_database_file'],
         'out': output_file,
         'tmp_dir': str(tmp_dir)
     })
-    results = subprocess.run(command, shell=True, check=True)
-    if results.returncode == 0:
-        df = pd.read_table(output_file, sep='\t', header=None)
-        df.columns = ['query_identifier', 'target_identifier', 'sequence_identity', 'alignment_length',
-                      'number_mismatches', 'number_gap_openings', 'domain_start_position_query',
-                      'domain_end_position_query', 'domain_start_position_target',
-                      'domain_end_position_target', 'E_value', 'bit_score']
-        print(df)
+    try:
+        subprocess.run(command, shell=True, check=True)
+    except subprocess.CalledProcessError as e:
+        print('error when executing the command (code {})'.format(e))
+        print(e.output)
+        return None
+    else:
+        columns = ['query_identifier', 'target_identifier', 'sequence_identity', 'alignment_length',
+                   'number_mismatches', 'number_gap_openings', 'domain_start_position_query',
+                   'domain_end_position_query', 'domain_start_position_target',
+                   'domain_end_position_target', 'E_value', 'bit_score']
+        try:
+            df = pd.read_table(output_file, sep='\t', header=None)
+        except pd.errors.EmptyDataError:
+            df = pd.DataFrame(columns=columns)
+        df.columns = columns
         records = df.to_dict(orient='records')
         pprint(records)
         return records
-    else:
-        print('error when executing the command (code {}): {}'.format(results.returncode, results.stderr))
-        return None
 
 
 def hmmscan_search(seq: str):
@@ -271,23 +279,28 @@ def hmmscan_search(seq: str):
         'query_seq': input_seq_file,
         # 'out_tmp': tmp_dir.joinpath(query_id + '.tmp')
     })
-    results = subprocess.run(command, shell=True, check=True)
-
-    if results.returncode == 0:
-        df = pd.read_table(output_file, header=2, skipfooter=10, sep='\s+', engine='python')
-        df.columns = [
+    try:
+        subprocess.run(command, shell=True, check=True)
+    except subprocess.CalledProcessError as e:
+        print('error when executing the command (code {})'.format(e))
+        print(e.output)
+        return None
+    else:
+        columns = [
             'target_name', 'target_accession', 'target_length', 'query_name',
             'query_accession', 'query_length', 'E_value', 'score', 'bias',
             'domain_index', 'num_domain', 'c_Evalue', 'i_Evalue', 'score',
             'bias', 'from_hmm', 'to_hmm', 'from_ali', 'to_ali', 'from_env',
             'to_env', 'acc', 'description_of_target']
+        try:
+            df = pd.read_table(output_file, header=2, skipfooter=10, sep='\s+', engine='python')
+        except pd.errors.EmptyDataError:
+            df = pd.DataFrame(columns=columns)
+        df.columns = columns
         print(df)
         records = df.to_dict(orient='records')
         pprint(records)
         return records
-    else:
-        print('error when executing the command (code {}): {}'.format(results.returncode, results.stderr))
-        return None
 
 
 # --- deprecated
@@ -312,3 +325,26 @@ def obj_to_dict(obj):
 
 def round_3(num: float):
     return round(num, 3)
+
+
+def df_to_formatted_json(df, sep="."):
+    """
+    The opposite of json_normalize
+    """
+    result = []
+    for idx, row in df.iterrows():
+        parsed_row = {}
+        for col_label,v in row.items():
+            keys = col_label.split(".")
+
+            current = parsed_row
+            for i, k in enumerate(keys):
+                if i==len(keys)-1:
+                    current[k] = v
+                else:
+                    if k not in current.keys():
+                        current[k] = {}
+                    current = current[k]
+        # save
+        result.append(parsed_row)
+    return result

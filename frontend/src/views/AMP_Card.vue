@@ -93,8 +93,9 @@
                   </li>
                   <el-table :data="AMP.relationships" height="250" style="width: 100%">
                     <el-table-column prop="GMSC" label="Genes" width="250%"/>
-                    <el-table-column prop="Source" label="Sample/Genome" width="150%"/>
-                    <el-table-column prop="taxid" label="Taxon id" width="100%"/>
+<!--                    TODO display gene sequence here.-->
+                    <el-table-column prop="Source" label="Sample/Genome" width="250%"/>
+<!--                    <el-table-column prop="taxid" label="Taxon id" width="100%"/>-->
                     <el-table-column prop="sciname" label="Name" width="250%"/>
                   </el-table>
                 </ul>

@@ -7,6 +7,8 @@
           <el-breadcrumb-item :to="{ path: '/browse_data' }">Browse data</el-breadcrumb-item>
         </el-breadcrumb>
         <br/>
+        multiple filter criteria:
+<!--        TODO https://stackoverflow.com/questions/56223664/search-multiple-fields-in-a-table-in-vue-js-with-different-v-model-->
         <el-tabs type="card" @tab-click="handleTabClick">
           <el-tab-pane label="AMPs">
             <el-table
