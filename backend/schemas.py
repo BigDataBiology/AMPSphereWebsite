@@ -55,13 +55,13 @@ class Distributions(BaseModel):
 class AMPFeatures(BaseModel):
     MW: float
     Length: float
-    Molar_extinction: List[float]
+    Molar_extinction: Dict[str, float]
     Aromaticity: float
     GRAVY: float
     Instability_index: float
     Isoelectric_point: float
     Charge_at_pH_7: float
-    Secondary_structure: List[float]
+    Secondary_structure: Dict[str, float]
     graph_points: Optional[FeatureGraphPoints]
 
     class Config:
@@ -157,12 +157,27 @@ class FamilyDownloads(BaseModel):
         orm_mode = True
 
 
+# not used for now.
+class FamilyFeatures(BaseModel):
+    MW: Dict[str, float]
+    Length: Dict[str, float]
+    Molar_extinction: Dict[str, Dict[str, float]]
+    Aromaticity: Dict[str, float]
+    GRAVY: Dict[str, float]
+    Instability_index: Dict[str, float]
+    Isoelectric_point: Dict[str, float]
+    Charge_at_pH_7: Dict[str, float]
+    Secondary_structure: Dict[str, Dict[str, float]]
+
+    class Config:
+        orm_mode = True
+
+
 class Family(BaseModel):
     accession: str
     consensus_sequence: str
     num_amps: int
-    #features: Dict[str, AMPFeatures]
-    #metadata: List[Metadata]
+    feature_statistics: Dict[str, AMPFeatures]
     downloads: FamilyDownloads
     associated_amps: List[str]
 
