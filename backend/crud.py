@@ -101,27 +101,9 @@ def get_fam_features(accession: str, db: Session):
     return dict(zip(stats, utils.df_to_formatted_json(statstics)))
 
 
-def get_fam_downloads(accession):
-    prefix = pathlib.Path(utils.cfg['family_data_dir'])
-    path_bases = dict(
-        alignment=str(prefix.joinpath('{}.aln')),
-        sequences=str(prefix.joinpath('{}.faa')),
-        hmm_logo=str(prefix.joinpath('{}.png')),
-        hmm_profile=str(prefix.joinpath('{}.hmm')),
-        sequence_logo=str(prefix.joinpath('{}.pdf')),
-        tree_figure=str(prefix.joinpath('{}.ascii')),
-        tree_nwk=str(prefix.joinpath('{}.nwk'))
-    )
-    return {key: item.format(accession) for key, item in path_bases.items()}
-
-
 def get_associated_amps(accession, db):
     amp_accessions = db.query(models.AMP.accession).filter(models.AMP.family == accession).all()
     return [accession for accession, in amp_accessions]
-
-
-def get_downloads(db: Session, skip: int = 0, page_size: int = 100):
-    pass
 
 
 def get_distributions(accession: str, db: Session):
@@ -169,5 +151,10 @@ def get_distributions(accession: str, db: Session):
     return
 
 
-def search_by_text(query):
-    pass
+def search_by_text(query: str, db: Session):
+    """
+    FIXME.
+    :param query:
+    :param db:
+    :return:
+    """

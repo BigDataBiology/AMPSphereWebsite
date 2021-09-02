@@ -218,6 +218,36 @@ def get_flexibility(seq):
     return out
 
 
+def get_fam_downloads(accession):
+    # TODO change prefix here for easier maintenance.
+    prefix = pathlib.Path('http://119.3.63.164:443/v1/families/' + accession + '/downloads/')
+    path_bases = dict(
+        alignment=str(prefix.joinpath('{}.aln')),
+        sequences=str(prefix.joinpath('{}.faa')),
+        hmm_logo=str(prefix.joinpath('{}.png')),
+        hmm_profile=str(prefix.joinpath('{}.hmm')),
+        sequence_logo=str(prefix.joinpath('{}.pdf')),
+        tree_figure=str(prefix.joinpath('{}.ascii')),
+        tree_nwk=str(prefix.joinpath('{}.nwk'))
+    )
+    return {key: item.format(accession) for key, item in path_bases.items()}
+
+
+def fam_download_file(accession: str, file: str):
+    file = pathlib.Path(cfg['family_data_dir']).joinpath(accession).joinpath(file)
+    return file
+
+
+def get_downloads(skip: int = 0, page_size: int = 100):
+    pass
+
+
+def download(file: str):
+    print(file)
+    print(pathlib.Path(file).exists())
+    return file
+
+
 def mmseqs_search(seq: str):
     query_id = str(uuid.uuid4())
     query_time_now = datetime.now()

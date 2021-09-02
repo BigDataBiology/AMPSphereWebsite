@@ -1,8 +1,10 @@
+import pathlib
+
 from sqlalchemy.orm import Session
 from database import SessionLocal
 from typing import List, Dict
 from fastapi import Depends
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, FileResponse
 import schemas
 import utils
 import crud
@@ -197,7 +199,20 @@ def fam_downloads(accession: str = 'SPHERE-III.001_396'):
     - :param accession:
     - :return:
     """
-    return crud.get_fam_downloads(accession=accession)
+    return utils.get_fam_downloads(accession=accession)
+
+
+@family_router.get("/{accession}/downloads/{file}",
+                   # response_model=schemas.FamilyDownloads,
+                   summary=default_route_summary)
+def fam_download_file(accession: str, file: str):
+    """
+    **tested**
+
+    - :param accession: use SPHERE-III.000_000 for testing
+    - :return:
+    """
+    return FileResponse(utils.fam_download_file(accession=accession, file=file))
 
 
 default_router = APIRouter(
@@ -209,15 +224,26 @@ default_router = APIRouter(
 @default_router.get("/downloads",
                     response_model=List[schemas.Download],
                     summary=default_route_summary)
-def read_downloads(db: Session = Depends(get_db)):
+def get_downloads(db: Session = Depends(get_db)):
     """
     TODO **test this**.
     TODO: implement me, low PRIORITY
     - :param db:
     - :return:
     """
-    downloads = crud.get_downloads(db)
+    downloads = utils.get_downloads(db)
     return downloads
+
+
+@default_router.get("/downloads/{file}",
+                    # response_class=FileResponse,
+                    summary=default_route_summary)
+async def download_file(file: str):
+    """
+    TODO **test this**.
+    TODO: implement me, low PRIORITY
+    """
+    return FileResponse(utils.download(file))
 
 
 @default_router.get("/search/text",
