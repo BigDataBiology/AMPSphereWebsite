@@ -1,5 +1,6 @@
 import pandas as pd
 from sqlalchemy.orm import Session
+from sqlalchemy import or_
 import models
 import utils
 from pprint import pprint
@@ -80,7 +81,7 @@ def get_family(accession: str, db: Session):
         #features=get_fam_features(accession, db),
         #metadata=get_fam_metadata(accession, db, page=0, page_size=20),
         associated_amps=get_associated_amps(accession, db),
-        downloads=get_fam_downloads(accession)
+        downloads=utils.get_fam_downloads(accession)
     )
     return family
 
@@ -151,10 +152,25 @@ def get_distributions(accession: str, db: Session):
     return
 
 
-def search_by_text(query: str, db: Session):
+def search_by_text(db: Session, text: str, page: int, page_size: int):
     """
     FIXME.
     :param query:
     :param db:
     :return:
     """
+    query = db.query(distinct(models.AMP.accession)).outerjoin(models.Metadata)
+
+    query = query.filter(or_(
+        models.AMP.accession.like(text),
+        models.AMP.family.like(text),
+        models.Metadata.GMSC.like(text),
+        models.Metadata.sample.like(text),
+        models.Metadata.microontology.like(text),
+        models.Metadata.origin_scientific_name.like(text),
+        models.Metadata.host_scientific_name.like(text),
+    ))
+
+    accessions = query.offset(page * page_size).limit(page_size).all()
+    # print(accessions)
+    return [get_amp(accession, db) for accession, in accessions]

@@ -247,16 +247,19 @@ async def download_file(file: str):
 
 
 @default_router.get("/search/text",
-                    response_model=schemas.mmSeqsSearchResult,
+                    response_model=schemas.List[schemas.AMP],
                     summary=default_route_summary)
-def text_search(query: str = 'AMP10.000_000'):
+def text_search(db: Session = Depends(get_db),
+                query: str = 'AMP10.000_000',
+                page: int = 0,
+                page_size: int=20):
     """
-    TODO: implement me, high PRIORITY
+    **tested**
 
     - :param query:
     - :return:
     """
-    return crud.search_by_text(query)
+    return crud.search_by_text(db, text=query, page=page, page_size=page_size)
 
 
 @default_router.get("/search/mmseqs",
