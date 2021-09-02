@@ -9,6 +9,7 @@ from pprint import pprint
 import uuid
 import pandas as pd
 from Bio import SearchIO
+import livingTree as lt
 
 
 def parse_config():
@@ -364,12 +365,12 @@ def df_to_formatted_json(df, sep="."):
     result = []
     for idx, row in df.iterrows():
         parsed_row = {}
-        for col_label,v in row.items():
+        for col_label, v in row.items():
             keys = col_label.split(".")
 
             current = parsed_row
             for i, k in enumerate(keys):
-                if i==len(keys)-1:
+                if i == len(keys) - 1:
                     current[k] = v
                 else:
                     if k not in current.keys():
@@ -378,3 +379,33 @@ def df_to_formatted_json(df, sep="."):
         # save
         result.append(parsed_row)
     return result
+
+
+def get_sunburst_data(paths_values, sep=None):
+    """
+    :param paths_values:
+    :param sep: each path is a list if sep = None.
+    :return:
+    """
+    print(paths_values)
+    paths_values.columns = ['path', 'value']
+    paths = paths_values['path']
+    if sep:
+        paths = paths.str.split(sep).apply(lambda x: ['Unknown' if i == '' else i for i in x])
+    identifiers = paths.apply(lambda x: x[-1])
+    tree = lt.SuperTree()
+    tree.create_node(identifier='')
+    tree.from_paths(paths)
+    print(tree.get_bfs_nodes())
+    tree.init_nodes_data(0)
+    values = dict(zip(identifiers, paths_values['value'].tolist()))
+    # print(values)
+    tree.fill_with(values)
+    tree.update_values()
+    # print(vars(tree.get_node('a')))
+    return list(zip(*[(nid, tree.parent(nid).identifier, tree.get_node(nid).data)
+                      for nid in tree.expand_tree(mode=tree.WIDTH) if nid != '']))
+
+
+# paths_values = pd.DataFrame({'path': ['a:b', 'a:c', 'a:d'], 'value': [1, 2, 3]})
+# print(get_sunburst_data(paths_values, sep=':'))

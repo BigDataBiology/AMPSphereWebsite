@@ -116,7 +116,7 @@ def get_distributions(accession: str, db: Session):
     else:
         print('error')  # better handle this.
     metadata = pd.DataFrame([obj.__dict__ for obj in raw_data]).drop(columns='_sa_instance_state')
-    print(metadata)
+    # print(metadata)
     color_map = {}  ##### supply here
     metadata['latitude'] = metadata['latitude'].replace('', None).astype(float).round(1)
     metadata['longitude'] = metadata['longitude'].replace('', None).astype(float).round(1)
@@ -134,22 +134,21 @@ def get_distributions(accession: str, db: Session):
     )
 
     # FIXME fix color map for geo plot
-    print('Processing geo data...')
+    # print('Processing geo data...')
     names = {'latitude': 'lat', 'longitude': 'lon', 'AMPSphere_code': 'size'}
     data['geo'].rename(columns=names, inplace=True)
-    print(data['geo'])
+    # print(data['geo'])
     # FIXME hierarchical structure generation.
-    data['habitats']['microontology'].str.split(':', expand=True).fillna('Unknown')
-    print(data['habitats'])
-
-    print('Assigning lineages to taxa...')
+    data['habitats'] = utils.get_sunburst_data(data['habitats'][['microontology', 'size']], sep=':')
+    # print(data['habitats'])
+    pprint(data['habitats'])
+    # print('Assigning lineages to taxa...')
     # Fix id inconsistency.
+    data['hosts'] = data['hosts'][data['hosts']['host_tax_id'] != '']
     data['hosts']['host_tax_id'] = data['hosts']['host_tax_id'].apply(lambda x: x if x != 2116673.0 else 85678.0)
-    pd.DataFrame(lt.LineageTracker(ids=data['hosts']['host_tax_id'].astype(int)).paths_sp,
-                 columns=['sk', 'k', 'p', 'c', 'o', 'f', 'g', 's'])
-    data['hosts'].fillna('Unknown', inplace=True)
-    print(data)
-    return
+    data['hosts']['host_lineage'] = lt.LineageTracker(ids=data['hosts']['host_tax_id'].astype(int)).paths_sp
+    data['hosts'] = utils.get_sunburst_data(data['hosts'][['host_lineage', 'size']], sep=None)
+    return data
 
 
 def search_by_text(db: Session, text: str, page: int, page_size: int):

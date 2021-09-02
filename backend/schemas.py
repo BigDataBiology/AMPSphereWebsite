@@ -27,7 +27,7 @@ class SunburstPlotData(BaseModel):
     labels: List[str]
     parents: List[str]
     values: List[float]
-    colorway: List[str]
+    colorway: List[str] = ['']
 
     class Config:
         orm_mode = True
@@ -38,7 +38,7 @@ class BubbleMapData(BaseModel):
     lat: List[float]
     lon: List[float]
     sizes: List[float]
-    colors: List[str]
+    colors: List[str] = ['']
 
     class Config:
         orm_mode = True
@@ -48,7 +48,7 @@ class Distributions(BaseModel):
     geo: BubbleMapData
     habitat: SunburstPlotData
     host: SunburstPlotData
-    origin: SunburstPlotData
+    origin: Optional[SunburstPlotData]
 
 
 # Object for AMP_card page ------------------------------------------------
