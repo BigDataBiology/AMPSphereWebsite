@@ -31,15 +31,15 @@ class Metadata(Base):
     __tablename__ = "Metadata"
     GMSC = Column(String, primary_key=True, index=True)
     AMPSphere_code = Column(String, ForeignKey(AMP.accession), index=True)
-    sample = Column(String)
-    microontology = Column(String)
+    sample = Column(String, index=True)
+    microontology = Column(String, index=True)
     environmental_features = Column(String)
     host_tax_id = Column(Integer)
-    host_scientific_name = Column(String)
+    host_scientific_name = Column(String, index=True)
     latitude = Column(Float)
     longitude = Column(Float)
     origin_tax_id = Column(Integer)
-    origin_scientific_name = Column(String)
+    origin_scientific_name = Column(String, index=True)
 
 
 
