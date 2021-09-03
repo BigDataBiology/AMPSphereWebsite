@@ -76,10 +76,10 @@ def get_families(db: Session, page: int, page_size: int, **kwargs):
 def get_family(accession: str, db: Session):
     family = dict(
         accession=accession,
-        consensus_sequence='',   # FIXME calculate consensus sequence.
+        consensus_sequence='',  # FIXME calculate consensus sequence.
         num_amps=db.query(func.count(models.AMP.accession).filter(models.AMP.family == accession)).scalar(),
-        #features=get_fam_features(accession, db),
-        #metadata=get_fam_metadata(accession, db, page=0, page_size=20),
+        feature_statistics=get_fam_features(accession, db),
+        distributions=get_distributions(accession, db),
         associated_amps=get_associated_amps(accession, db),
         downloads=utils.get_fam_downloads(accession)
     )
@@ -108,47 +108,14 @@ def get_associated_amps(accession, db):
 
 
 def get_distributions(accession: str, db: Session):
-    raw_data = None
     if accession.startswith('AMP'):
         raw_data = db.query(models.Metadata).filter(models.Metadata.AMPSphere_code == accession).all()
     elif accession.startswith('SPHERE'):
         raw_data = db.query(models.Metadata).outerjoin(models.AMP).filter(models.AMP.family == accession).all()
     else:
+        raw_data = []
         print('error')  # better handle this.
-    metadata = pd.DataFrame([obj.__dict__ for obj in raw_data]).drop(columns='_sa_instance_state')
-    # print(metadata)
-    color_map = {}  ##### supply here
-    metadata['latitude'] = metadata['latitude'].replace('', None).astype(float).round(1)
-    metadata['longitude'] = metadata['longitude'].replace('', None).astype(float).round(1)
-    metadata['habitat_type'] = pd.Categorical(metadata['microontology'].apply(lambda x: x.split(':')[0]))
-    # metadata['color'] = metadata['habitat_type'].map(color_map)
-    data = dict(
-        geo=metadata[['AMPSphere_code', 'latitude', 'longitude', 'habitat_type']].
-            groupby(['latitude', 'longitude', 'habitat_type'], as_index=False, observed=True).size(),
-        hosts=metadata[['AMPSphere_code', 'host_tax_id', 'host_scientific_name']].
-            groupby('host_tax_id', as_index=False).size(),
-        habitats=metadata[['AMPSphere_code', 'microontology', 'habitat_type']].
-            groupby(['microontology', 'habitat_type'], as_index=False).size(),
-        origins=metadata[['AMPSphere_code', 'origin_tax_id', 'origin_scientific_name']].
-            groupby('origin_tax_id', as_index=False).size()
-    )
-
-    # FIXME fix color map for geo plot
-    # print('Processing geo data...')
-    names = {'latitude': 'lat', 'longitude': 'lon', 'AMPSphere_code': 'size'}
-    data['geo'].rename(columns=names, inplace=True)
-    # print(data['geo'])
-    # FIXME hierarchical structure generation.
-    data['habitats'] = utils.get_sunburst_data(data['habitats'][['microontology', 'size']], sep=':')
-    # print(data['habitats'])
-    pprint(data['habitats'])
-    # print('Assigning lineages to taxa...')
-    # Fix id inconsistency.
-    data['hosts'] = data['hosts'][data['hosts']['host_tax_id'] != '']
-    data['hosts']['host_tax_id'] = data['hosts']['host_tax_id'].apply(lambda x: x if x != 2116673.0 else 85678.0)
-    data['hosts']['host_lineage'] = lt.LineageTracker(ids=data['hosts']['host_tax_id'].astype(int)).paths_sp
-    data['hosts'] = utils.get_sunburst_data(data['hosts'][['host_lineage', 'size']], sep=None)
-    return data
+    return utils.compute_distribution_from_query_data(raw_data)
 
 
 def search_by_text(db: Session, text: str, page: int, page_size: int):
@@ -173,3 +140,16 @@ def search_by_text(db: Session, text: str, page: int, page_size: int):
     accessions = query.offset(page * page_size).limit(page_size).all()
     # print(accessions)
     return [get_amp(accession, db) for accession, in accessions]
+
+
+def get_statistics(db: Session):
+    return dict(
+        num_amps=db.query(func.count(models.AMP.accession)).scalar(),
+        num_families=db.query(func.count(distinct(models.AMP.family))).scalar(),
+        num_hosts=db.query(func.count(distinct(models.Metadata.host_scientific_name))).scalar() - 1,
+        num_habitats=db.query(func.count(distinct(models.Metadata.microontology))).scalar() - 1,
+        num_genomes=db.query(func.count(distinct(models.Metadata.sample))). \
+                        filter(models.Metadata.microontology == '').scalar() - 1,
+        num_metagenomes=db.query(func.count(distinct(models.Metadata.sample))). \
+                        filter(models.Metadata.microontology != '').scalar(),
+    )

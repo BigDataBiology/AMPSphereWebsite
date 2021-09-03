@@ -239,7 +239,7 @@ def fam_download_file(accession: str, file: str):
     return file
 
 
-def get_downloads(skip: int = 0, page_size: int = 100):
+def get_downloads():
     pass
 
 
@@ -381,31 +381,96 @@ def df_to_formatted_json(df, sep="."):
     return result
 
 
-def get_sunburst_data(paths_values, sep=None):
+def get_sunburst_data(paths_values, sep: str = None) -> dict:
     """
     :param paths_values:
     :param sep: each path is a list if sep = None.
     :return:
     """
-    print(paths_values)
     paths_values.columns = ['path', 'value']
     paths = paths_values['path']
+
     if sep:
-        paths = paths.str.split(sep).apply(lambda x: ['Unknown' if i == '' else i for i in x])
+        paths = paths.str.strip(sep).str.split(sep)
+    else:
+        sep = ';'
+
+    # paths to set up the prefix tree
+    # pprint('before prefix')
+    # pprint(paths.tolist())
+    paths = paths.apply(lambda x: ['Unknown' if i == '' else i for i in x])
+    paths = paths.apply(lambda x: [sep.join(x[0:i]) for i in range(1, len(x) + 1)])
+    # pprint('after prefix')
+    # pprint(paths.tolist())
     identifiers = paths.apply(lambda x: x[-1])
     tree = lt.SuperTree()
     tree.create_node(identifier='')
     tree.from_paths(paths)
-    print(tree.get_bfs_nodes())
     tree.init_nodes_data(0)
     values = dict(zip(identifiers, paths_values['value'].tolist()))
     # print(values)
     tree.fill_with(values)
     tree.update_values()
     # print(vars(tree.get_node('a')))
-    return list(zip(*[(nid, tree.parent(nid).identifier, tree.get_node(nid).data)
-                      for nid in tree.expand_tree(mode=tree.WIDTH) if nid != '']))
+    def rm_prefix(identifier): return identifier.split(sep)[-1]
+    id_parent_value = list(zip(*[(rm_prefix(nid), rm_prefix(tree.parent(nid).identifier), tree.get_node(nid).data)
+                                 for nid in tree.expand_tree(mode=tree.WIDTH) if nid != '']))
+    return dict(zip(['labels', 'parents', 'values'], id_parent_value))
 
+
+def compute_distribution_from_query_data(query_data):
+    if len(query_data) > 0:
+        metadata = pd.DataFrame([obj.__dict__ for obj in query_data]).drop(columns='_sa_instance_state')
+        # print(metadata)
+        color_map = {}  # TODO supply here
+        metadata['latitude'] = metadata['latitude'].replace('', None).astype(float).round(1)
+        metadata['longitude'] = metadata['longitude'].replace('', None).astype(float).round(1)
+        metadata['habitat_type'] = pd.Categorical(metadata['microontology'].apply(lambda x: x.split(':')[0]))
+        # metadata['color'] = metadata['habitat_type'].map(color_map)
+        data = dict(
+            geo=metadata[['AMPSphere_code', 'latitude', 'longitude', 'habitat_type']].
+                groupby(['latitude', 'longitude', 'habitat_type'], as_index=False, observed=True).size(),
+            host=metadata[['AMPSphere_code', 'host_tax_id', 'host_scientific_name']].
+                groupby('host_tax_id', as_index=False).size(),
+            habitat=metadata[['AMPSphere_code', 'microontology', 'habitat_type']].
+                groupby(['microontology', 'habitat_type'], as_index=False).size(),
+            origin=metadata[['AMPSphere_code', 'origin_tax_id', 'origin_scientific_name']].
+                groupby('origin_tax_id', as_index=False).size()
+        )
+
+        # FIXME fix color map for geo plot
+        # print('Processing geo data...')
+        names = {'latitude': 'lat', 'longitude': 'lon', 'AMPSphere_code': 'size'}
+        data['geo'].rename(columns=names, inplace=True)
+        data['geo'] = data['geo'].to_dict(orient='list')
+        # print(data['geo'])
+        # FIXME hierarchical structure generation.
+        data['habitat'] = data['habitat'][data['habitat'].microontology != '']
+        # pprint(data['habitat'])
+        data['habitat'] = get_sunburst_data(data['habitat'][['microontology', 'size']], sep=':')
+        # Fix id inconsistency.
+        data['host'] = data['host'][data['host'].host_tax_id != '']
+        data['host']['host_tax_id'] = data['host']['host_tax_id'].apply(lambda x: x if x != 2116673.0 else 85678.0)
+        data['host']['host_lineage'] = lt.LineageTracker(ids=data['host']['host_tax_id'].astype(int)).paths_sp
+        data['host'] = get_sunburst_data(data['host'][['host_lineage', 'size']], sep=None)
+        data['origin'] = None
+        return data
+    else:
+        empty_sunburst = dict(
+            labels=[''],
+            parents=[''],
+            values=[0.0]
+        )
+        empty_bubblemap = dict(
+            lat=[0.0],
+            lon=[0.0],
+            size=[0.0]
+        )
+        return dict(
+            host=empty_sunburst,
+            habitat=empty_sunburst,
+            geo=empty_bubblemap
+        )
 
 # paths_values = pd.DataFrame({'path': ['a:b', 'a:c', 'a:d'], 'value': [1, 2, 3]})
 # print(get_sunburst_data(paths_values, sep=':'))

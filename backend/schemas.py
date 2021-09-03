@@ -37,7 +37,7 @@ class BubbleMapData(BaseModel):
     type: str = 'bubble map'
     lat: List[float]
     lon: List[float]
-    sizes: List[float]
+    size: List[float]
     colors: List[str] = ['']
 
     class Config:
@@ -177,9 +177,10 @@ class Family(BaseModel):
     accession: str
     consensus_sequence: str
     num_amps: int
-    feature_statistics: Dict[str, AMPFeatures]
     downloads: FamilyDownloads
     associated_amps: List[str]
+    feature_statistics: Dict[str, AMPFeatures]
+    distributions: Distributions
 
     class Config:
         orm_mode = True
@@ -236,3 +237,12 @@ class HMMERSearchResult(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class Statistics(BaseModel):
+    num_amps: int
+    num_families: int
+    num_hosts: int
+    num_habitats: int
+    num_genomes: int
+    num_metagenomes: int

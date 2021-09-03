@@ -71,7 +71,7 @@ def amp(accession: str = 'AMP10.000_000',
     return crud.get_amp(accession, db)
 
 
-@amp_router.get("/{accession}/features",
+@amp_router.get(path="/{accession}/features",
                 response_model=schemas.AMPFeatures,
                 summary=default_route_summary)
 def amp_features(accession: str = 'AMP10.000_000',
@@ -86,7 +86,7 @@ def amp_features(accession: str = 'AMP10.000_000',
     return crud.get_amp_features(accession, db)
 
 
-@amp_router.get("/{accession}/distributions",
+@amp_router.get(path="/{accession}/distributions",
                 response_model=schemas.Distributions,
                 summary=default_route_summary)
 def distributions(accession: str = 'AMP10.000_000',
@@ -100,7 +100,7 @@ def distributions(accession: str = 'AMP10.000_000',
     return crud.get_distributions(accession=accession, db=db)
 
 
-@amp_router.get("/{accession}/metadata",
+@amp_router.get(path="/{accession}/metadata",
                 response_model=List[schemas.Metadata],
                 summary=default_route_summary)
 def metadata(accession: str = 'AMP10.000_000',
@@ -181,7 +181,7 @@ def fam_features(accession: str = 'SPHERE-III.001_396', db: Session = Depends(ge
                    summary=default_route_summary)
 def fam_distributions(accession: str = 'SPHERE-III.001_396', db: Session = Depends(get_db)):
     """
-    TODO: implement me, low PRIORITY
+    **tested**
 
     - :param accession:
     - :return:
@@ -221,21 +221,33 @@ default_router = APIRouter(
 )
 
 
-@default_router.get("/downloads",
+@default_router.get(path="/statistics",
+                    response_model=schemas.Statistics,
+                    summary=default_route_summary)
+def get_statistics(db: Session = Depends(get_db)):
+    """
+
+    :param db:
+    :return:
+    """
+    return crud.get_statistics(db)
+
+
+@default_router.get(path="/downloads",
                     response_model=List[schemas.Download],
                     summary=default_route_summary)
-def get_downloads(db: Session = Depends(get_db)):
+def get_downloads():
     """
     TODO **test this**.
     TODO: implement me, low PRIORITY
     - :param db:
     - :return:
     """
-    downloads = utils.get_downloads(db)
+    downloads = utils.get_downloads()
     return downloads
 
 
-@default_router.get("/downloads/{file}",
+@default_router.get(path="/downloads/{file}",
                     # response_class=FileResponse,
                     summary=default_route_summary)
 async def download_file(file: str):
@@ -246,13 +258,13 @@ async def download_file(file: str):
     return FileResponse(utils.download(file))
 
 
-@default_router.get("/search/text",
+@default_router.get(path="/search/text",
                     response_model=schemas.List[schemas.AMP],
                     summary=default_route_summary)
 def text_search(db: Session = Depends(get_db),
                 query: str = 'AMP10.000_000',
                 page: int = 0,
-                page_size: int=20):
+                page_size: int = 20):
     """
     **tested**
 
@@ -262,7 +274,7 @@ def text_search(db: Session = Depends(get_db),
     return crud.search_by_text(db, text=query, page=page, page_size=page_size)
 
 
-@default_router.get("/search/mmseqs",
+@default_router.get(path="/search/mmseqs",
                     response_model=List[schemas.mmSeqsSearchResult],
                     summary=default_route_summary)
 def mmseqs_search(query: str = 'KKVKSIFKKALAMMGENEVKAWGIGIK'):
@@ -276,7 +288,7 @@ def mmseqs_search(query: str = 'KKVKSIFKKALAMMGENEVKAWGIGIK'):
     return utils.mmseqs_search(query)
 
 
-@default_router.get("/search/hmmer",
+@default_router.get(path="/search/hmmer",
                     response_model=List[schemas.HMMERSearchResult],
                     summary=default_route_summary)
 def hmmscan_search(query: str = 'KKVKSIFKKALAMMGENEVKAWGIGIK'):
@@ -288,10 +300,6 @@ def hmmscan_search(query: str = 'KKVKSIFKKALAMMGENEVKAWGIGIK'):
     - :return:
     """
     return utils.hmmscan_search(query)
-
-
-
-
 
 ## --------------------------Deprecated----------------------------------
 
