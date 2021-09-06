@@ -1,13 +1,11 @@
-import pathlib
-
 from sqlalchemy.orm import Session
-from database import SessionLocal
+from src.database import SessionLocal
 from typing import List, Dict
 from fastapi import Depends
-from fastapi.responses import RedirectResponse, FileResponse
-import schemas
-import utils
-import crud
+from fastapi.responses import FileResponse
+from src import schemas
+from src import utils
+from src import crud
 from fastapi import APIRouter
 
 

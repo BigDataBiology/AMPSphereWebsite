@@ -1,12 +1,9 @@
 import pandas as pd
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
-import models
-import utils
-from pprint import pprint
-import livingTree as lt
+from src import models
+from src import utils
 from sqlalchemy import distinct, func
-import pathlib
 
 
 def get_amps(db: Session, page: int = 0, page_size: int = 20, **kwargs):
@@ -97,9 +94,12 @@ def get_fam_metadata(accession: str, db: Session, page: int, page_size: int):
 def get_fam_features(accession: str, db: Session):
     amps = db.query(models.AMP).filter(models.AMP.family == accession).all()
     features = [utils.get_amp_features(amp.sequence, include_graph_points=False) for amp in amps]
-    statstics = pd.json_normalize(features).describe().round(3)
-    stats = statstics.index.tolist()
-    return dict(zip(stats, utils.df_to_formatted_json(statstics)))
+    if len(features) > 0:
+        statstics = pd.json_normalize(features).describe().round(3)
+        stats = statstics.index.tolist()
+        return dict(zip(stats, utils.df_to_formatted_json(statstics)))
+    else:
+        return
 
 
 def get_associated_amps(accession, db):

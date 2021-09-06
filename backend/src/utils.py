@@ -14,7 +14,7 @@ import livingTree as lt
 
 def parse_config():
     parser = configparser.ConfigParser()
-    parser.read('config.ini')
+    parser.read('config/config.ini')
     return parser['DEFAULT']
 
 
@@ -244,8 +244,8 @@ def get_downloads():
 
 
 def download(file: str):
-    print(file)
-    print(pathlib.Path(file).exists())
+    # print(file)
+    # print(pathlib.Path(file).exists())
     return file
 
 
@@ -271,7 +271,7 @@ def mmseqs_search(seq: str):
         'tmp_dir': str(tmp_dir)
     })
     try:
-        subprocess.run(command, shell=True, check=True)
+        subprocess.run(command, shell=True, check=True, stdout=subprocess.DEVNULL) ## FIXME
     except subprocess.CalledProcessError as e:
         print('error when executing the command (code {})'.format(e))
         print(e.output)
@@ -287,7 +287,7 @@ def mmseqs_search(seq: str):
             df = pd.DataFrame(columns=columns)
         df.columns = columns
         records = df.to_dict(orient='records')
-        pprint(records)
+        # pprint(records)
         return records
 
 
@@ -311,7 +311,7 @@ def hmmscan_search(seq: str):
         # 'out_tmp': tmp_dir.joinpath(query_id + '.tmp')
     })
     try:
-        subprocess.run(command, shell=True, check=True)
+        subprocess.run(command, shell=True, check=True, stdout=subprocess.DEVNULL) ## FIXME
     except subprocess.CalledProcessError as e:
         print('error when executing the command (code {})'.format(e))
         print(e.output)
@@ -328,26 +328,10 @@ def hmmscan_search(seq: str):
         except pd.errors.EmptyDataError:
             df = pd.DataFrame(columns=columns)
         df.columns = columns
-        print(df)
+        # print(df)
         records = df.to_dict(orient='records')
-        pprint(records)
+        # pprint(records)
         return records
-
-
-# --- deprecated
-# with pyhmmer.plan7.HMMFile('./database/hmmsearch_model/AMPSphere_v2021-03.hmm') as hmms:
-#     alphabet = pyhmmer.easel.Alphabet.amino()
-#     background = pyhmmer.plan7.Background(alphabet)
-#     pipeline = pyhmmer.plan7.Pipeline(alphabet, background=background)
-#     with pyhmmer.easel.SequenceFile("/root/AMPSphere/tmp/343598dd-f03a-4555-b0e5-9fe68eed7ae5.input") as seq_file:
-#         seq_file.set_digital(alphabet)
-#         hits = pipeline.search_hmm(query=hmms, sequences=seq_file)
-#
-# with pyhmmer.plan7.HMMFile('./database/hmmsearch_model/AMPSphere_v2021-03.hmm') as hmms:
-#     alphabet = pyhmmer.easel.Alphabet.amino()
-#     with pyhmmer.easel.SequenceFile("/root/AMPSphere/tmp/343598dd-f03a-4555-b0e5-9fe68eed7ae5.input") as seq_file:
-#         seq_file.set_digital(alphabet)
-#         all_hits = list(pyhmmer.hmmsearch(hmms, list(seq_file), cpus=1))
 
 
 def obj_to_dict(obj):
@@ -378,6 +362,7 @@ def df_to_formatted_json(df, sep="."):
                     current = current[k]
         # save
         result.append(parsed_row)
+    print(result)
     return result
 
 

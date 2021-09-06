@@ -1,9 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import models
-from database import engine
-from router import amp_router, family_router, default_router
+from src import models
+from src.database import engine
+from src.router import amp_router, family_router, default_router
+import os
 
+
+os.environ['worker_class'] = 'uvicorn.workers.UvicornH11Worker'
 models.Base.metadata.create_all(bind=engine)
 
 
