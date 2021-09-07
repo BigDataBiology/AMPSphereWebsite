@@ -19,3 +19,22 @@ pip install -r requirements.txt
 ```shell
 uvicorn main:app --reload
 ```
+
+## To test the backend API
+```shell
+python -m pytest tests/testing.py
+```
+
+## To generate coverage report (html)
+```shell
+python -m pytest --cov-report html:tests/coverage_html --cov=src tests/testing.py
+```
+
+## To host the coverage report using http.server
+```shell
+python -m http.server --directory tests/coverage_html/ 8000
+```
+
+## To browse the coverage report hosted on the HuaWeiCloud server
+
+See [here]()
