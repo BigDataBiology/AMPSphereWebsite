@@ -190,14 +190,15 @@ def fam_distributions(accession: str = 'SPHERE-III.001_396', db: Session = Depen
 @family_router.get("/{accession}/downloads",
                    response_model=schemas.FamilyDownloads,
                    summary=default_route_summary)
-def fam_downloads(accession: str = 'SPHERE-III.001_396'):
+def fam_downloads(accession: str = 'SPHERE-III.001_396',
+                  db: Session = Depends(get_db)):
     """
     **tested**
 
     - :param accession:
     - :return:
     """
-    return utils.get_fam_downloads(accession=accession)
+    return crud.get_fam_downloads(accession=accession, db=db)
 
 
 @family_router.get("/{accession}/downloads/{file}",

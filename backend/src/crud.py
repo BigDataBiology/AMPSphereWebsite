@@ -1,9 +1,12 @@
+import pathlib
+
 import pandas as pd
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from src import models
 from src import utils
 from sqlalchemy import distinct, func
+from fastapi import HTTPException
 
 
 def get_amps(db: Session, page: int = 0, page_size: int = 20, **kwargs):
@@ -25,13 +28,15 @@ def get_amps(db: Session, page: int = 0, page_size: int = 20, **kwargs):
         else:
             pass
     accessions = query.offset(page * page_size).limit(page_size).all()
-    print(accessions)
+    if len(accessions) == 0:
+        raise HTTPException(status_code=400, detail='invalid filter applied.')
     return [get_amp(accession, db) for accession, in accessions]
 
 
 def get_amp(accession: str, db: Session):
     amp_obj = db.query(models.AMP).filter(models.AMP.accession == accession).first()
-
+    if not amp_obj:
+        raise HTTPException(status_code=400, detail='invalid accession received.')
     features = utils.get_amp_features(amp_obj.sequence)
     feature_graph_points = utils.get_graph_points(amp_obj.sequence)
     features["graph_points"] = feature_graph_points
@@ -43,13 +48,19 @@ def get_amp(accession: str, db: Session):
 
 
 def get_amp_metadata(accession: str, db: Session, page: int, page_size: int):
-    m = db.query(models.Metadata).filter(models.Metadata.AMPSphere_code == accession). \
+    metadata = db.query(models.Metadata).filter(models.Metadata.AMPSphere_code == accession). \
         offset(page * page_size).limit(page_size).all()
-    return [row.__dict__ for row in m]
+    if len(metadata) == 0:
+        raise HTTPException(status_code=400, detail='invalid accession received.')
+    return [row.__dict__ for row in metadata]
 
 
 def get_amp_features(accession: str, db: Session):
-    seq, = db.query(models.AMP.sequence).filter(models.AMP.accession == accession).first()
+    q = db.query(models.AMP.sequence).filter(models.AMP.accession == accession).first()
+    if not q:
+        raise HTTPException(status_code=400, detail='invalid accession received.')
+    else:
+        seq, = q
     return utils.get_amp_features(seq)
 
 
@@ -66,7 +77,8 @@ def get_families(db: Session, page: int, page_size: int, **kwargs):
         if value:
             query = query.filter(getattr(models.Metadata, metadata_cols[key]) == value)
     accessions = query.offset(page * page_size).limit(page_size).all()
-    print(accessions)
+    if len(accessions) == 0:
+        raise HTTPException(status_code=400, detail='invalid filter applied.')
     return [get_family(accession, db) for accession, in accessions]
 
 
@@ -78,7 +90,7 @@ def get_family(accession: str, db: Session):
         feature_statistics=get_fam_features(accession, db),
         distributions=get_distributions(accession, db),
         associated_amps=get_associated_amps(accession, db),
-        downloads=utils.get_fam_downloads(accession)
+        downloads=get_fam_downloads(accession, db)
     )
     return family
 
@@ -94,12 +106,12 @@ def get_fam_metadata(accession: str, db: Session, page: int, page_size: int):
 def get_fam_features(accession: str, db: Session):
     amps = db.query(models.AMP).filter(models.AMP.family == accession).all()
     features = [utils.get_amp_features(amp.sequence, include_graph_points=False) for amp in amps]
-    if len(features) > 0:
+    if len(features) == 0:
+        raise HTTPException(status_code=400, detail='invalid accession received.')
+    else:
         statstics = pd.json_normalize(features).describe().round(3)
         stats = statstics.index.tolist()
         return dict(zip(stats, utils.df_to_formatted_json(statstics)))
-    else:
-        return
 
 
 def get_associated_amps(accession, db):
@@ -114,8 +126,29 @@ def get_distributions(accession: str, db: Session):
         raw_data = db.query(models.Metadata).outerjoin(models.AMP).filter(models.AMP.family == accession).all()
     else:
         raw_data = []
-        print('error')  # better handle this.
+    if len(raw_data) == 0:
+        raise HTTPException(status_code=400, detail='invalid accession received.')
     return utils.compute_distribution_from_query_data(raw_data)
+
+
+def get_fam_downloads(accession, db: Session):
+    # TODO change prefix here for easier maintenance.
+    q = db.query(models.AMP.family).filter(models.AMP.family == accession).first()
+    in_db = bool(q)
+    if not in_db:
+        raise HTTPException(status_code=400, detail='invalid accession received.')
+    else:
+        prefix = pathlib.Path('http://119.3.63.164:443/v1/families/' + accession + '/downloads/')
+    path_bases = dict(
+        alignment=str(prefix.joinpath('{}.aln')),
+        sequences=str(prefix.joinpath('{}.faa')),
+        hmm_logo=str(prefix.joinpath('{}.png')),
+        hmm_profile=str(prefix.joinpath('{}.hmm')),
+        sequence_logo=str(prefix.joinpath('{}.pdf')),
+        tree_figure=str(prefix.joinpath('{}.ascii')),
+        tree_nwk=str(prefix.joinpath('{}.nwk'))
+    )
+    return {key: item.format(accession) for key, item in path_bases.items()}
 
 
 def search_by_text(db: Session, text: str, page: int, page_size: int):
