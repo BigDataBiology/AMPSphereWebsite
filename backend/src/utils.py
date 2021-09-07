@@ -111,129 +111,6 @@ def get_graph_points(seq):
     return graph_points
 
 
-def get_transfer_energy(seq):
-    """
-    :param seq:
-    :return: a dict representing the coordinate of data points on the free energy of transfer from lipid phase to water graph.
-        Dict{
-            x: [..., ..., ..., ...]
-            y: [..., ..., ..., ...]
-            c: [..., ..., ..., ...] # color of axis X characters
-        }
-    """
-    wd = 5
-    analyzed_seq = ProteinAnalysis(str(seq))
-    val = analyzed_seq.protein_scale(window=wd, param_dict=scales['ez'])
-    xval, xcolors = [], []
-
-    for i in range(0, len(val)):
-        s = seq[i]
-        c = colorpallete[s]
-        xcolors.append(c)
-        s = f'{s}{i}'
-        xval.append(s)
-
-    out = {'x': xval, 'y': val, 'c': xcolors}
-
-    return out
-
-
-def get_hydrophobicity_parker(seq):
-    """
-    :param seq:
-    :return: a dict representing the coordinate of data points on the hydrophobicity_parker graph.
-        Dict{
-            x: [..., ..., ..., ...]
-            y: [..., ..., ..., ...]
-            c: [..., ..., ..., ...] # color of axis X characters
-        }
-    """
-    wd = 5
-    analyzed_seq = ProteinAnalysis(str(seq))
-    val = analyzed_seq.protein_scale(window=wd, param_dict=scales['Parker'])
-    xval, xcolors = [], []
-
-    for i in range(0, len(val)):
-        s = seq[i]
-        c = colorpallete[s]
-        xcolors.append(c)
-        s = f'{s}{i}'
-        xval.append(s)
-
-    out = {'x': xval, 'y': val, 'c': xcolors}
-
-    return out
-
-
-def get_surface_accessibility(seq):
-    """
-    :param seq:
-    :return: a dict representing the coordinate of data points on the surface_accessibility graph.
-        Dict{
-            x: [..., ..., ..., ...]
-            y: [..., ..., ..., ...]
-            c: [..., ..., ..., ...] # color of axis X characters
-        }
-    """
-    wd = 5
-    analyzed_seq = ProteinAnalysis(str(seq))
-    val = analyzed_seq.protein_scale(window=wd, param_dict=ProtParamData.em)
-    xval, xcolors = [], []
-
-    for i in range(0, len(val)):
-        s = seq[i]
-        c = colorpallete[s]
-        xcolors.append(c)
-        s = f'{s}{i}'
-        xval.append(s)
-
-    out = {'x': xval, 'y': val, 'c': xcolors}
-
-    return out
-
-
-def get_flexibility(seq):
-    """
-    :param seq:
-    :return: a dict representing the coordinate of data points on the flexibility graph.
-        Dict{
-            x: [..., ..., ..., ...]
-            y: [..., ..., ..., ...]
-            c: [..., ..., ..., ...] # color of axis X characters
-        }
-    """
-    wd = 5
-    analyzed_seq = ProteinAnalysis(str(seq))
-    val = analyzed_seq.protein_scale(window=wd, param_dict=ProtParamData.Flex)
-    xval, xcolors = [], []
-
-    for i in range(0, len(val)):
-        s = seq[i]
-        c = colorpallete[s]
-        xcolors.append(c)
-        s = f'{s}{i}'
-        xval.append(s)
-
-    out = {'x': xval, 'y': val, 'c': xcolors}
-
-    return out
-
-
-def get_fam_downloads(accession):
-    # TODO change prefix here for easier maintenance.
-    prefix = pathlib.Path('http://119.3.63.164:443/v1/families/' + accession + '/downloads/')
-    path_bases = dict(
-        alignment=str(prefix.joinpath('{}.aln')),
-        sequences=str(prefix.joinpath('{}.faa')),
-        hmm_logo=str(prefix.joinpath('{}.png')),
-        hmm_profile=str(prefix.joinpath('{}.hmm')),
-        sequence_logo=str(prefix.joinpath('{}.pdf')),
-        tree_figure=str(prefix.joinpath('{}.ascii')),
-        tree_nwk=str(prefix.joinpath('{}.nwk'))
-    )
-    return {key: item.format(accession) for key, item in path_bases.items()}
-
-
 def fam_download_file(accession: str, file: str):
     file = pathlib.Path(cfg['family_data_dir']).joinpath(accession).joinpath(file)
     return file
@@ -275,7 +152,7 @@ def mmseqs_search(seq: str):
     except subprocess.CalledProcessError as e:
         print('error when executing the command (code {})'.format(e))
         print(e.output)
-        return None
+        return None   # TODO better handle this
     else:
         columns = ['query_identifier', 'target_identifier', 'sequence_identity', 'alignment_length',
                    'number_mismatches', 'number_gap_openings', 'domain_start_position_query',
@@ -362,7 +239,6 @@ def df_to_formatted_json(df, sep="."):
                     current = current[k]
         # save
         result.append(parsed_row)
-    print(result)
     return result
 
 
