@@ -1,0 +1,67 @@
+API path	Input accession	Input query	Input type	Response code	Exception detail
+/v1/amps		family=SPHERE-III.000_001	valid	200	
+/v1/amps		family=fake_family	invalid	400	invalid filter applied.
+/v1/amps		habitat=host-associated:plant host:rhizosphere	valid	200	
+/v1/amps		habitat=fake_habitat	invalid	400	invalid filter applied.
+/v1/amps		host=Sus scrofa	valid	200	
+/v1/amps		host=fake_host	invalid	400	invalid filter applied.
+/v1/amps		origin=Xanthobacteraceae	valid	200	
+/v1/amps		origin=fake_origin	invalid	400	invalid filter applied.
+/v1/amps		sample=orion-mom_HD.S47-x-224-x-ST	valid	200	
+/v1/amps		sample=fake_sample	invalid	400	invalid filter applied.
+/v1/amps/{accession}	AMP10.000_000		valid	200	
+/v1/amps/{accession}	null		invalid	400	invalid accession received.
+/v1/amps/{accession}	none		invalid	400	invalid accession received.
+/v1/amps/{accession}	 		invalid	400	invalid accession received.
+/v1/amps/{accession}			invalid	400	invalid accession received.
+/v1/amps/{accession}/features	AMP10.000_000		valid	200	
+/v1/amps/{accession}/features	null		invalid	400	invalid accession received.
+/v1/amps/{accession}/features	none		invalid	400	invalid accession received.
+/v1/amps/{accession}/features	 		invalid	400	invalid accession received.
+/v1/amps/{accession}/features			invalid	400	invalid accession received.
+/v1/amps/{accession}/distributions	AMP10.000_000		valid	200	
+/v1/amps/{accession}/distributions	null		invalid	400	invalid accession received.
+/v1/amps/{accession}/distributions	none		invalid	400	invalid accession received.
+/v1/amps/{accession}/distributions	 		invalid	400	invalid accession received.
+/v1/amps/{accession}/distributions			invalid	400	invalid accession received.
+/v1/amps/{accession}/metadata	AMP10.000_000		valid	200	
+/v1/amps/{accession}/metadata	null		invalid	400	invalid accession received.
+/v1/amps/{accession}/metadata	none		invalid	400	invalid accession received.
+/v1/amps/{accession}/metadata	 		invalid	400	invalid accession received.
+/v1/amps/{accession}/metadata			invalid	400	invalid accession received.
+/v1/families		family=	valid	200	
+/v1/families		family=fake_family	invalid	400	invalid filter applied.
+/v1/families		habitat=	valid	200	
+/v1/families		habitat=fake_habitat	invalid	400	invalid filter applied.
+/v1/families		host=	valid	200	
+/v1/families		host=fake_host	invalid	400	invalid filter applied.
+/v1/families		origin=	valid	200	
+/v1/families		origin=fake_origin	invalid	400	invalid filter applied.
+/v1/families		sample=	valid	200	
+/v1/families		sample=fake_sample	invalid	400	invalid filter applied.
+/v1/families/{accession}	SPHERE-III.000_001		valid	200	
+/v1/families/{accession}	null		invalid	400	invalid accession received.
+/v1/families/{accession}	none		invalid	400	invalid accession received.
+/v1/families/{accession}	 		invalid	400	invalid accession received.
+/v1/families/{accession}			invalid	400	invalid accession received.
+/v1/families/{accession}/features	SPHERE-III.000_001		valid	200	
+/v1/families/{accession}/features	null		invalid	400	invalid accession received.
+/v1/families/{accession}/features	none		invalid	400	invalid accession received.
+/v1/families/{accession}/features	 		invalid	400	invalid accession received.
+/v1/families/{accession}/features			invalid	400	invalid accession received.
+/v1/families/{accession}/distributions	SPHERE-III.000_001		valid	200	
+/v1/families/{accession}/distributions	null		invalid	400	invalid accession received.
+/v1/families/{accession}/distributions	none		invalid	400	invalid accession received.
+/v1/families/{accession}/distributions	 		invalid	400	invalid accession received.
+/v1/families/{accession}/distributions			invalid	400	invalid accession received.
+/v1/families/{accession}/downloads	SPHERE-III.000_001		valid	200	
+/v1/families/{accession}/downloads	null		invalid	400	invalid accession received.
+/v1/families/{accession}/downloads	none		invalid	400	invalid accession received.
+/v1/families/{accession}/downloads	 		invalid	400	invalid accession received.
+/v1/families/{accession}/downloads			invalid	400	invalid accession received.
+/v1/search/mmseqs		query=KKVKSIFKKALAMMGENEVKAWGIGIK	valid	200	
+/v1/search/mmseqs		query=LLLVLVLVVLCLCLCL	valid	200	
+/v1/search/mmseqs		query=WRWRWRRRRWRWRGIK	valid	200	
+/v1/search/hmmer		query=KKVKSIFKKALAMMGENEVKAWGIGIK	valid	200	
+/v1/search/hmmer		query=LLLVLVLVVLCLCLCL	valid	200	
+/v1/search/hmmer		query=WRWRWRRRRWRWRGIK	valid	200	
