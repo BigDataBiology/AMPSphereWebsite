@@ -5,12 +5,12 @@ This repository contains source code for the backend of AMPSphere website.
 ## Components and description
 
 ```txt
-├── config/*                # Define default configuration of the backend here.                                                                                                         
-├── conftest.py             # This file only exists for unittest.                                                                                           
-├── database/*              # AMPSphere database and sequence search databases.                                                                                                         
-├── description.md          # Markdown content to be displayed on the Swagger API page.                                                                                           
-├── __init__.py                                                                                                                                                                                                                                                                                                                                                                                          
-├── README.md               
+├── config/*                # Define default configuration of the backend here.
+├── conftest.py             # This file only exists for unittest. 
+├── database/*              # AMPSphere database and sequence search databases. 
+├── description.md          # Markdown content to be displayed on the Swagger API page.
+├── __init__.py   
+├── README.md  
 ├── requirements.txt
 ├── setup.cfg
 ├── src
