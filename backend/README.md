@@ -37,4 +37,4 @@ python -m http.server --directory tests/coverage_html/ 8000
 
 ## To browse the coverage report hosted on the HuaWeiCloud server
 
-See [here]()
+See [http://119.3.63.164:8000/](http://119.3.63.164:8000/)
