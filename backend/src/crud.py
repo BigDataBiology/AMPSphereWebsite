@@ -176,6 +176,9 @@ def search_by_text(db: Session, text: str, page: int, page_size: int):
 
 
 def get_statistics(db: Session):
+    # TODO SPHEREs with num_amps < 8 should not be treated as families.
+    # TODO display two numbers for num_genomes / num_metagenomes
+    #               (analyzed_genomes..., num_...containing amps)
     return dict(
         num_amps=db.query(func.count(models.AMP.accession)).scalar(),
         num_families=db.query(func.count(distinct(models.AMP.family))).scalar(),

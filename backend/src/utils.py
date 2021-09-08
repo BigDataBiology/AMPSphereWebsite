@@ -132,12 +132,13 @@ def mmseqs_search(seq: str):
     tmp_dir = pathlib.Path(cfg['tmp_dir'])
     input_seq_file = tmp_dir.joinpath(query_id + '.input')
     output_file = tmp_dir.joinpath(query_id + '.output')
-
+    # TODO add hint when the length of input sequence is not between 8 and 98
+    # HINT: The search result may not reflect the reality as your sequence is too long/short.
     if not tmp_dir.exists():
         tmp_dir.mkdir(parents=True)
     with open(input_seq_file, 'w') as f:
         f.write(f'>submitted_sequence\n{seq}')
-
+    # sensitivity = 1
     command_base = 'mmseqs createdb {query_seq} {query_seq}.mmseqsdb && ' \
                    'mmseqs search {query_seq}.mmseqsdb  {database} {out}.mmseqsdb {tmp_dir} && ' \
                    'mmseqs convertalis {query_seq}.mmseqsdb {database} {out}.mmseqsdb {out}'
@@ -145,9 +146,11 @@ def mmseqs_search(seq: str):
         'query_seq': input_seq_file,
         'database': cfg['mmseqs_database_file'],
         'out': output_file,
-        'tmp_dir': str(tmp_dir)
+        'tmp_dir': str(tmp_dir),
+        # 's': sensitivity
     })
     try:
+        # TODO redirect the stdout to a temporary file and return its content when there is no match.
         subprocess.run(command, shell=True, check=True, stdout=subprocess.DEVNULL) ## FIXME
     except subprocess.CalledProcessError as e:
         print('error when executing the command (code {})'.format(e))
@@ -174,13 +177,15 @@ def hmmscan_search(seq: str):
     tmp_dir = pathlib.Path(cfg['tmp_dir'])
     input_seq_file = tmp_dir.joinpath(query_id + '.input')
     output_file = tmp_dir.joinpath(query_id + '.output')
+    # TODO add hint when the length of input sequence is not between 8 and 98
+    # HINT: The search result may not reflect the reality as your sequence is too long/short.
 
     if not tmp_dir.exists():
         tmp_dir.mkdir(parents=True)
     with open(input_seq_file, 'w') as f:
         f.write(f'>submitted_sequence\n{seq}')
 
-    command_base = 'hmmscan --domtblout {out} {hmm_profiles} {query_seq}'
+    command_base = 'hmmsearch --domtblout {out} {hmm_profiles} {query_seq}'
     command = command_base.format_map({
         'out': output_file,
         'hmm_profiles': cfg['hmm_profile_file'],
@@ -188,6 +193,7 @@ def hmmscan_search(seq: str):
         # 'out_tmp': tmp_dir.joinpath(query_id + '.tmp')
     })
     try:
+        # TODO redirect the stdout to a temporary file and return its content when there is no match.
         subprocess.run(command, shell=True, check=True, stdout=subprocess.DEVNULL) ## FIXME
     except subprocess.CalledProcessError as e:
         print('error when executing the command (code {})'.format(e))
