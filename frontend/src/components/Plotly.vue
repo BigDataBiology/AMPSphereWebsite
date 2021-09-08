@@ -3,7 +3,8 @@
 </template>
 
 <script>
-import Plotly from "plotly.js/dist/plotly";
+// import Plotly from "plotly.js/dist/plotly";
+import Plotly from "plotly.js"
 import events from "./events.js";
 import methods from "./methods.js";
 import { camelize } from "../utils/helper";
