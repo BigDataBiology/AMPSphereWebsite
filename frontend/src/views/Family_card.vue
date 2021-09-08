@@ -54,7 +54,7 @@
                                                 label="Sequences"
                                                 header-align="center"
                                                 align="center">
-                                            <template slot-scope="scope">
+                                            <template v-slot="scope">
                                                 <router-link
                                                         :to="{path:'/amp',query:{Family_ID:scope.row.Family_ID}}">
                                                     <el-tag type="info">

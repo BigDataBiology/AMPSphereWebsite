@@ -72,9 +72,9 @@
                     <el-pagination
                             style="margin-bottom: 18px"
                             background
-                            :page-size.sync="pageSize"
+                            v-model:page-size="pageSize"
                             :total="count"
-                            :current-page.sync="currentPage"
+                            v-model:current-page="currentPage"
                             layout="total, sizes, prev, next"
                             :page-sizes="[10, 20, 30]"
                             @size-change="handleSizeChange"
@@ -91,7 +91,7 @@
                                 label="AMP ID"
                                 header-align="center"
                                 align="center">
-                            <template slot-scope="scope">
+                            <template v-slot="scope">
                                 <router-link :to="{path:'/amp_card',query:{AMP_ID:scope.row.AMP_ID}}">
                                     <el-tag type="info">
                                         <i class="el-icon-connection"></i>{{scope.row.AMP_ID}}
@@ -120,7 +120,7 @@
                                 label="Family ID"
                                 header-align="center"
                                 align="center">
-                            <template slot-scope="scope">
+                            <template v-slot="scope">
                                 <router-link :to="{path:'/family',query:{Family_ID:scope.row.Family_ID}}">
                                     <el-tag type="info">
                                         <i class="el-icon-connection"></i>{{ scope.row.Family_ID }}

@@ -41,7 +41,11 @@
 
       <el-main>
         <el-row>
-          <el-col><router-view/></el-col>
+          <el-col>
+            <div>
+              <router-view/>
+            </div>
+          </el-col>
         </el-row>
       </el-main>
 

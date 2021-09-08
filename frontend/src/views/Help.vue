@@ -160,7 +160,7 @@ where:
               <h2 id="graphs-in-amp-cards">Graphs in AMP cards</h2>
               <p>The amino acids compositional deviation was calculated using the Z-score calculated from two different groups (AMPs and non-AMPs) previously used in the training set of Macrel models (<strong>Fig. 1</strong>).</p>
               <figure class="figure">
-                <img style="align-content: center;" src="../assets/figures/aa_composition_deviation_AMP10.000_000.png" width="450" height="300">
+<!--                <img style="align-content: center;" src="../assets/figures/aa_composition_deviation_AMP10.000_000.png" width="450" height="300">-->
                 <figcaption class="figure-caption">
                   Fig. 1. Compositional deviation of peptide AMP10.000_000 from Macrel’s training set of AMPs and non-AMPs.<br>
                 </figcaption>
@@ -183,7 +183,7 @@ where:
               <p>A negative Z score means that a specific amino acid decreased compared with the average training set for AMPs or non-AMPs. On the other side, a positive Z-score means the opposite, the increment of some amino acid compared to the average training set. Whether the Z-score is around zero, then the peptide composition is close to the average training set.</p>
               <p>We produced Z-score graphs to compare AMPs with the training set used by Macrel of AMPs and non-AMPs, placing a given peptide in this background (<strong>Fig. 2</strong>). The average and standard deviation for each of the features calculated from Macrel’s training set were used to derive the Z-scores for AMPs and non-AMPs. These Z-scores were plotted for each variable and grouped by color (black for AMPs and gray for non-AMPs, respectively). Among the several different tested features, some of them were already above mentioned in detail.</p>
               <figure class="figure">
-                <img style="align-content: center;" src="../assets/figures/zscore_comparison.png" width="700" height="1000">
+<!--                <img style="align-content: center;" src="../assets/figures/zscore_comparison.png" width="700" height="1000">-->
                 <figcaption class="figure-caption">
                   Fig. 2. Z-score comparison of (a) aliphatic index, (b) Boman index, (c) hydrophobic moment, (d) instability index - instaindex, (e) isoelectric point, and (f) charge using the average of complete training set separated by non-antimicrobial peptides (gray), antimicrobial peptides (black) and dots representing the peptide as a red star - in this example, AMP10.000_000.
                 </figcaption>
@@ -216,7 +216,7 @@ where:
               <p>The charge, instability index, and isoelectric point were calculated as mentioned in the previous section and compared against AMP and non-AMP sets using Z-score as shown in <strong>Fig. 2d-f</strong>.</p>
               <p>Usually, in globular proteins, helices have one face oriented toward the hydrophobic core and the other is solvent-exposed. The helical wheel (<strong>Fig. 3</strong>) illustrates this property of alpha-helices, through the concentration of hydrophobic amino acids on one side of the helix, with polar or hydrophilic amino acids on the other.</p>
               <figure class="figure">
-                <img style="align-content: center;" src="../assets/figures/helicalwheel_AMP10.000_000.png" width="300" height="300">
+<!--                <img style="align-content: center;" src="../assets/figures/helicalwheel_AMP10.000_000.png" width="300" height="300">-->
                 <figcaption class="figure-caption">
                   Fig. 3. Amino acids helical wheel with the H-moment indicated.
                 </figcaption>
@@ -246,7 +246,7 @@ It uses 5 groups (note Histidine):
               <p>Our calculations used the algorithm implemented in <a href="http://www.expasy.org/cgi-bin/protscale.pl">ProtScale</a>, in which for a window size n, we use the i-(n-1)/2 neighboring residues on each side to compute the score for i.</p>
               <p>The hydrophobicity scale adopted in the AMPSphere (<a href="https://pubmed.ncbi.nlm.nih.gov/2430611/">Parker et al., 1986</a>) and used in <strong>Fig. 4</strong>. is derived by measuring HPLC retention times of peptide libraries. It presents two adjacent copies of a variable residue in a random coil peptide, one more exposed located toward the N-terminus of the peptide and one packed between the other copy of the tested residue and a Leucine residue (Ac–GXXLLLKK–amide).</p>
               <figure class="figure">
-                <img style="align-content: center;" src="../assets/figures/hydrophobicity_Parker_AMP10.000_000.png" width="500" height="300">
+<!--                <img style="align-content: center;" src="../assets/figures/hydrophobicity_Parker_AMP10.000_000.png" width="500" height="300">-->
                 <figcaption class="figure-caption">
                   Fig. 4. Profile of hydrophobicity of residues of AMP10.000_000 using the relative scale of Parker.
                 </figcaption>
@@ -254,7 +254,7 @@ It uses 5 groups (note Histidine):
               <p><br/>This scale is interesting to understand whether hydrophobic or hydrophilic stretches are present in the peptide. If the hydrophobicity is above 0.5, it is considered hydrophobic (<a href="https://doi.org/10.1016/j.jtbi.2017.02.012">Pane et al., 2017</a>).</p>
               <p>The profile of residues free energy of transfer from water to membrane lipid (Ez) in <strong>Fig. 5</strong> was conceived initially by <a href="https://pubmed.ncbi.nlm.nih.gov/17174324/">Senes et al. (2007)</a>. Ez estimated by a reverse-Boltzman relationship of potential can be calculated from the propensities for the occurrence of each residue as a function of their depth in the lipid bilayer <a href="https://pubmed.ncbi.nlm.nih.gov/17174324/">Senes et al. (2007)</a>.AMPs need to have low free energy for transfer to easily insert themselves in the lipid membranes, triggering their effects. The scale adopted in <strong>Fig. 5</strong> is the same as in <a href="https://doi.org/10.1093/bioinformatics/btx285">modlAMP</a>.</p>
               <figure class="figure">
-                <img style="align-content: center;" src="../assets/figures/EZenergy_AMP10.000_000.png" width="500" height="300">
+<!--                <img style="align-content: center;" src="../assets/figures/EZenergy_AMP10.000_000.png" width="500" height="300">-->
                 <figcaption class="figure-caption">
                   Fig. 5. Profile of AMP10.000_000 residues free energy of transfer from water to membrane lipid.
                 </figcaption>
@@ -268,14 +268,14 @@ It uses 5 groups (note Histidine):
         i vary from 1 to 6 depending on its position in the window</code></pre>
               <p>SA values greater than 1.0 indicate an increased probability of being found on the surface. AMPs present an interesting periodicity of exposed and buried motifs, which arguments in the sense that they can form secondary structures and possibly interact with membranes and the extra/intra-cellular milleu.</p>
               <figure class="figure">
-                <img style="align-content: center;" src="../assets/figures/SA_AMP10.000_000.png" width="500" height="300">
+<!--                <img style="align-content: center;" src="../assets/figures/SA_AMP10.000_000.png" width="500" height="300">-->
                 <figcaption class="figure-caption:bold">
                   Fig. 6. Profile of solvent accessibility of residues of AMP10.000_000.
                 </figcaption>
               </figure>
               <p><br/>The calculated flexibility profile (<strong>Fig. 7</strong>) shows regions submitted to higher tensions in the molecule and those able to move the rigid structure into a more favorable conformation. Therefore, accurate analysis of the peptide flexibility can lead to valuable ideas of how the peptide can fold and conformationally adjust. The normalized flexibility parameters (B-values) from <a href="https://onlinelibrary.wiley.com/doi/10.1002/prot.340190207">Vihinen (1994)</a> was the scale adopted in the profile calculation.</p>
               <figure class="figure">
-                <img style="align-content: center;" src="../assets/figures/flexibility_AMP10.000_000.png" width="500" height="300">
+<!--                <img style="align-content: center;" src="../assets/figures/flexibility_AMP10.000_000.png" width="500" height="300">-->
                 <figcaption class="figure-caption">
                   Fig. 7. Profile of flexibility of residues of AMP10.000_000.
                 </figcaption>
