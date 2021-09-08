@@ -20,14 +20,19 @@ npm run build
 npm run lint
 ```
 
+### Performance diagnosis tips
+```shell
+# analyze the chunk-vendors.js and create a production build
+npm run report  
+
+# Generate performance report using LightHouse
+lighthouse http://119.3.63.164/home --chrome-flags="--window-size=1920,1080" --view \
+  --output-path performance_report/index.html  
+```
+
 ### Serve the production build on server
 ```shell
 serve -s -l tcp://0.0.0.0:80 dist
-```
-
-### Generate performance report using LightHouse
-```shell
-lighthouse http://119.3.63.164/home --chrome-flags="--window-size=1920,1080" --view
 ```
 
 ### Customize configuration
