@@ -5,8 +5,7 @@
       <el-header height="200px">
         <div class="header-wrapper">
           <div class="logo">
-            <el-image style="height: 200px; width: 200px" :src="url" lazy>
-            </el-image>
+            <el-image style="height: 200px; width: 200px" :src="url" lazy></el-image>
           </div>
           <div class="search-box"><el-input placeholder="accession"
                                            v-model="text"
@@ -27,7 +26,7 @@
             <el-menu mode="horizontal" :default-active="activeMenuItem" :router="true">
               <el-menu-item index="home">Home</el-menu-item>
               <el-menu-item index="browse_data">Browse data</el-menu-item>
-              <el-menu-item index="tools">Tools</el-menu-item>
+<!--              <el-menu-item index="tools">Tools</el-menu-item>-->
               <el-menu-item index="api">API</el-menu-item>
               <el-menu-item index="downloads">Downloads</el-menu-item>
 <!--              <el-menu-item index="citation">Citation</el-menu-item>-->
@@ -40,6 +39,7 @@
       </el-header>
 
       <el-main>
+<!--        Use CDN to speed up the production build: https://segmentfault.com/a/1190000015709430-->
         <el-row>
           <el-col>
             <div>
@@ -56,7 +56,7 @@
             Powered by
             <el-link href="https://vuejs.org/index.html" type="success">Vue.js</el-link>
             <el-divider direction="vertical"></el-divider>
-            <el-link href="https://element.eleme.cn/#/en-US" type="primary">Element</el-link>
+            <el-link href="https://element-plus.org/#/en-US" type="primary">Element</el-link>
             <el-divider direction="vertical"></el-divider>
             <el-link href="https://fastapi.tiangolo.com/" type="success">FastAPI</el-link>
           </el-col>
@@ -68,7 +68,6 @@
             All Rights Reserved.
           </el-col>
         </el-row>
-
       </el-footer>
     </el-container>
   </div>
