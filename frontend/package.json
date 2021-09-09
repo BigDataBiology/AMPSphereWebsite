@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve --host 0.0.0.0",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "report": "vue-cli-service build --report"
   },
   "dependencies": {
     "@element-plus/icons": "^0.0.11",
@@ -18,7 +19,6 @@
     "d3-dsv": "^3.0.1",
     "element-plus": "^1.0.2-beta.55",
     "express": "^4.17.1",
-    "plotly.js": "^2.3.1",
     "spa-http-server": "^0.9.0",
     "vue": "^3.0.0",
     "vue-axios": "^3.2.4",
