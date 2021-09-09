@@ -15,6 +15,7 @@
                 <el-menu-item><el-link class="nav-subsection" href="#length">Peptide length</el-link></el-menu-item>
                 <el-menu-item><el-link class="nav-subsection" href="#molecular-weight">Molecular weight</el-link></el-menu-item>
                 <el-menu-item><el-link class="nav-subsection" href="#sequence">Sequence</el-link></el-menu-item>
+<!--                <el-menu-item><el-link class="nav-subsection" href="#gene-sequence">Gene sequence</el-link></el-menu-item>-->
                 <el-menu-item><el-link class="nav-subsection" href="#relationships">Relationships</el-link></el-menu-item>
                 <el-menu-item><el-link class="nav-subsection" href="#secondary-structure">Secondary structure</el-link></el-menu-item>
               </el-submenu>
@@ -54,7 +55,7 @@
 <!--            <el-table-column prop="Accession" label="Accession" width="200%"></el-table-column>-->
             <span>
               <h1>Antimicrobial peptide: {{ AMP.Accession }}
-                <el-button class="button" @click="methods.downloadCurrPage()" type="primary" icon="el-icon-download" circle></el-button>
+                <el-button class="button" @click="downloadCurrPage()" type="primary" icon="el-icon-download" circle></el-button>
               </h1>
             </span>
 
@@ -70,12 +71,14 @@
                     <li><span class="info-item" id="molecular-weight">Molecular weight</span>: {{ AMP.Info.MW }}</li>
                     <br/>
                     <li><span class="info-item" id="sequence">Sequence</span>: {{ AMP.Info.Sequence }}</li>
+<!--                    <br/>-->
+<!--                    <li><span class="info-item" id="gene-sequence">Gene sequence</span>: {{ AMP.Info.GeneSequence }}</li>-->
                   </ul>
                 </el-col>
                 <el-col :span="6">
                   <div id="secondary-structure" style="height: 180px;">
-<!--                    <Plotly :data="methods.SecStructureData()" :layout="methods.SecStructureLayout()"/>-->
-                    <Plotly :data="methods.SecStructurePieData()"
+<!--                    <Plotly :data="SecStructureData()" :layout="SecStructureLayout()"/>-->
+                    <Plotly :data="SecStructurePieData()"
                             :layout="{title: {text: 'Secondary Structure'},
                             margin: {l: 0, r: 0, t: 0, b: 0, pad: 0},
                             showlegend: false, height: 180}"
@@ -87,17 +90,27 @@
                 <ul>
                   <li><span class="info-item" id="relationships">Relationships</span>
                     <el-tooltip class="item" content="Download relationships table" placement="right">
-                      <el-button @click="methods.downloadRelationshipsTable()" type="text"
+                      <el-button @click="downloadRelationshipsTable()" type="text"
                                  icon="el-icon-download" circle></el-button>
                     </el-tooltip>
                   </li>
-                  <el-table :data="AMP.relationships" height="250" style="width: 100%">
+                  <el-table :data="AMP.relationships.currentTableData" height="250" style="width: 100%" size="mini">
                     <el-table-column prop="GMSC" label="Genes" width="250%"/>
 <!--                    TODO display gene sequence here.-->
                     <el-table-column prop="Source" label="Sample/Genome" width="250%"/>
 <!--                    <el-table-column prop="taxid" label="Taxon id" width="100%"/>-->
                     <el-table-column prop="sciname" label="Name" width="250%"/>
                   </el-table>
+                  <div class="block">
+                    <el-pagination
+                        @current-change="setRelationshipTablePage"
+                        :page-size="AMP.relationships.pageSize"
+                        layout="total, prev, pager, next"
+                        :total="AMP.relationships.tableData.length"
+                    >
+                    </el-pagination>
+<!--                    FIXME integrate pagination buttons with the table-->
+                  </div>
                 </ul>
                 </el-row>
             </el-card>
@@ -107,16 +120,16 @@
             <el-card class="box-card">
               <el-row>
                 <h4 id="global-distribution">Global distribution</h4>
-                <Plotly :data="methods.GeoPlotData()"
-                        :layout="methods.GeoPlotLayout()"
+                <Plotly :data="GeoPlotData()"
+                        :layout="GeoPlotLayout()"
                         :toImageButtonOptions="{format: 'svg', scale: 1}"/>
               </el-row>
               <el-row>
 <!--                <el-col :span="12">-->
 <!--                  <h4 id="distribution-across-habitats">Across habitats</h4>-->
 <!--                  <div>-->
-<!--                    <Plotly :data="methods.EnvPlotData()"-->
-<!--                            :layout="methods.EnvPlotLayout()"-->
+<!--                    <Plotly :data="EnvPlotData()"-->
+<!--                            :layout="EnvPlotLayout()"-->
 <!--                            :toImageButtonOptions="{format: 'svg', scale: 1}"/>-->
 <!--                  </div>-->
 <!--&lt;!&ndash;                  <div id="myModal" class="modal">&ndash;&gt;-->
@@ -129,14 +142,14 @@
 <!--                <el-col :span="12">-->
 <!--                  <h4 id="distribution-across-hosts">Across hosts</h4>-->
 <!--                  <div>-->
-<!--                    <Plotly :data="methods.HostPlotData()"-->
-<!--                            :layout="methods.HostPlotLayout()"-->
+<!--                    <Plotly :data="HostPlotData()"-->
+<!--                            :layout="HostPlotLayout()"-->
 <!--                            :toImageButtonOptions="{format: 'svg', scale: 1}"/>-->
 <!--                  </div>-->
 <!--                </el-col>-->
                 <div>
-                  <Plotly :data="methods.DistributionGraphData()"
-                          :layout="methods.DistributionGraphLayout()"
+                  <Plotly :data="DistributionGraphData()"
+                          :layout="DistributionGraphLayout()"
                           :toImageButtonOptions="{format: 'svg', scale: 1}"/>
                 </div>
               </el-row>
@@ -191,8 +204,8 @@
                 <el-col>
                   <h4 id="features">Features</h4>
                   <div>
-                    <Plotly :data="methods.featureGraphData()"
-                            :layout="methods.featureGraphLayout()"
+                    <Plotly :data="featureGraphData()"
+                            :layout="featureGraphLayout()"
                             :toImageButtonOptions="{format: 'svg', scale: 1}"/>
                   </div>
                   EZenergy.  xxxxx. Flexibility.  xxxxx.  Hydrophobicity Parker. xxxxx.
@@ -204,7 +217,7 @@
 <!--              <el-row>-->
 <!--                <el-col>-->
 <!--                  <h4 id="comparisons">Comparison with entire database</h4>-->
-<!--                  <div><Plotly :data="methods.comparisonGraphData()" :layout="methods.comparisonGraphLayout()"></Plotly></div>-->
+<!--                  <div><Plotly :data="comparisonGraphData()" :layout="comparisonGraphLayout()"></Plotly></div>-->
 <!--                  Z-score comparison of (a) aliphatic index, (b) Boman index, (c) hydrophobic moment, (d) instability index - instaindex, (e) isoelectric point, and (f) charge using the average of complete training set separated by non-antimicrobial peptides (gray), antimicrobial peptides (black) and dots representing the peptide as a red star.-->
 <!--                </el-col>-->
 <!--              </el-row>-->
@@ -275,10 +288,17 @@ export default {
         Accession: 'AMP10.000_000',
         Info: {
           Sequence: 'KKVKSIFKKALAMMGENEVKAWGIGIK', MW: '3.01 kDa', Length: 27, Family: 'SPHERE-III.000-000',
+          GeneSequence: 'AAGAAGGTGAAGAGCATCTTCAAGAAGGCCCTGGCCATGATGGGCGAGAACGAGGTGAAGGCCTGGGGCATCGGCATCAAG',
           Molar_extinction: [5500, 5500], Aromaticity: 0.07407407407407407, GRAVY: -0.11111111111111117,
           Instability_index: -18.348148148148148, Isoeletric_point: 10.12554931640625, Charget_at_pH_7: 0.758729531142717,
         },
-        relationships: [
+        relationships: {
+          page: 1,
+          pageSize: 6,
+          currentTableData: [
+            {GMSC: 'GMSC10.SMORF.000_036_844_556', Source: 'SAMEA104142073', taxid: 237, sciname: 'Phocaeicola'},
+          ],
+          tableData: [
           {GMSC: 'GMSC10.SMORF.000_036_844_556', Source: 'SAMEA104142073', taxid: 237, sciname: 'Phocaeicola'},
           {GMSC: 'GMSC10.SMORF.001_828_692_528', Source: 'SAMN03955567', taxid: 237, sciname: 'Phocaeicola'},
           {GMSC: 'GMSC10.SMORF.001_828_750_506', Source: 'SAMN03955549', taxid: 237, sciname: 'Phocaeicola'},
@@ -289,16 +309,17 @@ export default {
           {GMSC: 'GMSC10.SMORF.001_828_927_346', Source: 'SAMN05930844', taxid: 237, sciname: 'Phocaeicola'},
           {GMSC: 'GMSC10.SMORF.001_829_153_490', Source: 'SAMN05930833', taxid: 237, sciname: 'Phocaeicola'},
           {GMSC: 'GMSC10.SMORF.001_829_180_169', Source: 'SAMN05930842', taxid: 238, sciname: 'Phocaeicola vulgatus'},
-        ],
+        ]},
         helicalwheel: require('./../assets/images/helicalwheel_AMP10.000_000.png'),
+      }
+    }
+    },
+      mounted() {
+        this.setRelationshipTablePage(1)
+        console.log('setting first page')
       },
-
       computed: {
       },
-
-      mounted() {
-      },
-
       methods: {
         SecStructureData(){
           let strucData = {
@@ -358,6 +379,13 @@ export default {
             textinfo: "label+percent",
             insidetextorientation: "radial"}]
         },
+        setRelationshipTablePage (val) {
+          let self = this
+          self.AMP.relationships.page = val
+          self.AMP.relationships.currentTableData = this.AMP.relationships.tableData.slice(
+              this.AMP.relationships.pageSize * this.AMP.relationships.page -
+              this.AMP.relationships.pageSize, this.AMP.relationships.pageSize * this.AMP.relationships.page)
+        },
         GeoPlotData(){
           let GeoString = "n\tenvironmental_features\tlatitude\tlongitude\tMO-level-I\n" +
             "10\thuman-associated habitat [ENVO:00009003]\t39.9\t116.25\tTerrestrial\n" +
@@ -392,7 +420,6 @@ export default {
             showlegend: false,
             geo: {
               scope: 'global',
-
               resolution: 50,
               showland: true,
               landcolor: 'rgb(217, 217, 217)',
@@ -660,7 +687,5 @@ export default {
           print()
         }
       }
-    }
-  }
   }
 </script>
