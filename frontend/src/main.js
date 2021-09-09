@@ -33,5 +33,5 @@ const ImageZoom = require('vue-image-zoomer').default
 app.component('image-zoom', ImageZoom)
 app.component(More.name, More)
 app.component(Download.name, Download)
-axios.defaults.baseURL = 'http://127.0.0.1:8080'
+axios.defaults.baseURL = 'http://119.3.63.164:443/v1'
 app.mount('#app')
