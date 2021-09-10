@@ -1,10 +1,10 @@
 <template>
     <div class="Home">
       <el-row justify="center" align="middle">
-        <el-col :span="11" type="flex" justify="middle">
+        <el-col :span="14" :offset="1" type="flex" justify="middle">
           <div style="font-size: 150%; text-align: center">Browse by data type</div>
         </el-col>
-        <el-col :span="11" :offset="0" type="flex" justify="middle">
+        <el-col :span="7" :offset="1" type="flex" justify="middle">
           <div style="font-size: 150%; text-align: center">Search by sequence</div>
         </el-col>
       </el-row>
@@ -12,41 +12,41 @@
         <br/>
       </el-row>
       <el-row>
-        <el-col :span="10" :offset="1">
+        <el-col :span="14" :offset="1">
           <el-row>
 <!--            This is AMPSphere, a database of prokaryotic AMP sequences predicted from thousands of genomes and metagenomes.-->
 <!--            The almost 1 M candidate AMP sequences available here are distributed as follows:-->
 <!--            <br/>-->
 <!--            <br/>-->
-            <el-col :span="8">
-              <el-table :data="distributionData.amps_families" style="width: 100%" :show-header="false">
-                <el-table-column prop="number" label="Number" width="80">
+            <el-col :span="7">
+              <el-table :data="distributionData.amps_families" style="width: 120%" :show-header="false">
+                <el-table-column prop="number" label="Number">
                   <template #default="props">
-                    <el-link href="/browse_data" type="primary"> {{ props.row.number }} </el-link>
+                    <el-link href="/browse_data" type="primary" style="font-size: medium"> {{ props.row.number }} </el-link>
                   </template>
                 </el-table-column>
-                <el-table-column prop="type" label="Type" width="80"> </el-table-column>
+                <el-table-column prop="type" label="Type"> </el-table-column>
               </el-table>
             </el-col>
-            <el-col :span="8" :offset="0">
+            <el-col :span="7" :offset="1">
 <!--              <h4>Derived from</h4>-->
-              <el-table :data="distributionData.genomes_metagenomes" style="width: 100%" :show-header="false">
-                <el-table-column prop="number" label="Number" width="60">
+              <el-table :data="distributionData.genomes_metagenomes" style="width: 120%" :show-header="false">
+                <el-table-column prop="number" label="Number">
                   <template #default="props">
-                    <el-link href="/browse_data" type="primary"> {{ props.row.number }} </el-link>
+                    <el-link href="/browse_data" type="primary" style="font-size: medium"> {{ props.row.number }} </el-link>
                   </template>
                 </el-table-column>
-                <el-table-column prop="type" label="Type" width="100"> </el-table-column>
+                <el-table-column prop="type" label="Type"> </el-table-column>
               </el-table>
             </el-col>
-            <el-col :span="8" :offset="0">
-              <el-table :data="distributionData.habitats_hosts" style="width: 100%" :show-header="false">
-                <el-table-column prop="number" label="Number" width="60">
+            <el-col :span="7" :offset="1">
+              <el-table :data="distributionData.habitats_hosts" style="width: 120%" :show-header="false">
+                <el-table-column prop="number" label="Number">
                   <template #default="props">
-                    <el-link href="/browse_data" type="primary"> {{ props.row.number }} </el-link>
+                    <el-link href="/browse_data" type="primary" style="font-size: medium"> {{ props.row.number }} </el-link>
                   </template>
                 </el-table-column>
-                <el-table-column prop="type" label="Type" width="100"> </el-table-column>
+                <el-table-column prop="type" label="Type"> </el-table-column>
               </el-table>
             </el-col>
 <!--            <el-image></el-image>-->
@@ -57,7 +57,7 @@
 <!--            <el-image :src="hostDistribution">-->
 <!--            </el-image>-->
             <el-col>
-              <el-carousel :interval="5000" arrow="always" height="350px" :autoplay="true">
+              <el-carousel :interval="5000" height="500px" :autoplay="true">
                 <el-carousel-item v-for="graph in distributioinGraphs" :key="graph">
                   <!--                <h3>{{ graph.type }}</h3>-->
                   <el-image :src="graph.image" fit="scale-down"></el-image>
@@ -66,24 +66,56 @@
             </el-col>
           </el-row>
         </el-col>
-        <el-col :span="10" :offset="2" type="flex" justify="middle">
+        <el-col :span="7" :offset="1" type="flex" justify="middle">
           <el-row>
-            <div style="line-height: 100px;">
+            <div style="text-align: left">
+              Paste peptide sequences here (fasta format). <br/><br/>
               <el-input
                   type="textarea"
-                  :autosize="{ minRows: 15, maxRows: 40}"
+                  :autosize="{ minRows: 8, maxRows: 40}"
                   :placeholder="exampleSequences"
                   v-model="text">
               </el-input>
             </div>
+            <br/>
+            <div style="text-align: left">
+              Or upload a file (amino acid sequences, size &lt; 50kb)
+              <br/><br/>
+              <el-upload
+                  class="upload-demo"
+                  drag
+                  action="https://jsonplaceholder.typicode.com/posts/"
+                  :on-preview="handlePreview"
+                  :on-remove="handleRemove"
+                  :file-list="fileList"
+                  multiple
+              >
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">Drop file here or <em>click to upload</em></div>
+              </el-upload>
+<!--              <el-upload-->
+<!--                action="https://jsonplaceholder.typicode.com/posts/"-->
+<!--                :limit="1"-->
+<!--                :file-list="fastaFile"-->
+<!--                style="text-align: left"-->
+<!--            >-->
+<!--              <el-button size="small" type="primary">Upload a fasta file</el-button>-->
+<!--&lt;!&ndash;              <template #tip>&ndash;&gt;-->
+<!--&lt;!&ndash;                <div class="el-upload__tip"></div>&ndash;&gt;-->
+<!--&lt;!&ndash;              </template>&ndash;&gt;-->
+<!--            </el-upload>-->
+            </div>
           </el-row>
           <el-row>
+            <!--                TODO FIXME-->
             <el-radio v-model="searchMethod" label="MMseqs">MMseqs</el-radio>
             <el-radio v-model="searchMethod" label="HMMSearch">HMMSearch</el-radio>
             <el-button type="primary"
                        icon="el-icon-search">
               Search
             </el-button>
+
+
           </el-row>
         </el-col>
       </el-row>
@@ -103,7 +135,6 @@
       name: 'Home',
     data() {
       return {
-        searchMethod: 'MMseqs',
         statistics: {
           num_amps: 863498,
           num_families: 530194,
@@ -114,16 +145,16 @@
         },
         distributionData: {
           amps_families: [
-            {number: 0, type: 'AMPs'},
-            {number: 0, type: 'families'},
+            {number: (863498).toLocaleString('en-US'), type: 'AMPs'},
+            {number: (530194).toLocaleString('en-US'), type: 'families'},
           ],
           genomes_metagenomes: [
-            {number: 0, type: 'genomes'},
-            {number: 0, type: 'metagenomes'}
+            {number: (49757).toLocaleString('en-US'), type: 'genomes'},
+            {number: (61393).toLocaleString('en-US'), type: 'metagenomes'}
           ],
           habitats_hosts: [
-            {number: 0, type: 'habitats'},
-            {number: 0, type: 'hosts'},
+            {number: (57).toLocaleString('en-US'), type: 'habitats'},
+            {number: (195).toLocaleString('en-US'), type: 'hosts'},
           ]
         },
         geoDistribution: require('../assets/geoDistribution.svg'),
@@ -138,13 +169,9 @@
             ">AMP10.000_002 | SPHERE-III.010_054\n" +
             "KRVKSFFKGYMRAIEINAALMYGYRPK\n" +
             ">AMP10.000_003 | SPHERE-III.001_008\n" +
-            "GRVIGKQGRIAKAIRVVMRAAAVRVDEKVLVEID\n" +
-            ">AMP10.000_004 | SPHERE-III.001_863\n" +
-            "KLRKILKSMFNNYCKTFKDVPPGNMFR\n" +
-            ">AMP10.000_005 | SPHERE-III.013_380\n" +
-            "AIFYVIKHISRKHFVSLQRYKIKEKM\n" +
-            ">AMP10.000_006 | SPHERE-III.007_692\n" +
-            "LVRIISMVIAGVIIVYLVRWIDNFFSRYRK"
+            "GRVIGKQGRIAKAIRVVMRAAAVRVDEKVLVEID\n",
+        searchMethod: 'MMseqs',
+        fastaFile: [],
       }
     },
     mounted () {
@@ -166,16 +193,16 @@
             self.statistics = response.data;
             self.distributionData = {
               amps_families: [
-                {number: self.statistics.num_amps, type: 'AMPs'},
-                {number: self.statistics.num_families, type: 'families'},
+                {number: self.statistics.num_amps.toLocaleString('en-US'), type: 'AMPs'},
+                {number: self.statistics.num_families.toLocaleString('en-US'), type: 'families'},
               ],
               genomes_metagenomes: [
-                {number: self.statistics.num_genomes, type: 'genomes'},
-                {number: self.statistics.num_metagenomes, type: 'metagenomes'}
+                {number: self.statistics.num_genomes.toLocaleString('en-US'), type: 'genomes'},
+                {number: self.statistics.num_metagenomes.toLocaleString('en-US'), type: 'metagenomes'}
               ],
               habitats_hosts: [
-                {number: self.statistics.num_habitats, type: 'habitats'},
-                {number: self.statistics.num_hosts, type: 'hosts'},
+                {number: self.statistics.num_habitats.toLocaleString('en-US'), type: 'habitats'},
+                {number: self.statistics.num_hosts.toLocaleString('en-US'), type: 'hosts'},
               ]
             }
           })
