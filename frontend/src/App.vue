@@ -2,10 +2,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <div id="AMPSphere">
     <el-container>
-      <el-header height="200px">
+      <el-header height="150px">
         <div class="header-wrapper">
           <div class="logo">
-            <el-image style="height: 200px; width: 200px" :src="url" lazy></el-image>
+            <el-image style="height: 150px; width: 150px" :src="url" lazy></el-image>
           </div>
           <div class="search-box"><el-input placeholder="accession"
                                            v-model="text"
@@ -18,9 +18,13 @@
               </el-button>
             </template>
           </el-input>
-            Examples:
-            <el-link href="/AMP?ampId=AMP10.000_000" target="_blank" type="primary">AMP10.000_000</el-link>,
-            <el-link href="/family?accession=SPHERE-III.001_396" target="_blank" type="primary">SPHERE-III.001_396</el-link>
+            <span>
+              <br/><br/>
+              Examples:
+              <el-link href="/AMP?ampId=AMP10.000_000" target="_blank" type="primary">AMP10.000_000</el-link>,
+              <el-link href="/family?accession=SPHERE-III.001_396" target="_blank" type="primary">SPHERE-III.001_396</el-link>
+
+            </span>
           </div>
           <div class="menu">
             <el-menu mode="horizontal" :default-active="activeMenuItem" :router="true">
@@ -31,8 +35,8 @@
               <el-menu-item index="downloads">Downloads</el-menu-item>
 <!--              <el-menu-item index="citation">Citation</el-menu-item>-->
               <el-menu-item index="help">Help</el-menu-item>
-              <el-menu-item index="about">About</el-menu-item>
               <el-menu-item index="contact">Contact</el-menu-item>
+              <el-menu-item index="about">About</el-menu-item>
             </el-menu>
           </div>
         </div>
@@ -77,34 +81,34 @@
 .header-wrapper {
   display: grid;
   grid-template-columns: repeat(24, 1fr);
-  grid-template-rows: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
 }
 .logo{
   grid-column-start: 2;
   grid-column-end: 5;
   grid-row-start: 1;
-  grid-row-end: 4;
+  grid-row-end: 3;
 }
 .search-box{
   grid-column-start: 14;
   grid-column-end: 24;
-  grid-row-start: 2;
-  grid-row-end: 2;
+  grid-row-start: 1;
+  grid-row-end: 1;
 }
 .search-example{
   grid-column-start: 14;
   grid-column-end: 24;
-  grid-row-start: 3;
-  grid-row-end: 3;
+  grid-row-start: 2;
+  grid-row-end: 2;
   vertical-align: top;
   text-align: left;
   line-height: 10px;
 }
 .menu{
-  grid-column-start: 6;
+  grid-column-start: 7;
   grid-column-end: 20;
-  grid-row-start: 3;
-  grid-row-end: 4;
+  grid-row-start: 2;
+  grid-row-end: 3;
 }
 .el-footer{
   bottom: 0;
