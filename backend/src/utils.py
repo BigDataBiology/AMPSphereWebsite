@@ -112,7 +112,7 @@ def get_graph_points(seq):
 
 
 def fam_download_file(accession: str, file: str):
-    file = pathlib.Path(cfg['family_data_dir']).joinpath(accession).joinpath(file)
+    file = pathlib.Path(cfg['pre_computed_data'] + 'families').joinpath(accession).joinpath(file)
     return file
 
 
@@ -144,7 +144,7 @@ def mmseqs_search(seq: str):
                    'mmseqs convertalis {query_seq}.mmseqsdb {database} {out}.mmseqsdb {out}'
     command = command_base.format_map({
         'query_seq': input_seq_file,
-        'database': cfg['mmseqs_database_file'],
+        'database': cfg['mmseqs_db'],
         'out': output_file,
         'tmp_dir': str(tmp_dir),
         # 's': sensitivity
@@ -188,7 +188,7 @@ def hmmscan_search(seq: str):
     command_base = 'hmmsearch --domtblout {out} {hmm_profiles} {query_seq}'
     command = command_base.format_map({
         'out': output_file,
-        'hmm_profiles': cfg['hmm_profile_file'],
+        'hmm_profiles': cfg['hmmprofile_db'],
         'query_seq': input_seq_file,
         # 'out_tmp': tmp_dir.joinpath(query_id + '.tmp')
     })

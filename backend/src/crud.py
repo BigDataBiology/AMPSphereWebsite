@@ -138,7 +138,7 @@ def get_fam_downloads(accession, db: Session):
     if not in_db:
         raise HTTPException(status_code=400, detail='invalid accession received.')
     else:
-        prefix = pathlib.Path('http://119.3.63.164:443/v1/families/' + accession + '/downloads/')
+        prefix = pathlib.Path('https://119.3.63.164:443/v1/families/' + accession + '/downloads/')
     path_bases = dict(
         alignment=str(prefix.joinpath('{}.aln')),
         sequences=str(prefix.joinpath('{}.faa')),
