@@ -28,8 +28,8 @@ def get_amps(db: Session, page: int = 0, page_size: int = 20, **kwargs):
         else:
             pass
     accessions = query.offset(page * page_size).limit(page_size).all()
-    if len(accessions) == 0:
-        raise HTTPException(status_code=400, detail='invalid filter applied.')
+    # if len(accessions) == 0:
+    #     raise HTTPException(status_code=400, detail='invalid filter applied.')
     return [get_amp(accession, db) for accession, in accessions]
 
 
@@ -77,8 +77,8 @@ def get_families(db: Session, page: int, page_size: int, **kwargs):
         if value:
             query = query.filter(getattr(models.Metadata, metadata_cols[key]) == value)
     accessions = query.offset(page * page_size).limit(page_size).all()
-    if len(accessions) == 0:
-        raise HTTPException(status_code=400, detail='invalid filter applied.')
+    # if len(accessions) == 0:
+    #     raise HTTPException(status_code=400, detail='invalid filter applied.')
     return [get_family(accession, db) for accession, in accessions]
 
 
