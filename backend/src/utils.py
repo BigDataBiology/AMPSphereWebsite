@@ -254,9 +254,9 @@ def get_sunburst_data(paths_values, sep: str = None) -> dict:
     :param sep: each path is a list if sep = None.
     :return:
     """
+    # print(paths_values)
     paths_values.columns = ['path', 'value']
     paths = paths_values['path']
-
     if sep:
         paths = paths.str.strip(sep).str.split(sep)
     else:
@@ -293,6 +293,7 @@ def compute_distribution_from_query_data(query_data):
         metadata['latitude'] = metadata['latitude'].replace('', None).astype(float).round(1)
         metadata['longitude'] = metadata['longitude'].replace('', None).astype(float).round(1)
         metadata['habitat_type'] = pd.Categorical(metadata['microontology'].apply(lambda x: x.split(':')[0]))
+        # print(metadata[['habitat_type', 'microontology']])
         # metadata['color'] = metadata['habitat_type'].map(color_map)
         data = dict(
             geo=metadata[['AMPSphere_code', 'latitude', 'longitude', 'habitat_type']].
@@ -300,11 +301,12 @@ def compute_distribution_from_query_data(query_data):
             host=metadata[['AMPSphere_code', 'host_tax_id', 'host_scientific_name']].
                 groupby('host_tax_id', as_index=False).size(),
             habitat=metadata[['AMPSphere_code', 'microontology', 'habitat_type']].
-                groupby(['microontology', 'habitat_type'], as_index=False).size(),
+                groupby(['microontology', 'habitat_type'], as_index=False, observed=True).size(),
             origin=metadata[['AMPSphere_code', 'origin_tax_id', 'origin_scientific_name']].
                 groupby('origin_tax_id', as_index=False).size()
         )
-
+        # print('after groupby')
+        # print(data['habitat'])
         # FIXME fix color map for geo plot
         # print('Processing geo data...')
         names = {'latitude': 'lat', 'longitude': 'lon', 'AMPSphere_code': 'size'}
