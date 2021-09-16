@@ -4,87 +4,135 @@
       <el-col :span="22" :offset="1">
         <el-container>
           <sidebar-menu :menu="menu" />
-          <el-aside>
-            <el-menu :unique-opened="true" style="position: fixed; top:240px; text-align: left; width:250px">
-              <el-submenu index="1">
-                <template #title>
-                  <i class="el-icon-info"></i>
-                <el-link class="nav-section" href="#general_info">General information</el-link>
-              </template>
-                <el-menu-item><el-link class="nav-subsection" href="#family">Family</el-link></el-menu-item>
-                <el-menu-item><el-link class="nav-subsection" href="#length">Peptide length</el-link></el-menu-item>
-                <el-menu-item><el-link class="nav-subsection" href="#molecular-weight">Molecular weight</el-link></el-menu-item>
-                <el-menu-item><el-link class="nav-subsection" href="#sequence">Sequence</el-link></el-menu-item>
-<!--                <el-menu-item><el-link class="nav-subsection" href="#gene-sequence">Gene sequence</el-link></el-menu-item>-->
-                <el-menu-item><el-link class="nav-subsection" href="#relationships">Relationships</el-link></el-menu-item>
-                <el-menu-item><el-link class="nav-subsection" href="#secondary-structure">Secondary structure</el-link></el-menu-item>
-              </el-submenu>
-              <el-submenu index="2">
-                <template #title>
-                  <i class="el-icon-info"></i>
-                  <el-link class="nav-section" href="#distribution">Distribution</el-link>
-                </template>
-                <el-menu-item><el-link class="nav-subsection" href="#global-distribution">Global</el-link></el-menu-item>
-                <el-menu-item><el-link class="nav-subsection" href="#distribution-across-habitats">Habitats</el-link></el-menu-item>
-                <el-menu-item><el-link class="nav-subsection" href="#distribution-across-hosts">Hosts</el-link></el-menu-item>
-              </el-submenu>
-              <el-submenu index="3">
-                <template #title>
-                  <i class="el-icon-info"></i>
-                  <el-link class="nav-section" href="#properties">Properties</el-link>
-                </template>
-                <el-menu-item><el-link type="info" class="nav-subsection" href="#charge-neutral-pH">Charge at neutral pH</el-link></el-menu-item>
-                <el-menu-item><el-link class="nav-subsection" href="#isoeletric-point">Isoeletric point</el-link></el-menu-item>
-                <el-menu-item><el-link class="nav-subsection" href="#molar-extinction">Molar extinction</el-link></el-menu-item>
-                <el-menu-item><el-link class="nav-subsection" href="#aromaticity">Aromaticity</el-link></el-menu-item>
-                <el-menu-item><el-link class="nav-subsection" href="#gravy">GRAVY</el-link></el-menu-item>
-                <el-menu-item><el-link class="nav-subsection" href="#instability-index">Instability index</el-link></el-menu-item>
-                <el-menu-item><el-link class="nav-subsection" href="#helical-wheel">Helical wheel</el-link></el-menu-item>
-              </el-submenu>
-              <el-submenu index="4">
-                <template #title>
-                  <i class="el-icon-info"></i>
-                  <el-link class="nav-section" href="#graphs">Graphs</el-link>
-                </template>
-                <el-menu-item><el-link class="nav-subsection" href="#features">Features</el-link></el-menu-item>
-                <el-menu-item><el-link class="nav-subsection" href="#comparisons">Comparisons</el-link></el-menu-item>
-              </el-submenu>
-            </el-menu>
-          </el-aside>
           <el-main>
-<!--            <el-table-column prop="Accession" label="Accession" width="200%"></el-table-column>-->
             <span>
               <h1>Antimicrobial peptide: {{ accession }}
                 <el-button class="button" @click="downloadCurrPage()" type="primary" icon="el-icon-download" circle></el-button>
               </h1>
             </span>
-
-<!--            <h3 id="general_info">General information</h3>-->
-              <el-row style="text-align: left">
-                <el-col :span="16">
-                  <ul>
-                    <li><span class="info-item" id="family">Family</span>: {{ family }}</li>
-                    <br/>
-                    <li><span class="info-item" id="length">Length</span>: {{ length }}</li>
-                    <br/>
-                    <li><span class="info-item" id="molecular-weight">Molecular weight</span>: {{ features.MW }} </li>
-                    <br/>
-                    <li><span class="info-item" id="sequence">Sequence</span>: {{ sequence }}</li>
-<!--                    <br/>-->
-<!--                    <li><span class="info-item" id="gene-sequence">Gene sequence</span>: {{ AMP.Info.GeneSequence }}</li>-->
-                  </ul>
-                </el-col>
-                <el-col :span="6">
-                  <div id="secondary-structure" style="height: 180px;">
-<!--                    <Plotly :data="SecStructureData()" :layout="SecStructureLayout()"/>-->
-                    <Plotly :data="SecStructurePieData()"
-                            :layout="{title: {text: 'Secondary Structure'},
+            <el-tabs type="border-card">
+              <el-tab-pane label="Overview">
+                <el-row style="text-align: left">
+                  <el-col :span="16">
+                    <ul>
+                      <li><span class="info-item" id="family">Family</span>: {{ family }}</li>
+                      <br/>
+                      <li><span class="info-item" id="length">Length</span>: {{ length }}</li>
+                      <br/>
+                      <li><span class="info-item" id="molecular-weight">Molecular weight</span>: {{ features.MW }} </li>
+                      <br/>
+                      <li><span class="info-item" id="sequence">Sequence</span>: {{ sequence }}</li>
+                      <!--                    <br/>-->
+                      <!--                    <li><span class="info-item" id="gene-sequence">Gene sequence</span>: {{ AMP.Info.GeneSequence }}</li>-->
+                    </ul>
+                  </el-col>
+                  <el-col :span="6">
+                    <div id="secondary-structure" style="height: 180px;">
+                      <!--                    <Plotly :data="SecStructureData()" :layout="SecStructureLayout()"/>-->
+                      <Plotly :data="SecStructurePieData()"
+                              :layout="{title: {text: 'Secondary Structure'},
                             margin: {l: 0, r: 0, t: 0, b: 0, pad: 0},
                             showlegend: false, height: 180}"
-                            :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                    </div>
+                  </el-col>
+                </el-row>
+              </el-tab-pane>
+              <el-tab-pane label="Distribution">
+<!--                <h3 id="distribution">Distribution</h3>-->
+                <el-row>
+                  <!--                <h4 id="global-distribution">Global distribution</h4>-->
+                  <Plotly :data="GeoPlotData()"
+                          :layout="GeoPlotLayout()"
+                          :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                </el-row>
+                <el-row>
+                  <el-col :span="12">
+                    <h4 id="distribution-across-habitats">Across habitats</h4>
+                    <div>
+                      <Plotly :data="EnvPlotData()"
+                              :layout="EnvPlotLayout()"
+                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                    </div>
+                  </el-col>
+                  <el-col :span="12">
+                    <h4 id="distribution-across-hosts">Across hosts</h4>
+                    <div>
+                      <Plotly :data="HostPlotData()"
+                              :layout="HostPlotLayout()"
+                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                    </div>
+                  </el-col>
+                  <!--                <div>-->
+                  <!--                  <Plotly :data="DistributionGraphData()"-->
+                  <!--                          :layout="DistributionGraphLayout()"-->
+                  <!--                          :toImageButtonOptions="{format: 'svg', scale: 1}"/>-->
+                  <!--                </div>-->
+                </el-row>
+                <br/>
+                <hr>
+              </el-tab-pane>
+              <el-tab-pane label="Chemical properties">
+                <h3 id="properties">Biochemical properties</h3>
+                <el-col :span="12">
+                  <div style="text-align: left">
+                    <!--                More spaces-->
+                    <ul>
+                      <li><span class="info-item" id="charge-neutral-pH">Charge at pH 7.0</span>: {{ features.Charge_at_pH_7 }}</li>
+                      <br/>
+                      <li><span class="info-item" id="isoeletric-point">Isoeletric point</span>: {{ features.Isoelectric_point }}</li>
+                      <br/>
+                      <li><span class="info-item" id="molar-extinction">Molar extinction</span>:
+                        {{ features.Molar_extinction.cysteines_reduced }}
+                        {{ features.Molar_extinction.cystines_residues }}
+                      </li>
+                      <br/>
+                      <li><span class="info-item" id="aromaticity">Aromaticity</span>: {{ features.Aromaticity }}</li>
+                      <br/>
+                      <li><span class="info-item" id="gravy">GRAVY</span>: {{ features.GRAVY }}</li>
+                      <br/>
+                      <li><span class="info-item" id="instability-index">Instability index</span>: {{ features.Instability_index }}</li>
+                    </ul>
                   </div>
                 </el-col>
-              </el-row>
+                <el-col :span="6" :offset="2">
+                  <div style="text-align: center" id="helical-wheel">
+                    <el-link :href="helicalwheel"
+                             target="_blank"
+                             type="primary">
+                      <span class="medium">Helical wheel</span>
+                    </el-link>
+                    <br/>
+                    Amino acids helical wheel with the H-moment indicated.
+                  </div>
+                  <div style="align-content: center; text-align: center;">
+                    <el-image :src="helicalwheel"></el-image>
+                    <!--                  TODO directly include svg file here, not inplace generation-->
+                    <!--                  TODO https://observablehq.com/@smsaladi/helical-wheel-visualization-wip-2019_05_10-->
+                    <!--                  TODO inplacely generate helicalwheel using echarts-->
+                    <!--                  https://github.com/ecomfe/vue-echarts/blob/5.x/README.zh_CN.md-->
+                    <!--                  https://echarts.apache.org/examples/zh/editor.html?c=graph-circular-layout-->
+                  </div>
+                </el-col>
+
+                <br>
+                <!--            <h3 id="graphs">Graphs</h3>-->
+                <el-row>
+                  <el-col>
+                    <!--                  <h4 id="features">Features</h4>-->
+                    <div>
+                      <Plotly :data="featureGraphData()"
+                              :layout="featureGraphLayout()"
+                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                    </div>
+                    EZenergy.  xxxxx. Flexibility.  xxxxx.  Hydrophobicity Parker. xxxxx.
+                  </el-col>
+                </el-row>
+                <br/>
+              </el-tab-pane>
+            </el-tabs>
+<!--            <h3 id="general_info">General information</h3>-->
+
 <!--              <el-row style="text-align: left">-->
 <!--                <ul>-->
 <!--                  <li><span class="info-item" id="relationships">Relationships</span>-->
@@ -112,98 +160,6 @@
 <!--                  </div>-->
 <!--                </ul>-->
 <!--                </el-row>-->
-
-            <br/>
-
-            <hr>
-            <h3 id="distribution">Distribution</h3>
-              <el-row>
-<!--                <h4 id="global-distribution">Global distribution</h4>-->
-                <Plotly :data="GeoPlotData()"
-                        :layout="GeoPlotLayout()"
-                        :toImageButtonOptions="{format: 'svg', scale: 1}"/>
-              </el-row>
-              <el-row>
-                <el-col :span="12">
-                  <h4 id="distribution-across-habitats">Across habitats</h4>
-                  <div>
-                    <Plotly :data="EnvPlotData()"
-                            :layout="EnvPlotLayout()"
-                            :toImageButtonOptions="{format: 'svg', scale: 1}"/>
-                  </div>
-                </el-col>
-                <el-col :span="12">
-                  <h4 id="distribution-across-hosts">Across hosts</h4>
-                  <div>
-                    <Plotly :data="HostPlotData()"
-                            :layout="HostPlotLayout()"
-                            :toImageButtonOptions="{format: 'svg', scale: 1}"/>
-                  </div>
-                </el-col>
-<!--                <div>-->
-<!--                  <Plotly :data="DistributionGraphData()"-->
-<!--                          :layout="DistributionGraphLayout()"-->
-<!--                          :toImageButtonOptions="{format: 'svg', scale: 1}"/>-->
-<!--                </div>-->
-              </el-row>
-            <br/>
-            <hr>
-            <h3 id="properties">Biochemical properties</h3>
-              <el-col :span="12">
-              <div style="text-align: left">
-<!--                More spaces-->
-                <ul>
-                  <li><span class="info-item" id="charge-neutral-pH">Charge at pH 7.0</span>: {{ features.Charge_at_pH_7 }}</li>
-                  <br/>
-                  <li><span class="info-item" id="isoeletric-point">Isoeletric point</span>: {{ features.Isoelectric_point }}</li>
-                  <br/>
-                  <li><span class="info-item" id="molar-extinction">Molar extinction</span>:
-                    {{ features.Molar_extinction.cysteines_reduced }}
-                    {{ features.Molar_extinction.cystines_residues }}
-                  </li>
-                  <br/>
-                  <li><span class="info-item" id="aromaticity">Aromaticity</span>: {{ features.Aromaticity }}</li>
-                  <br/>
-                  <li><span class="info-item" id="gravy">GRAVY</span>: {{ features.GRAVY }}</li>
-                  <br/>
-                  <li><span class="info-item" id="instability-index">Instability index</span>: {{ features.Instability_index }}</li>
-                </ul>
-              </div>
-              </el-col>
-              <el-col :span="6" :offset="2">
-                <div style="text-align: center" id="helical-wheel">
-                  <el-link :href="helicalwheel"
-                           target="_blank"
-                           type="primary">
-                    <span class="medium">Helical wheel</span>
-                  </el-link>
-                  <br/>
-                  Amino acids helical wheel with the H-moment indicated.
-                </div>
-                <div style="align-content: center; text-align: center;">
-                  <el-image :src="helicalwheel"></el-image>
-<!--                  TODO directly include svg file here, not inplace generation-->
-<!--                  TODO https://observablehq.com/@smsaladi/helical-wheel-visualization-wip-2019_05_10-->
-<!--                  TODO inplacely generate helicalwheel using echarts-->
-<!--                  https://github.com/ecomfe/vue-echarts/blob/5.x/README.zh_CN.md-->
-<!--                  https://echarts.apache.org/examples/zh/editor.html?c=graph-circular-layout-->
-                </div>
-              </el-col>
-
-            <br>
-<!--            <h3 id="graphs">Graphs</h3>-->
-              <el-row>
-                <el-col>
-<!--                  <h4 id="features">Features</h4>-->
-                  <div>
-                    <Plotly :data="featureGraphData()"
-                            :layout="featureGraphLayout()"
-                            :toImageButtonOptions="{format: 'svg', scale: 1}"/>
-                  </div>
-                  EZenergy.  xxxxx. Flexibility.  xxxxx.  Hydrophobicity Parker. xxxxx.
-                </el-col>
-              </el-row>
-            <br/>
 <!--            <el-card>-->
 <!--              <el-row>-->
 <!--                <el-col>-->
