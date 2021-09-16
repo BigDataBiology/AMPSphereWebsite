@@ -21,7 +21,7 @@
             <span>
               <br/><br/>
               Examples:
-              <el-link href="/AMP?ampId=AMP10.000_000" target="_blank" type="primary">AMP10.000_000</el-link>,
+              <el-link href="/AMP?accession=AMP10.000_000" target="_blank" type="primary">AMP10.000_000</el-link>,
               <el-link href="/family?accession=SPHERE-III.001_396" target="_blank" type="primary">SPHERE-III.001_396</el-link>
 
             </span>
