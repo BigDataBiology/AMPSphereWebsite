@@ -10,7 +10,7 @@ parser.add_argument('--metadata', type=str)
 parser.add_argument('--faa', type=str)
 parser.add_argument('--fna', type=str)
 parser.add_argument('--origins', type=str)
-parser.add_argument('outdir', type=str)
+parser.add_argument('outdir', type=str, default='tables')
 args = parser.parse_args()
 
 
@@ -35,18 +35,26 @@ if not output_dir.is_dir():
 
 
 print('Generating tables...', end=' ')
-AMP_cols = ['accession', 'sequence', 'family', 'helical_wheel_path']
-GMSC_cols = ['accession', 'sequence', 'AMP']
+AMP_cols = ['accession', 'sequence', 'family']
+GMSC_cols = ['accession', 'gene_sequence', 'AMP']
 tables = {
-    'AMP': pd.DataFrame([[r.id, str(r.seq), r.description.split(' | ')[1], ''] for r in faa.records],
+    'AMP': pd.DataFrame([[r.id, str(r.seq), r.description.split(' | ')[1]] for r in faa.records],
                         columns=AMP_cols),
     'GMSC': pd.DataFrame([[r.id, str(r.seq), r.description.split(' ')[1]] for r in fna.records],
                          columns=GMSC_cols),
     'Metadata': pd.merge(left=metadata, right=origins, on=['GMSC', 'AMPSphere_code', 'sample'], how='outer')
 }
+tables['Statistics'] = pd.DataFrame({**tables['Metadata'].nunique(dropna=True).to_frame().T.to_dict(),
+                                     **tables['AMP'].nunique(dropna=True).to_frame().T.to_dict()})
+
+# SPHEREs with num_amps < 8 should not be treated as families.
+tables['Statistics']['family'] = sum(tables['AMP'].family.value_counts() >= 8)
+cols = "GMSC sample microontology environmental_features host_scientific_name origin_scientific_name accession family "
+tables['Statistics'] = tables['Statistics'][cols.split()]
+# for col in cols.split():
+#     if col in tables['Metadata'].columns and tables['Metadata'][col].hasnans:
+#         tables['Statistics'][col] -= 1
 print('done')
-print(tables['Metadata'].columns)
-print(tables['Metadata'])
 
 
 for name, table in tables.items():
