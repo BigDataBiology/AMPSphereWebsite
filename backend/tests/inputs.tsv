@@ -1,4 +1,3 @@
-inputs
 API path	Input accession	Input query	Input type	Response code	Exception detail
 /v1/amps		family=SPHERE-III.000_001	valid	200	
 /v1/amps		family=fake_family	valid	200	
