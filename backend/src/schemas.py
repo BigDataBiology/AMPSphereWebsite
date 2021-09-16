@@ -96,6 +96,7 @@ class Metadata(BaseModel):
     # sample: Optional[str]
     AMPSphere_code: str
     GMSC: str
+    gene_sequence: str
     sample: str
     microontology: str
     environmental_features: str
@@ -135,7 +136,7 @@ class AMP(BaseModel):
     accession: str
     sequence: str
     family: str
-    helical_wheel_path: str
+    # helical_wheel_path: str
     features: AMPFeatures
     metadata: List[Metadata]
 
