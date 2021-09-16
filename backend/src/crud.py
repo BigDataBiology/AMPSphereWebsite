@@ -37,22 +37,41 @@ def get_amp(accession: str, db: Session):
     amp_obj = db.query(models.AMP).filter(models.AMP.accession == accession).first()
     if not amp_obj:
         raise HTTPException(status_code=400, detail='invalid accession received.')
+    gene_seqs = db.query(models.GMSC.gene_sequence).filter(models.GMSC.AMP == accession).all()
     features = utils.get_amp_features(amp_obj.sequence)
     feature_graph_points = utils.get_graph_points(amp_obj.sequence)
     features["graph_points"] = feature_graph_points
 
     metadata = get_amp_metadata(accession, db, page=0, page_size=20)
+
+    setattr(amp_obj, "gene_sequences", gene_seqs)
     setattr(amp_obj, "features", features)
     setattr(amp_obj, "metadata", metadata)
     return amp_obj
 
 
 def get_amp_metadata(accession: str, db: Session, page: int, page_size: int):
-    metadata = db.query(models.Metadata).filter(models.Metadata.AMPSphere_code == accession). \
-        offset(page * page_size).limit(page_size).all()
+    metadata = db.query(
+        models.Metadata.AMPSphere_code,
+        models.Metadata.GMSC,
+        models.GMSC.gene_sequence,
+        models.Metadata.sample,
+        models.Metadata.microontology,
+        models.Metadata.environmental_features,
+        models.Metadata.host_tax_id,
+        models.Metadata.host_scientific_name,
+        models.Metadata.latitude,
+        models.Metadata.longitude,
+        models.Metadata.origin_tax_id,
+        models.Metadata.origin_scientific_name,
+    ).outerjoin(
+        models.GMSC, models.Metadata.GMSC == models.GMSC.accession
+    ).filter(
+        models.Metadata.AMPSphere_code == accession
+    ).offset(page * page_size).limit(page_size).all()
     if len(metadata) == 0:
         raise HTTPException(status_code=400, detail='invalid accession received.')
-    return [row.__dict__ for row in metadata]
+    return metadata # [row.__dict__ for row in metadata]
 
 
 def get_amp_features(accession: str, db: Session):
