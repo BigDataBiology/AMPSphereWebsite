@@ -124,23 +124,33 @@
                 <h3 id="properties">Biochemical properties</h3>
                 <el-col :span="12">
                   <div style="text-align: left">
-                    <!--                More spaces-->
-                    <ul>
-                      <li><span class="info-item" id="charge-neutral-pH">Charge at pH 7.0</span>: {{ features.Charge_at_pH_7 }}</li>
-                      <br/>
-                      <li><span class="info-item" id="isoeletric-point">Isoeletric point</span>: {{ features.Isoelectric_point }}</li>
-                      <br/>
-                      <li><span class="info-item" id="molar-extinction">Molar extinction</span>:
-                        {{ features.Molar_extinction.cysteines_reduced }}
-                        {{ features.Molar_extinction.cystines_residues }}
-                      </li>
-                      <br/>
-                      <li><span class="info-item" id="aromaticity">Aromaticity</span>: {{ features.Aromaticity }}</li>
-                      <br/>
-                      <li><span class="info-item" id="gravy">GRAVY</span>: {{ features.GRAVY }}</li>
-                      <br/>
-                      <li><span class="info-item" id="instability-index">Instability index</span>: {{ features.Instability_index }}</li>
-                    </ul>
+                    <div>
+                    <span class="info-item" id="charge-neutral-pH">Charge at pH 7.0: </span>
+                    <span class="info-item-value">{{ features.Charge_at_pH_7 }} </span>
+                    </div>
+                    <div>
+                    <span class="info-item" id="isoeletric-point">Isoeletric point: </span>
+                    <span class="info-item-value"> {{ features.Isoelectric_point }} </span>
+                    </div>
+                    <div>
+                    <span class="info-item" id="molar-extinction">Molar extinction: </span>
+                    <span class="info-item-value">
+                      {{ features.Molar_extinction.cysteines_reduced }}
+                      {{ features.Molar_extinction.cystines_residues }}
+                    </span>
+                    </div>
+                    <div>
+                    <span class="info-item" id="aromaticity">Aromaticity: </span>
+                    <span class="info-item-value">{{ features.Aromaticity }}</span>
+                    </div>
+                    <div>
+                    <span class="info-item" id="gravy">GRAVY: </span>
+                    <span class="info-item-value"> {{ features.GRAVY }}</span>
+                    </div>
+                    <div>
+                    <span class="info-item" id="instability-index">Instability index: </span>
+                    <span class="info-item-value">{{ features.Instability_index }}</span>
+                    </div>
                   </div>
                 </el-col>
                 <el-col :span="6" :offset="2">
