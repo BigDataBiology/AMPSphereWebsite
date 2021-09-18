@@ -3,60 +3,71 @@
     <el-row>
       <el-col :span="22" :offset="1">
         <el-container>
-          <sidebar-menu :menu="menu" />
           <el-main>
-            <span>
-              <h1>Antimicrobial peptide: {{ accession }}
-                <el-button class="button" @click="downloadCurrPage()" type="primary" icon="el-icon-download" circle></el-button>
-              </h1>
-            </span>
+            <div class="title">Antimicrobial peptide: {{ accession }}
+              <el-button class="button" @click="downloadCurrPage()" type="primary" icon="el-icon-download" plain></el-button>
+            </div>
+            <div class="description">
+              The AMP belongs to
+              <el-link :href="getFamilyPageURL()" type="primary">
+                <span class="description">{{ family }}</span>
+              </el-link>
+              family and has {{length}} amino acid residues.
+            </div>
+
             <el-tabs type="border-card">
               <el-tab-pane label="Overview">
                 <el-row style="text-align: left">
-                  <el-col :span="16">
-                    <ul>
-                      <li><span class="info-item" id="family">Family</span>: {{ family }}</li>
-                      <br/>
-                      <li><span class="info-item" id="length">Length</span>: {{ length }}</li>
-                      <br/>
-                      <li><span class="info-item" id="molecular-weight">Molecular weight</span>: {{ features.MW }} </li>
-                      <br/>
-                      <li><span class="info-item" id="sequence">Sequence</span>: {{ sequence }}</li>
-                      <!--                    <br/>-->
-                      <!--                    <li><span class="info-item" id="gene-sequence">Gene sequence</span>: {{ AMP.Info.GeneSequence }}</li>-->
-                    </ul>
-                  </el-col>
-                  <el-col :span="6">
-                    <div id="secondary-structure" style="height: 180px;">
-                      <!--                    <Plotly :data="SecStructureData()" :layout="SecStructureLayout()"/>-->
+                  <el-col :span="6" style="margin-left: 30px">
+                    <div class="info-item" id="sequence">
+                      Peptide sequence
+                      <el-button @click="CopyPeptideSequence()" icon="el-icon-document-copy"
+                                 size="mini" type="primary" plain>
+<!--                        Copy-->
+                      </el-button>
+                    </div>
+                    <pre><code id="aa-sequence">{{ sequence }}</code></pre>
+                    <div style="alignment: left;">
+                      <div class="info-item" id="secondary-structure">Secondary Structure</div>
                       <Plotly :data="SecStructurePieData()"
                               :layout="{title: {text: 'Secondary Structure'},
                             margin: {l: 0, r: 0, t: 0, b: 0, pad: 0},
-                            showlegend: false, height: 180}"
+                            showlegend: false, height: 240, width: 240}"
+                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                    </div>
+
+                  </el-col>
+                  <el-col :span="14" :offset="2">
+                    <div id="global distribution">
+                      <Plotly :data="GeoPlotData()"
+                              :layout="GeoPlotLayout()"
                               :toImageButtonOptions="{format: 'svg', scale: 1}"/>
                     </div>
                   </el-col>
                 </el-row>
-              </el-tab-pane>
-              <el-tab-pane label="Distribution">
-<!--                <h3 id="distribution">Distribution</h3>-->
+
+                <el-divider></el-divider>
+
                 <el-row>
-                  <!--                <h4 id="global-distribution">Global distribution</h4>-->
-                  <Plotly :data="GeoPlotData()"
-                          :layout="GeoPlotLayout()"
-                          :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                  <el-col style="margin-left: 30px" :offset="1">
+                    <h3 id="distribution" class="subsection-title">Distribution</h3>
+                  </el-col>
                 </el-row>
                 <el-row>
-                  <el-col :span="12">
-                    <h4 id="distribution-across-habitats">Across habitats</h4>
+                  <el-col :span="10" style="magrin-left: 30px">
+                    <h4 id="distribution-across-habitats">Habitats</h4>
                     <div>
                       <Plotly :data="EnvPlotData()"
                               :layout="EnvPlotLayout()"
                               :toImageButtonOptions="{format: 'svg', scale: 1}"/>
                     </div>
                   </el-col>
-                  <el-col :span="12">
-                    <h4 id="distribution-across-hosts">Across hosts</h4>
+                  <el-col :span="3" style="line-height: 100px">
+                    <el-divider direction="vertical"></el-divider>
+                  </el-col>
+
+                  <el-col :span="10">
+                    <h4 id="distribution-across-hosts">Hosts</h4>
                     <div>
                       <Plotly :data="HostPlotData()"
                               :layout="HostPlotLayout()"
@@ -70,9 +81,46 @@
                   <!--                </div>-->
                 </el-row>
                 <br/>
-                <hr>
+                <el-divider></el-divider>
+                <el-row>
+                  <el-col style="margin-left: 30px" :offset="1">
+                    <h3 id="relationships" class="subsection-title">Relationships</h3>
+                    <el-table :data="currentMetadata" stripe :default-sort="{prop: 'GMSC', order: 'descending'}" width="100%">
+                      <el-table-column prop="GMSC" label="Gene" sortable width="260%"/>
+                      <el-table-column label="Gene sequense" sortable width="400%">
+                        <template #default="props">
+                          <pre><code><small>{{ props.row.gene_sequence }}</small></code></pre>
+                        </template>
+                      </el-table-column>
+                      <el-table-column prop="sample" label="Sample/Genome" sortable width="150%"/>
+                      <el-table-column prop="host_scientific_name" label="Host" sortable width="150%"/>
+                      <el-table-column prop="origin_scientific_name" label="Origin" sortable width="150%"/>
+                    </el-table>
+                    <div class="block">
+<!--                      <el-pagination-->
+<!--                          @size-change="handleSizeChange"-->
+<!--                          @current-change="setMetadataPage"-->
+<!--                          v-model:currentPage="currentPage4"-->
+<!--                          :page-sizes="[10, 20, 50, 100]"-->
+<!--                          :page-size="metadata.pageSize"-->
+<!--                          layout="total, sizes, prev, pager, next, jumper"-->
+<!--                          :total="50"-->
+<!--                      >-->
+<!--                      </el-pagination>-->
+                      <el-pagination
+                          @current-change="setMetadataPage"
+                          :page-size="metadata.pageSize"
+                          layout="total, prev, pager, next, jumper"
+                          :total="metadata.totalRow"
+                      >
+                      </el-pagination>
+  <!--                    FIXME integrate pagination buttons with the table-->
+                    </div>
+
+                  </el-col>
+                </el-row>
               </el-tab-pane>
-              <el-tab-pane label="Chemical properties">
+              <el-tab-pane label="Features">
                 <h3 id="properties">Biochemical properties</h3>
                 <el-col :span="12">
                   <div style="text-align: left">
@@ -178,11 +226,68 @@
 </template>
 
 <style>
-  .info-item {
-    font-weight: bold;
-    color: #063d7c;
-    font-size: large;
+.title {
+  font-size: xx-large;
+  font-weight: normal;
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  text-align: left;
+}
+.description {
+  font-size: xx-large;
+  font-weight: normal;
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  color: #00897B;
+  text-align: left;
+}
+.subsection-title {
+  font-size: x-large;
+  font-weight: normal;
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  text-align: left;
+}
+.info-item {
+  font-weight: normal;
+  font-size: 150%;
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  line-height: 40px;
+}
+.info-item-value {
+  font-weight: normal;
+  font-size: 120%;
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  line-height: 24px;
+}
+pre {
+  margin: 0;
+  font: 1rem/1.5 'Roboto Mono', monospace;
+  white-space: pre-wrap;       /* Since CSS 2.1 */
+  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+  white-space: -o-pre-wrap;    /* Opera 7 */
+  word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+code {
+  -webkit-user-select: all;
+  user-select: all;
+  display: block;
+  padding: 20px;
+  border: 1px;
+  /*color: #7F7F7F;*/
+  background-color: #F5F5F5;
+  text-align: left;
+  font-family: inherit;
+  overflow: auto;
+}
+code:focus {
+  border: 2px dashed #31808c;
+  outline: none;
+  animation: select 100ms step-end forwards;
+}
+@keyframes select {
+  to {
+    -webkit-user-select: text;
+    user-select: text;
   }
+}
   .nav-section {
     font-size: medium;
     font-weight: bold
@@ -217,8 +322,10 @@
 
 <script>
 import Plotly from "../components/Plotly"
+import * as clipboard from "clipboard-polyfill/text";
 //import { tsvParse } from 'd3-dsv'
 // import * as d3 from "d3-dsv";
+
 
 
 export default {
@@ -235,48 +342,27 @@ export default {
       features: {
         MW: 0,
         Length: 0,
-        Molar_extinction: {
-          cysteines_reduced: 0,
-          cystines_residues: 0
-        },
+        Molar_extinction: {cysteines_reduced: 0, cystines_residues: 0},
         Aromaticity: 0,
         GRAVY: 0,
         Instability_index: 0,
         Isoelectric_point: 0,
         Charge_at_pH_7: 0,
-        Secondary_structure: {
-          helix: 0,
-          turn: 0,
-          sheet: 0
-        },
+        Secondary_structure: {helix: 0, turn: 0, sheet: 0},
         graph_points: {
-          transfer_energy: {
-            type: "line plot",
-            x: [],
-            y: [],
-            c: []
-            },
-          hydrophobicity_parker: {
-            type: "line plot",
-            x: [],
-            y: [],
-            c: []
-          },
-          surface_accessibility: {
-            type: "line plot",
-            x: [],
-            y: [],
-            c: []
-          },
-          flexibility: {
-            type: "line plot",
-            x: [],
-            y: [],
-            c: []
-          }
+          transfer_energy: {type: "line plot", x: [], y: [], c: []},
+          hydrophobicity_parker: {type: "line plot", x: [], y: [], c: []},
+          surface_accessibility: {type: "line plot", x: [], y: [], c: []},
+          flexibility: {type: "line plot", x: [], y: [], c: []}
         }
       },
-      metadata: [],
+      metadata: {
+        pageSize: 10,
+        totalPage: 1,
+        totalRow: 1,
+        currentPage: 1,
+        currentData: [],
+      },
       distribution: {
         geo: {
           type: "bubble map",
@@ -295,33 +381,21 @@ export default {
           labels: [], parents: [], values: [], colorway: []
         }
       },
-      relationships: {
-        page: 1,
-        pageSize: 6,
-        currentTableData: [
-          {GMSC: 'GMSC10.SMORF.000_036_844_556', Source: 'SAMEA104142073', taxid: 237, sciname: 'Phocaeicola'},
-        ],
-        tableData: [
-        {GMSC: 'GMSC10.SMORF.000_036_844_556', Source: 'SAMEA104142073', taxid: 237, sciname: 'Phocaeicola'},
-        {GMSC: 'GMSC10.SMORF.001_828_692_528', Source: 'SAMN03955567', taxid: 237, sciname: 'Phocaeicola'},
-        {GMSC: 'GMSC10.SMORF.001_828_750_506', Source: 'SAMN03955549', taxid: 237, sciname: 'Phocaeicola'},
-        {GMSC: 'GMSC10.SMORF.001_828_786_262', Source: 'SAMN03955576', taxid: 237, sciname: 'Phocaeicola'},
-        {GMSC: 'GMSC10.SMORF.001_828_803_495', Source: 'SAMN03955558', taxid: 237, sciname: 'Phocaeicola'},
-        {GMSC: 'GMSC10.SMORF.001_828_863_094', Source: 'SAMN03955541', taxid: 237, sciname: 'Phocaeicola'},
-        {GMSC: 'GMSC10.SMORF.001_828_884_876', Source: 'SAMN03955550', taxid: 488, sciname: 'Phocaeicola dorei'},
-        {GMSC: 'GMSC10.SMORF.001_828_927_346', Source: 'SAMN05930844', taxid: 237, sciname: 'Phocaeicola'},
-        {GMSC: 'GMSC10.SMORF.001_829_153_490', Source: 'SAMN05930833', taxid: 237, sciname: 'Phocaeicola'},
-        {GMSC: 'GMSC10.SMORF.001_829_180_169', Source: 'SAMN05930842', taxid: 238, sciname: 'Phocaeicola vulgatus'},
-      ]},
       helicalwheel: require('./../assets/images/helicalwheel_AMP10.000_000.png'),
     }
     },
-  mounted() {
-    // this.setRelationshipTablePage(1)
-    console.log('setting first page')
+  created() {
     this.getAMP()
   },
+  mounted() {
+    this.metadata.pageSize = 10
+    console.log(this.metadata.pageSize)
+    this.setMetadataPage(this.metadata.currentPage)
+  },
   computed: {
+    currentMetadata () {
+      return this.metadata.currentData
+    }
   },
   methods: {
     getAMP(){
@@ -334,7 +408,11 @@ export default {
           self.length = response.data.sequence.length;
           self.family = response.data.family
           self.features = response.data.features
-          self.metadata = response.data.metadata
+          // TODO get total row from the backend
+          self.metadata.currentData = response.data.metadata
+          self.metadata.currentPage = 1
+          self.metadata.totalPage = 5
+          self.metadata.totalRow = 50
         })
         .catch(function (error) {
           console.log(error);
@@ -400,41 +478,24 @@ export default {
         textinfo: "label+percent",
         insidetextorientation: "radial"}]
     },
-    // setRelationshipTablePage (val) {
-    //   let self = this
-    //   self.AMP.relationships.page = val
-    //   self.AMP.relationships.currentTableData = this.AMP.relationships.tableData.slice(
-    //       this.AMP.relationships.pageSize * this.AMP.relationships.page -
-    //       this.AMP.relationships.pageSize, this.AMP.relationships.pageSize * this.AMP.relationships.page)
-    // },
+    setMetadataPage (val) {
+      // this.$message('setting to ' + val.toString() + 'th page')
+      this.metadata.currentPage = val
+      console.log(this.metadata.pageSize)
+      let config = {
+        params: {page: val, page_size: this.metadata.pageSize}
+      }
+      let self = this
+      this.axios.get('/amps/' + self.accession + '/metadata', config)
+          .then(function (response) {
+            console.log(response.data)
+            self.metadata.currentData = response.data
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
+    },
     GeoPlotData(){
-      // let GeoString = "n\tenvironmental_features\tlatitude\tlongitude\tMO-level-I\n" +
-      //   "10\thuman-associated habitat [ENVO:00009003]\t39.9\t116.25\tTerrestrial\n" +
-      //   "70\thuman-associated habitat [ENVO:00009003]\t37.27567620000001\t-104.65581230000001\tTerrestrial\n" +
-      //   "10\tanimal-associated habitat [ENVO:00006776]\t52.13\t5.29\tTerrestrial\n" +
-      //   "10\thuman-associated habitat [ENVO:00009003]\t34.5\t109.5\tTerrestrial\n" +
-      //   "10\thuman-associated habitat [ENVO:00009003]\t39.9\t116.25\tTerrestrial\n" +
-      //   "10\thuman-associated habitat [ENVO:00009003]\t47.3\t106.15\tTerrestrial\n" +
-      //   "30\thuman-associated habitat [ENVO:00009003]\t56.21285989999999\t9.3005073\tTerrestrial\n" +
-      //   "10\thuman-associated habitat [ENVO:00009003]\t38.626999999999995\t-90.1994\tTerrestrial\n" +
-      //   "10\thuman-associated habitat [ENVO:00009003]\t30.3\t120.2\tTerrestrial\n" +
-      //   "30\thuman-associated habitat [ENVO:00009003]\t56.21285989999999\t9.3005073\tTerrestrial"
-      // let geoData = d3.tsvParse(GeoString, d3.autoType)
-      // console.log(geoData)
-      // return [{
-      //   type: 'scattergeo',
-      //   //locationmode: 'USA-states',
-      //   lat: this.UnpackCol(geoData, 'latitude'),
-      //   lon: this.UnpackCol(geoData, 'longitude'),
-      //   marker: {
-      //     size: this.UnpackCol(geoData, 'n'),
-      //     color: this.MapColors(this.UnpackCol(geoData, 'MO-level-I'), this.ColorPalette('quanlitative')),
-      //     line: {
-      //       color: 'black',
-      //       size: 2
-      //     }
-      //   },
-      // }]
       let data = this.distribution.geo
       return [{
             type: 'scattergeo',
@@ -467,10 +528,10 @@ export default {
           countrycolor: 'rgb(255,255,255)'
         },
         margin: {
-          l: 30,
-          r: 30,
-          t: 30,
-          b: 30
+          l: 0,
+          r: 0,
+          t: 0,
+          b: 0
         }
       }
     },
@@ -555,17 +616,6 @@ export default {
         ]}
     },
     featureGraphData(){
-    //   function makeTrace(i) {
-    //     return {
-    //       y: Array.apply(null, Array(100)).map(() => Math.random()),
-    //       line: {
-    //         color: 'black'
-    //       },
-    //       visible: i === 0,
-    //       //name: ['EZenergy', 'Flexibility', 'Hydrophobicity Parker', 'SA AMPs'].slice(i),
-    //     };
-    //   }
-    //   return [0, 1, 2, 3].map(makeTrace)
       let self = this
       let data = self.features.graph_points
       let line = {color: 'blue'}
@@ -691,6 +741,16 @@ export default {
         }
       }
     },
+    getFamilyPageURL(){
+      return "http://119.3.63.164/family?accession=" + this.family
+    },
+    CopyPeptideSequence(){
+      clipboard.writeText(this.sequence).then(
+          () => { console.log("success!"); },
+          () => { console.log("error!"); }
+      )
+      this.$message('Amino acid sequence copied!')
+    },
     makeTraceVisible(index, totalTrace){
       var visibility = []
       for (var i=0; i<totalTrace; i++){
@@ -708,4 +768,9 @@ export default {
     }
   }
 }
+window.addEventListener("DOMContentLoaded", function () {
+  const button = document.body.appendChild(document.createElement("button"));
+  button.textContent = "Copy";
+  button.addEventListener("click", this.CopyPeptideSequence);
+});
 </script>

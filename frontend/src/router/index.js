@@ -4,7 +4,7 @@ import BrowseData from "../views/Browse_Data.vue"
 import API from '../views/API.vue'
 import Downloads from '../views/Downloads.vue'
 import Help from '../views/Help.vue'
-import AMP_card from '../views/AMP_Card.vue'
+import AMP_card from '../views/AMP_Card-1.vue'
 import About from '../views/About.vue'
 import Contact from '../views/Contact.vue'
 
