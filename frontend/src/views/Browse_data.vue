@@ -7,72 +7,38 @@
           <el-breadcrumb-item :to="{ path: '/browse_data' }">Browse data</el-breadcrumb-item>
         </el-breadcrumb>
         <br/>
-        multiple filter criteria:
-<!--        TODO https://stackoverflow.com/questions/56223664/search-multiple-fields-in-a-table-in-vue-js-with-different-v-model-->
-        <el-tabs type="card" @tab-click="handleTabClick">
-          <el-tab-pane label="AMPs">
-            <el-table
-                :data="AMPs_data"
-                stripe
-                style="width: 100%">
-              <el-table-column
-                  label="Accession"
-                  width="150">
-                <template #default="props">
-                  <el-button @click="handleFamilyDetail(props.row.accession)" type="text" size="small">
-                    {{ props.row.accession }}
-                  </el-button>
-                </template>
-              </el-table-column>
-              <el-table-column
-                  label="Family"
-                  width="150">
-                <template #default="props">
-                  <el-button @click="handleFamilyDetail(props.row.family)" type="text" size="small">
-                    {{ props.row.family }}
-                  </el-button>
-                </template>
-              </el-table-column>
-              <el-table-column
-                  prop="pep_sequence"
-                  label="Peptide sequence"
-                  width="1080">
-              </el-table-column>
-            </el-table>
-          </el-tab-pane>
-          <el-tab-pane label="Families" lazy=true>
-            <el-table
-                :data="families_data"
-                stripe
-                style="width: 100%">
-              <el-table-column
-                  label="Accession"
-                  width="150">
-                <template #default="props">
-                  <el-button @click="handleFamilyDetail(props.row.accession)" type="text" size="small">
-                    {{ props.row.accession }}
-                  </el-button>
-                </template>
-              </el-table-column>
-              <el-table-column
-                  prop="num_AMPs"
-                  label="Number of AMPs"
-                  width="150">
-              </el-table-column>
-              <el-table-column
-                  prop="consensus_seq"
-                  label="Consensus sequence"
-                  width="1080">
-              </el-table-column>
-            </el-table>
-          </el-tab-pane>
-          <el-tab-pane label="Environments">
-            under developing...
-          </el-tab-pane>
-          <el-tab-pane label="Hosts">
-            under developing...
-          </el-tab-pane>
-        </el-tabs>
+<!--    multiple filter criteria:-->
+<!--    TODO https://stackoverflow.com/questions/56223664/search-multiple-fields-in-a-table-in-vue-js-with-different-v-model-->
+<!--    在后端添加分页信息，读取分页信息并建立pagination。filters如何实现？-->
+<!--    https://www.cxyzjd.com/article/baidu_33552969/88977014-->
+          <el-table
+              :data="amps"
+              stripe
+              style="width: 100%">
+            <el-table-column
+                label="Accession"
+                width="150">
+              <template #default="props">
+                <el-button @click="handleFamilyDetail(props.row.accession)" type="text" size="small">
+                  {{ props.row.accession }}
+                </el-button>
+              </template>
+            </el-table-column>
+            <el-table-column
+                label="Family"
+                width="150">
+              <template #default="props">
+                <el-button @click="handleFamilyDetail(props.row.family)" type="text" size="small">
+                  {{ props.row.family }}
+                </el-button>
+              </template>
+            </el-table-column>
+            <el-table-column
+                prop="pep_sequence"
+                label="Peptide sequence"
+                width="1080">
+            </el-table-column>
+          </el-table>
       </el-col>
       <el-col :span="11">
       </el-col>
@@ -95,83 +61,25 @@ export default {
 
   data() {
     return {
-      url: require('../assets/logo.png'),
-      AMPs_data: [{
-        accession: 'AMP10.000-000',
-        family: 'SPHERE-III.000-000',
-        pep_sequence: 'FFGIGQQEMTLEEIGDKFGLTRERVRQIKEKAIRRLRQSSFFGIGQQEMT',
-      },{
-        accession: 'AMP10.000-000',
-        family: 'SPHERE-III.000-000',
-        pep_sequence: 'FFGIGQQEMTLEEIGDKFGLTRERVRQIKEKAIRRLRQSSFFGIGQQEMT',
-      },{
-        accession: 'AMP10.000-000',
-        family: 'SPHERE-III.000-000',
-        pep_sequence: 'FFGIGQQEMTLEEIGDKFGLTRERVRQIKEKAIRRLRQSSFFGIGQQEMT',
-      },{
-        accession: 'AMP10.000-000',
-        family: 'SPHERE-III.000-000',
-        pep_sequence: 'FFGIGQQEMTLEEIGDKFGLTRERVRQIKEKAIRRLRQSSFFGIGQQEMT',
-      },{
-        accession: 'AMP10.000-000',
-        family: 'SPHERE-III.000-000',
-        pep_sequence: 'FFGIGQQEMTLEEIGDKFGLTRERVRQIKEKAIRRLRQSSFFGIGQQEMT',
-      },{
-        accession: 'AMP10.000-000',
-        family: 'SPHERE-III.000-000',
-        pep_sequence: 'FFGIGQQEMTLEEIGDKFGLTRERVRQIKEKAIRRLRQSSFFGIGQQEMT',
-      },{
-        accession: 'AMP10.000-000',
-        family: 'SPHERE-III.000-000',
-        pep_sequence: 'FFGIGQQEMTLEEIGDKFGLTRERVRQIKEKAIRRLRQSSFFGIGQQEMT',
-      },{
-        accession: 'AMP10.000-000',
-        family: 'SPHERE-III.000-000',
-        pep_sequence: 'FFGIGQQEMTLEEIGDKFGLTRERVRQIKEKAIRRLRQSSFFGIGQQEMT',
-      },{
-        accession: 'AMP10.000-000',
-        family: 'SPHERE-III.000-000',
-        pep_sequence: 'FFGIGQQEMTLEEIGDKFGLTRERVRQIKEKAIRRLRQSSFFGIGQQEMT',
-      },{
-        accession: 'AMP10.000-000',
-        family: 'SPHERE-III.000-000',
-        pep_sequence: 'FFGIGQQEMTLEEIGDKFGLTRERVRQIKEKAIRRLRQSSFFGIGQQEMT',
-      },{
-        accession: 'AMP10.000-000',
-        family: 'SPHERE-III.000-000',
-        pep_sequence: 'FFGIGQQEMTLEEIGDKFGLTRERVRQIKEKAIRRLRQSSFFGIGQQEMT',
+      amps: [],
+      info: {
+        currentPage: 1,
+        pageSize: 20,
+        totalItem: 0,
+        totalPage: 1,
+      },
+      filters: {
+        family: null,
+        habitat: null,
+        host: null,
+        sample: null,
+        origin: null,
       }
-      ],
-      families_data: [{
-        accession: 'SPHERE-III.000-000',
-        num_AMPs: 'nnnn',
-        consensus_seq: 'FFGIGQQEMTLEEIGDKFGLTRERVRQIKEKAIRRLRQSSFFGIGQQEMTLEEIGDKFGLTRERVRQIKEKAIRRLRQSSFFGIGQQEMTLEEIGDKFGL'
-      }, {
-        accession: 'SPHERE-III.000-000',
-        num_AMPs: 'nnnn',
-        consensus_seq: 'FFGIGQQEMTLEEIGDKFGLTRERVRQIKEKAIRRLRQSSFFGIGQQEMTLEEIGDKFGLTRERVRQIKEKAIRRLRQSSFFGIGQQEMTLEEIGDKFGL'
-      }, {
-        accession: 'SPHERE-III.000-000',
-        num_AMPs: 'nnnn',
-        consensus_seq: 'FFGIGQQEMTLEEIGDKFGLTRERVRQIKEKAIRRLRQSSFFGIGQQEMTLEEIGDKFGLTRERVRQIKEKAIRRLRQSSFFGIGQQEMTLEEIGDKFGL'
-      }, {
-        accession: 'SPHERE-III.000-000',
-        num_AMPs: 'nnnn',
-        consensus_seq: 'FFGIGQQEMTLEEIGDKFGLTRERVRQIKEKAIRRLRQSSFFGIGQQEMTLEEIGDKFGLTRERVRQIKEKAIRRLRQSSFFGIGQQEMTLEEIGDKFGL'
-      }, {
-        accession: 'SPHERE-III.000-000',
-        num_AMPs: 'nnnn',
-        consensus_seq: 'FFGIGQQEMTLEEIGDKFGLTRERVRQIKEKAIRRLRQSSFFGIGQQEMTLEEIGDKFGLTRERVRQIKEKAIRRLRQSSFFGIGQQEMTLEEIGDKFGL'
-      }, {
-        accession: 'SPHERE-III.000-000',
-        num_AMPs: 'nnnn',
-        consensus_seq: 'FFGIGQQEMTLEEIGDKFGLTRERVRQIKEKAIRRLRQSSFFGIGQQEMTLEEIGDKFGLTRERVRQIKEKAIRRLRQSSFFGIGQQEMTLEEIGDKFGL'
-      }],
-      envs_data: [],
-      hosts_data: []
     }
   },
+  created() {
 
+  },
   mounted() {
     this.axios.get('/').then(function (response) {
       if (response.status === 200) {
@@ -181,7 +89,9 @@ export default {
       console.log(error);
     });
   },
+  computed(){
 
+  },
   methods: {
     handleTabClick(tab, event) {
       console.log(tab, event);
