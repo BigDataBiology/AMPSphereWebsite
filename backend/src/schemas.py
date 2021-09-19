@@ -69,31 +69,6 @@ class AMPFeatures(BaseModel):
 
 
 class Metadata(BaseModel):
-    """
-  'AMPSphere_code': 'AMP10.000_000',
-  'GMSC': 'GMSC10.SMORF.000_036_899_109',
-  '_sa_instance_state': <sqlalchemy.orm.state.InstanceState object at 0x7f852d890e50>,
-  'environmental_features': 'human-associated habitat [ENVO:00009003]',
-  'host_scientific_name': 'Homo sapiens',
-  'host_tax_id': 9606,
-  'latitude': 23.1271,
-  'longitude': 113.2828,
-  'microontology': 'host-associated:animal host:digestive tract:intestine',
-  'origin_scientific_name': 'Phocaeicola vulgatus',
-  'origin_tax_id': 238,
-  'sample': 'SAMEA104142074
-    """
-    # AMPSphere_code: str
-    # GMSC: str
-    # environmental_features: Optional[str]
-    # host_scientific_name: Optional[str]
-    # host_tax_id: Optional[int]
-    # latitude: Optional[float]
-    # longitude: Optional[float]
-    # microontology: Optional[str]
-    # origin_scientific_name: Optional[str]
-    # origin_tax_id: Optional[int]
-    # sample: Optional[str]
     AMPSphere_code: str
     GMSC: str
     gene_sequence: str
@@ -106,6 +81,9 @@ class Metadata(BaseModel):
     longitude: Optional[float]
     origin_tax_id: Optional[int]
     origin_scientific_name: Optional[str]
+
+    class Config:
+        orm_mode = True
 
     @validator('origin_tax_id', pre=True)
     def origin_tax_id_blank_string(value, field):
@@ -132,13 +110,31 @@ class Metadata(BaseModel):
         return None if value == "" else value
 
 
+class MetadataPageInfo(BaseModel):
+    currentPage: int
+    pageSize: int
+    totalPage: int
+    totalItem: int
+
+    class Config:
+        orm_mode = True
+
+
+class MetadataPage(BaseModel):
+    info: MetadataPageInfo
+    data: List[Metadata]
+
+    class Config:
+        orm_mode = True
+
+
 class AMP(BaseModel):
     accession: str
     sequence: str
     family: str
     # helical_wheel_path: str
     features: AMPFeatures
-    metadata: List[Metadata]
+    metadata: MetadataPage
 
     class Config:
         orm_mode = True

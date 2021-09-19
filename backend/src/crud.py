@@ -1,4 +1,6 @@
+import math
 import pathlib
+import types
 
 import pandas as pd
 from sqlalchemy.orm import Session
@@ -42,7 +44,7 @@ def get_amp(accession: str, db: Session):
     feature_graph_points = utils.get_graph_points(amp_obj.sequence)
     features["graph_points"] = feature_graph_points
 
-    metadata = get_amp_metadata(accession, db, page=0, page_size=20)
+    metadata = get_amp_metadata(accession, db, page=0, page_size=5)
 
     setattr(amp_obj, "gene_sequences", gene_seqs)
     setattr(amp_obj, "features", features)
@@ -51,7 +53,7 @@ def get_amp(accession: str, db: Session):
 
 
 def get_amp_metadata(accession: str, db: Session, page: int, page_size: int):
-    metadata = db.query(
+    data = db.query(
         models.Metadata.AMPSphere_code,
         models.Metadata.GMSC,
         models.GMSC.gene_sequence,
@@ -69,9 +71,13 @@ def get_amp_metadata(accession: str, db: Session, page: int, page_size: int):
     ).filter(
         models.Metadata.AMPSphere_code == accession
     ).offset(page * page_size).limit(page_size).all()
-    if len(metadata) == 0:
+    if len(data) == 0:
         raise HTTPException(status_code=400, detail='invalid accession received.')
-    return metadata # [row.__dict__ for row in metadata]
+    metadata_info = get_metadata_info(accession=accession, page_size=page_size, page=page, db=db)
+    metadata = types.SimpleNamespace()
+    metadata.info = metadata_info
+    metadata.data = data
+    return metadata
 
 
 def get_amp_features(accession: str, db: Session):
@@ -117,6 +123,7 @@ def get_family(accession: str, db: Session):
 def get_fam_metadata(accession: str, db: Session, page: int, page_size: int):
     amp_accessions = db.query(models.AMP.accession).filter(models.AMP.family == accession).all()
     amp_accessions = [accession for accession, in amp_accessions]
+    # TODO FIX HERE
     m = db.query(models.Metadata).filter(models.Metadata.AMPSphere_code.in_(amp_accessions)). \
         offset(page * page_size).limit(page_size).all()
     return [row.__dict__ for row in m]
@@ -208,3 +215,28 @@ def get_statistics(db: Session):
         num_metagenomes=db.query(func.count(distinct(models.Metadata.sample))). \
                         filter(models.Metadata.microontology != '').scalar(),
     )
+
+
+def get_metadata_info(accession: str, page_size: int, page: int, db: Session):
+    if accession.startswith('AMP'):
+        total_items = db.query(models.Metadata.GMSC). \
+            filter(models.Metadata.AMPSphere_code == accession).count()
+    elif accession.startswith('SPHERE'):
+        total_items = db.query(models.Metadata.GMSC).outerjoin(models.AMP). \
+            filter(models.AMP.family == accession).count()
+    else:
+        total_items = 0
+    total_page = math.ceil(total_items / page_size)
+    current_page = page
+    # info = types.SimpleNamespace()
+    # info.currentPage = current_page
+    # info.pageSize = page_size
+    # info.totalPage = total_page
+    # info.totalItem = total_items
+    info = dict(
+        currentPage=current_page,
+        pageSize=page_size,
+        totalPage=total_page,
+        totalItem=total_items
+    )
+    return info

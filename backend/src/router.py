@@ -99,7 +99,7 @@ def distributions(accession: str = 'AMP10.000_000',
 
 
 @amp_router.get(path="/{accession}/metadata",
-                response_model=List[schemas.Metadata],
+                response_model=schemas.MetadataPage,
                 summary=default_route_summary)
 def metadata(accession: str = 'AMP10.000_000',
              db: Session = Depends(get_db),
