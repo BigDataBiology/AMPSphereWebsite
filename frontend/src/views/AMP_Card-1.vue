@@ -85,7 +85,7 @@
                 <el-row>
                   <el-col style="margin-left: 30px" :offset="1">
                     <h3 id="relationships" class="subsection-title">Relationships</h3>
-                    <el-table :data="currentMetadata" stripe :default-sort="{prop: 'GMSC', order: 'descending'}" width="100%">
+                    <el-table :data="currentMetadata" stripe :default-sort="{prop: 'GMSC', order: 'ascending'}" width="100%">
                       <el-table-column prop="GMSC" label="Gene" sortable width="260%"/>
                       <el-table-column label="Gene sequense" sortable width="400%">
                         <template #default="props">
@@ -97,23 +97,22 @@
                       <el-table-column prop="origin_scientific_name" label="Origin" sortable width="150%"/>
                     </el-table>
                     <div class="block">
-<!--                      <el-pagination-->
-<!--                          @size-change="handleSizeChange"-->
-<!--                          @current-change="setMetadataPage"-->
-<!--                          v-model:currentPage="currentPage4"-->
-<!--                          :page-sizes="[10, 20, 50, 100]"-->
-<!--                          :page-size="metadata.pageSize"-->
-<!--                          layout="total, sizes, prev, pager, next, jumper"-->
-<!--                          :total="50"-->
-<!--                      >-->
-<!--                      </el-pagination>-->
                       <el-pagination
+                          @size-change="setMetadataPageSize"
                           @current-change="setMetadataPage"
-                          :page-size="metadata.pageSize"
-                          layout="total, prev, pager, next, jumper"
-                          :total="metadata.totalRow"
+                          :page-sizes="[5, 10, 20, 50, 100]"
+                          :page-size="5"
+                          layout="total, sizes, prev, pager, next, jumper"
+                          :total="metadata.info.totalRow"
                       >
                       </el-pagination>
+<!--                      <el-pagination-->
+<!--                          @current-change="setMetadataPage"-->
+<!--                          :page-size="metadata.info.pageSize"-->
+<!--                          layout="total, prev, pager, next, jumper"-->
+<!--                          :total="metadata.info.totalRow"-->
+<!--                      >-->
+<!--                      </el-pagination>-->
   <!--                    FIXME integrate pagination buttons with the table-->
                     </div>
 
@@ -367,10 +366,12 @@ export default {
         }
       },
       metadata: {
-        pageSize: 10,
-        totalPage: 1,
-        totalRow: 1,
-        currentPage: 1,
+        info: {
+          pageSize: 5,
+          totalPage: 1,
+          totalRow: 1,
+          currentPage: 1,
+        },
         currentData: [],
       },
       distribution: {
@@ -398,9 +399,7 @@ export default {
     this.getAMP()
   },
   mounted() {
-    this.metadata.pageSize = 10
-    console.log(this.metadata.pageSize)
-    this.setMetadataPage(this.metadata.currentPage)
+    this.setMetadataPageSize(5)
   },
   computed: {
     currentMetadata () {
@@ -418,11 +417,10 @@ export default {
           self.length = response.data.sequence.length;
           self.family = response.data.family
           self.features = response.data.features
-          // TODO get total row from the backend
-          self.metadata.currentData = response.data.metadata
-          self.metadata.currentPage = 1
-          self.metadata.totalPage = 5
-          self.metadata.totalRow = 50
+          self.metadata.currentData = response.data.metadata.data
+          self.metadata.info.currentPage = 1
+          self.metadata.info.totalPage = response.data.metadata.info.totalPage
+          self.metadata.info.totalRow = response.data.metadata.info.totalItem
         })
         .catch(function (error) {
           console.log(error);
@@ -436,74 +434,37 @@ export default {
           console.log(error)
         })
     },
-    SecStructureData(){
-      let strucData = this.features.Secondary_structure
-      return [{
-        x: [strucData.helix],
-        y: [''],
-        name: 'Alpha helix',
-        orientation: 'h',
-        type: 'bar',
-        marker: {width: 0.5},
-      },{
-        x: [strucData.turn],
-        y: [''],
-        name: 'Beta turn',
-        orientation: 'h',
-        type: 'bar',
-        marker: {width: 0.5},
-      },{
-        x: [strucData.sheet],
-        y: [''],
-        name: 'Beta sheet',
-        orientation: 'h',
-        type: 'bar',
-        marker: {width: 0.5},
-      },{
-        x: [100 - strucData.turn - strucData.helix - strucData.sheet],
-        y: [''],
-        name: 'Disordered',
-        orientation: 'h',
-        type: 'bar',
-        marker: {width: 0.5},
-      }]
-    },
-    SecStructureLayout(){
-      return {
-        margin: {l: 0, r: 0, t: 0, b: 0},
-        barmode: 'stack',
-        legend: {orientation: "h", xanchor: "center", x: 0.5, y: 0.95},
-      }
-    },
     SecStructurePieData(){
       let strucData = this.features.Secondary_structure
       strucData.disordered = 1 - strucData.turn - strucData.helix - strucData.sheet
       return [{
-        type: 'pie',
-        values: Object.values(strucData),
-        labels: Object.keys(strucData),
-        marker:{
-          colors: this.ColorPalette('quanlitative'),
-        },
-        textinfo: "label+percent",
-        insidetextorientation: "radial"}]
+        type: 'pie', values: Object.values(strucData), labels: Object.keys(strucData),
+        marker: {colors: this.ColorPalette('quanlitative')},
+        textinfo: "label+percent", insidetextorientation: "radial"}]
     },
-    setMetadataPage (val) {
-      // this.$message('setting to ' + val.toString() + 'th page')
-      this.metadata.currentPage = val
-      console.log(this.metadata.pageSize)
+    setMetadataPage(page) {
+      // this.$message('setting to ' + page + 'th page')
+      // Important: page index starting from zero.
+      this.metadata.info.currentPage = page - 1
+      console.log(this.metadata.info.currentPage)
       let config = {
-        params: {page: val, page_size: this.metadata.pageSize}
+        params: {page: this.metadata.info.currentPage, page_size: this.metadata.info.pageSize}
       }
       let self = this
       this.axios.get('/amps/' + self.accession + '/metadata', config)
           .then(function (response) {
             console.log(response.data)
-            self.metadata.currentData = response.data
+            self.metadata.currentData = response.data.data
+            self.metadata.info.totalPage = response.data.info.totalPage
+            self.metadata.info.totalRow = response.data.info.totalItem
           })
           .catch(function (error) {
             console.log(error);
           })
+    },
+    setMetadataPageSize(size) {
+      this.metadata.info.pageSize = size
+      this.setMetadataPage(1)
     },
     GeoPlotData(){
       let data = this.distribution.geo
@@ -778,9 +739,9 @@ export default {
     }
   }
 }
-window.addEventListener("DOMContentLoaded", function () {
-  const button = document.body.appendChild(document.createElement("button"));
-  button.textContent = "Copy";
-  button.addEventListener("click", this.CopyPeptideSequence);
-});
+// window.addEventListener("DOMContentLoaded", function () {
+//   const button = document.body.appendChild(document.createElement("button"));
+//   button.textContent = "Copy";
+//   button.addEventListener("click", this.CopyPeptideSequence);
+// });
 </script>
