@@ -29,7 +29,7 @@ amp_router = APIRouter(
 
 # TODO define consistent schema for AMP object.
 @amp_router.get(path="",
-                response_model=List[schemas.AMP],
+                response_model=schemas.PagedAMPs,
                 summary=default_route_summary)
 def amps(db: Session = Depends(get_db),
          family: str = None,
@@ -99,7 +99,7 @@ def distributions(accession: str = 'AMP10.000_000',
 
 
 @amp_router.get(path="/{accession}/metadata",
-                response_model=schemas.MetadataPage,
+                response_model=schemas.PagedMetadata,
                 summary=default_route_summary)
 def metadata(accession: str = 'AMP10.000_000',
              db: Session = Depends(get_db),
@@ -121,7 +121,7 @@ family_router = APIRouter(
 
 
 @family_router.get(path="",
-                   response_model=List[schemas.Family],
+                   response_model=schemas.PagedFamilies,
                    summary=default_route_summary)
 def families(db: Session = Depends(get_db),
              habitat: str = None,
@@ -230,6 +230,19 @@ def get_statistics(db: Session = Depends(get_db)):
     :return:
     """
     return crud.get_statistics(db)
+
+
+@default_router.get(path='/available_filters',
+                    #response_model=schemas.Filters,
+                    summary=default_route_summary
+                    )
+def get_filters(db: Session = Depends(get_db)):
+    """
+
+    :param db:
+    :return:
+    """
+    return crud.get_filters(db)
 
 
 @default_router.get(path="/downloads",

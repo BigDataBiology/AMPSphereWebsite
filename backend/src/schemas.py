@@ -110,7 +110,7 @@ class Metadata(BaseModel):
         return None if value == "" else value
 
 
-class MetadataPageInfo(BaseModel):
+class PageInfo(BaseModel):
     currentPage: int
     pageSize: int
     totalPage: int
@@ -120,8 +120,8 @@ class MetadataPageInfo(BaseModel):
         orm_mode = True
 
 
-class MetadataPage(BaseModel):
-    info: MetadataPageInfo
+class PagedMetadata(BaseModel):
+    info: PageInfo
     data: List[Metadata]
 
     class Config:
@@ -134,7 +134,15 @@ class AMP(BaseModel):
     family: str
     # helical_wheel_path: str
     features: AMPFeatures
-    metadata: MetadataPage
+    metadata: PagedMetadata
+
+    class Config:
+        orm_mode = True
+
+
+class PagedAMPs(BaseModel):
+    info: PageInfo
+    data: List[AMP]
 
     class Config:
         orm_mode = True
@@ -178,6 +186,14 @@ class Family(BaseModel):
     associated_amps: List[str]
     feature_statistics: Dict[str, AMPFeatures]
     distributions: Distributions
+
+    class Config:
+        orm_mode = True
+
+
+class PagedFamilies(BaseModel):
+    info: PageInfo
+    data: List[Family]
 
     class Config:
         orm_mode = True
@@ -243,3 +259,17 @@ class Statistics(BaseModel):
     num_habitats: int
     num_genomes: int
     num_metagenomes: int
+
+    class Config:
+        orm_mode = True
+
+
+class Filters(BaseModel):
+    family: List[str]
+    habitat: List[str]
+    host: List[str]
+    sample: List[str]
+    origin: List[str]
+
+    class Config:
+        orm_mode = True

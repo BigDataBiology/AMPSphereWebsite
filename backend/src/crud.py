@@ -32,7 +32,12 @@ def get_amps(db: Session, page: int = 0, page_size: int = 20, **kwargs):
     accessions = query.offset(page * page_size).limit(page_size).all()
     # if len(accessions) == 0:
     #     raise HTTPException(status_code=400, detail='invalid filter applied.')
-    return [get_amp(accession, db) for accession, in accessions]
+    data = [get_amp(accession, db) for accession, in accessions]
+    info = get_page_info(kind='amp', page=page, page_size=page_size, db=db)
+    paged_amps = types.SimpleNamespace()
+    paged_amps.info = info
+    paged_amps.data = data
+    return paged_amps
 
 
 def get_amp(accession: str, db: Session):
@@ -73,7 +78,7 @@ def get_amp_metadata(accession: str, db: Session, page: int, page_size: int):
     ).offset(page * page_size).limit(page_size).all()
     if len(data) == 0:
         raise HTTPException(status_code=400, detail='invalid accession received.')
-    metadata_info = get_metadata_info(accession=accession, page_size=page_size, page=page, db=db)
+    metadata_info = get_page_info(kind='amp.metadata', accession=accession, page_size=page_size, page=page, db=db)
     metadata = types.SimpleNamespace()
     metadata.info = metadata_info
     metadata.data = data
@@ -104,7 +109,12 @@ def get_families(db: Session, page: int, page_size: int, **kwargs):
     accessions = query.offset(page * page_size).limit(page_size).all()
     # if len(accessions) == 0:
     #     raise HTTPException(status_code=400, detail='invalid filter applied.')
-    return [get_family(accession, db) for accession, in accessions]
+    data = [get_family(accession, db) for accession, in accessions]
+    info = get_page_info(kind='family', page=page, page_size=page_size, db=db)
+    paged_families = types.SimpleNamespace()
+    paged_families.info = info
+    paged_families.data = data
+    return paged_families
 
 
 def get_family(accession: str, db: Session):
@@ -217,11 +227,15 @@ def get_statistics(db: Session):
     )
 
 
-def get_metadata_info(accession: str, page_size: int, page: int, db: Session):
-    if accession.startswith('AMP'):
+def get_page_info(kind: str, page_size: int, page: int, db: Session, accession: str = None):
+    if kind == 'amp':
+        total_items = db.query(models.AMP.accession).count()
+    elif kind == 'family':
+        total_items = db.query(models.AMP.family).distinct().count()
+    elif kind == 'amp.metadata':
         total_items = db.query(models.Metadata.GMSC). \
             filter(models.Metadata.AMPSphere_code == accession).count()
-    elif accession.startswith('SPHERE'):
+    elif kind == 'family.metadata':
         total_items = db.query(models.Metadata.GMSC).outerjoin(models.AMP). \
             filter(models.AMP.family == accession).count()
     else:
@@ -240,3 +254,19 @@ def get_metadata_info(accession: str, page_size: int, page: int, db: Session):
         totalItem=total_items
     )
     return info
+
+
+def get_filters(db: Session):
+    # FIXME not using the first 100 rows.
+    family, = zip(*db.query(models.AMP.family).limit(100).distinct())
+    habitat, = zip(*db.query(models.Metadata.microontology).limit(100).distinct())
+    host, = zip(*db.query(models.Metadata.host_scientific_name).limit(100).distinct())
+    sample, = zip(*db.query(models.Metadata.sample).limit(100).distinct())
+    origin, = zip(*db.query(models.Metadata.origin_scientific_name).limit(100).distinct())
+    return dict(
+        family=family,
+        habitat=habitat,
+        host=host,
+        sample=sample,
+        origin=origin,
+    )
