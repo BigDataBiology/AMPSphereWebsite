@@ -2,6 +2,7 @@ import { createApp, h } from 'vue'
 import App from './App.vue'
 import ElementPLus from 'element-plus'
 import './style/theme/index.css'
+import './style/main.css';
 import locale from 'element-plus/lib/locale/lang/en'
 import router from './router'
 import axios from 'axios'
