@@ -1,0 +1,62 @@
+.title {
+    font-size: xx-large;
+    font-weight: normal;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    text-align: left;
+}
+.description {
+    font-size: xx-large;
+    font-weight: normal;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    color: #00897B;
+    text-align: left;
+}
+.subsection-title {
+    font-size: x-large;
+    font-weight: normal;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    text-align: left;
+}
+.info-item {
+    font-weight: normal;
+    font-size: 150%;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    line-height: 40px;
+}
+.info-item-value {
+    font-weight: normal;
+    font-size: 120%;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    line-height: 24px;
+}
+pre {
+    margin: 0;
+    font: 1rem/1.5 'Roboto Mono', monospace;
+    white-space: pre-wrap;       /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+code {
+    -webkit-user-select: all;
+    user-select: all;
+    display: block;
+    padding: 20px;
+    border: 1px;
+    /*color: #7F7F7F;*/
+    background-color: #F5F5F5;
+    text-align: left;
+    font-family: inherit;
+    overflow: auto;
+}
+code:focus {
+    border: 2px dashed #31808c;
+    outline: none;
+    animation: select 100ms step-end forwards;
+}
+@keyframes select {
+    to {
+        -webkit-user-select: text;
+        user-select: text;
+    }
+}
