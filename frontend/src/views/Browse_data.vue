@@ -13,30 +13,43 @@
 <!--    https://www.cxyzjd.com/article/baidu_33552969/88977014-->
         <span>
           Select filters:
-          <el-select v-model="options.family" filterable clearable placeholder="Family" @change="onFamilyChange" size="mini">
-            <el-option v-for="item in availableOptions.family" :label="item" :value="item"></el-option>
+          <el-select v-model="options.family" filterable clearable placeholder="Family"
+                     @change="onFamilyChange" size="mini"
+                     v-loading="isloading" element-loading-spinner="el-icon-loading">
+            <el-option v-for="item in availableOptions.family" :label="item" :value="item" :key="item"></el-option>
           </el-select>
-          <el-select v-model="options.habitat" filterable clearable placeholder="Habitat" @change="onHabitatChange" size="mini">
-            <el-option v-for="item in availableOptions.habitat" :label="item" :value="item"></el-option>
+          <el-select v-model="options.habitat" filterable clearable placeholder="Habitat"
+                     @change="onHabitatChange" size="mini"
+                     v-loading="isloading" element-loading-spinner="el-icon-loading">
+            <el-option v-for="item in availableOptions.habitat" :label="item" :value="item" :key="item"></el-option>
           </el-select>
-          <el-select v-model="options.host" filterable clearable placeholder="Host" @change="onHostChange" size="mini">
-            <el-option v-for="item in availableOptions.host" :label="item" :value="item"></el-option>
+          <el-select v-model="options.host" filterable clearable placeholder="Host"
+                     @change="onHostChange" size="mini"
+                     v-loading="isloading" element-loading-spinner="el-icon-loading">
+            <el-option v-for="item in availableOptions.host" :label="item" :value="item" :key="item"></el-option>
           </el-select>
-          <el-select v-model="options.sample" filterable clearable placeholder="Sample" @change="onSampleChange" size="mini">
-            <el-option v-for="item in availableOptions.sample" :label="item" :value="item"></el-option>
+          <el-select v-model="options.sample" filterable clearable placeholder="Sample"
+                     @change="onSampleChange" size="mini"
+                     v-loading="isloading" element-loading-spinner="el-icon-loading">
+            <el-option v-for="item in availableOptions.sample" :label="item" :value="item" :key="item"></el-option>
           </el-select>
-          <el-select v-model="options.origin" filterable clearable placeholder="Origin" @change="onOriginChange" size="mini">
-            <el-option v-for="item in availableOptions.origin" :label="item" :value="item"></el-option>
+          <el-select v-model="options.origin" filterable clearable placeholder="Origin"
+                     @change="onOriginChange" size="mini"
+                     v-loading="isloading" element-loading-spinner="el-icon-loading">
+            <el-option v-for="item in availableOptions.origin" :label="item" :value="item" :key="item"></el-option>
           </el-select>
 <!--          <el-button @click="clearFilters" type="primary"><span>Clear</span></el-button>-->
           </span>
-          <el-table :data="amps" v-loading="isloading" stripe style="width: 100%">
-            <el-table-column label="Accession" width="150">
+          <el-table :data="amps" stripe style="width: 100%"
+                    v-loading="isloading"
+                    element-loading-text="Loading..."
+                    element-loading-spinner="el-icon-loading">
+            <el-table-column label="Accession" width="200">
               <template #default="props">
                 <el-button @click="AMPDetail(props.row.accession)" type="text">{{ props.row.accession }}</el-button>
               </template>
             </el-table-column>
-            <el-table-column label="Family" width="150">
+            <el-table-column label="Family" width="200">
               <template #default="props">
                 <el-button @click="familyDetail(props.row.family)" type="text">{{ props.row.family }}</el-button>
               </template>
@@ -70,8 +83,6 @@
         >
         </el-pagination>
       </el-col>
-      <el-col :span="11">
-      </el-col>
     </el-row>
 
   </div>
@@ -92,7 +103,8 @@ export default {
   data() {
     return {
       amps: [],
-      loading: true,
+      axiosRefCount: 0,
+      loading: false,
       info: {
         currentPage: 1,
         pageSize: 20,
@@ -116,6 +128,26 @@ export default {
     }
   },
   created() {
+    let self = this
+    // https://stackoverflow.com/questions/50768678/axios-ajax-show-loading-when-making-ajax-request
+    this.axios.interceptors.request.use((config) => {
+      self.loading = true
+      // trigger 'loading=true' event here
+      return config;
+    }, (error) => {
+      self.loading = false
+      // trigger 'loading=false' event here
+      return Promise.reject(error);
+    });
+    this.axios.interceptors.response.use((response) => {
+      self.loading = false
+      // trigger 'loading=false' event here
+      return response;
+    }, (error) => {
+      self.loading = false
+      // trigger 'loading=false' event here
+      return Promise.reject(error);
+    });
   },
   mounted() {
     this.setAMPsPageSize(20)
@@ -130,7 +162,6 @@ export default {
     setAMPsPage(page){
       // this.$message('setting to ' + page + 'th page')
       // Important: page index starting from zero.
-      this.loading = true
       this.info.currentPage = page - 1
       console.log(this.info.currentPage)
       let config = {
@@ -155,7 +186,6 @@ export default {
         .catch(function (error) {
           console.log(error);
         })
-      this.loading = false
     },
     setAMPsPageSize(size) {
       this.info.pageSize = size
@@ -197,6 +227,15 @@ export default {
     },
     familyDetail(accession){
       window.open('/family?accession='+accession, '_blank')
+    },
+    setLoading(isLoading) {
+      if (isLoading) {
+        this.axiosRefCount++;
+        this.loading = true;
+      } else if (this.axiosRefCount > 0) {
+        this.axiosRefCount--;
+        this.loading = (this.axiosRefCount > 0);
+      }
     }
   }
 }
