@@ -1,6 +1,7 @@
 import math
 import pathlib
 import types
+from pprint import pprint
 
 import pandas as pd
 from sqlalchemy.orm import Session
@@ -215,11 +216,14 @@ def get_statistics(db: Session):
     # TODO SPHEREs with num_amps < 8 should not be treated as families.
     # TODO display two numbers for num_genomes / num_metagenomes
     #               (analyzed_genomes..., num_...containing amps)
+    # TODO FIX here.
+    stats = db.query(models.Statistics).first()
     return dict(
-        num_amps=db.query(func.count(models.AMP.accession)).scalar(),
-        num_families=db.query(func.count(distinct(models.AMP.family))).scalar(),
-        num_hosts=db.query(func.count(distinct(models.Metadata.host_scientific_name))).scalar() - 1,
-        num_habitats=db.query(func.count(distinct(models.Metadata.microontology))).scalar() - 1,
+        num_amps=stats.accession,
+        num_families=stats.family,
+        num_hosts=stats.host_scientific_name,
+        num_habitats=stats.microontology,
+        # FIXME
         num_genomes=db.query(func.count(distinct(models.Metadata.sample))). \
                         filter(models.Metadata.microontology == '').scalar() - 1,
         num_metagenomes=db.query(func.count(distinct(models.Metadata.sample))). \
