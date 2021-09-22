@@ -208,7 +208,6 @@ def search_by_text(db: Session, text: str, page: int, page_size: int):
     ))
 
     accessions = query.offset(page * page_size).limit(page_size).all()
-    # print(accessions)
     return [get_amp(accession, db) for accession, in accessions]
 
 
