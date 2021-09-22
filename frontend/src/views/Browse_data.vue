@@ -28,6 +28,7 @@
                      v-loading="isloading" element-loading-spinner="el-icon-loading">
             <el-option v-for="item in availableOptions.host" :label="item" :value="item" :key="item"></el-option>
           </el-select>
+<!--          TODO MEDIUM PRIORITY: change this filter into peptide length-->
           <el-select v-model="options.sample" filterable clearable placeholder="Sample"
                      @change="onSampleChange" size="mini"
                      v-loading="isloading" element-loading-spinner="el-icon-loading">

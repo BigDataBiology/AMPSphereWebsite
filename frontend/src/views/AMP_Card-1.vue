@@ -7,6 +7,7 @@
             <div class="title">Antimicrobial peptide: {{ accession }}
               <el-button class="button" @click="downloadCurrPage()" type="primary" icon="el-icon-download" plain></el-button>
             </div>
+<!--          TODO test: move this description down to the overview tab-->
             <div class="description">
               The AMP belongs to
               <el-link :href="getFamilyPageURL()" type="primary">
@@ -38,6 +39,7 @@
 
                   </el-col>
                   <el-col :span="14" :offset="2">
+<!--                   TODO Geographical distribution -->
                     <div id="global distribution">
                       <Plotly :data="GeoPlotData()"
                               :layout="GeoPlotLayout()"
@@ -55,6 +57,7 @@
                 </el-row>
                 <el-row>
                   <el-col :span="10" style="magrin-left: 30px">
+<!--                    TODO Bigger title  and figure captions-->
                     <h4 id="distribution-across-habitats">Habitats</h4>
                     <div>
                       <Plotly :data="EnvPlotData()"
@@ -67,6 +70,7 @@
                   </el-col>
 
                   <el-col :span="10">
+                    <!--                    TODO Bigger title and figure captions -->
                     <h4 id="distribution-across-hosts">Hosts</h4>
                     <div>
                       <Plotly :data="HostPlotData()"
@@ -85,6 +89,7 @@
                 <el-row>
                   <el-col style="margin-left: 30px" :offset="1">
                     <h3 id="relationships" class="subsection-title">Relationships</h3>
+<!--                    TODO add download button here -->
                     <el-table :data="currentMetadata" stripe :default-sort="{prop: 'GMSC', order: 'ascending'}" width="100%">
                       <el-table-column prop="GMSC" label="Gene" sortable width="260%"/>
                       <el-table-column label="Gene sequense" sortable width="400%">
