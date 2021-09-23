@@ -7,17 +7,13 @@
           <div class="logo">
             <el-image style="height: 150px; width: 150px" :src="url" lazy></el-image>
           </div>
-          <div class="search-box"><el-input placeholder="accession"
-                                           v-model="text"
-                                           maxlength="10"
-                                           show-word-limit=true>
-            <template v-slot:append>
-              <el-button type="success"
-                         icon="el-icon-search">
-                Search
-              </el-button>
-            </template>
-          </el-input>
+          <div class="search-box">
+            <el-input placeholder="Text search" v-model="searchTerm" @keyup.enter="textSearch" clearable
+                      maxlength="40" show-word-limit=true>
+              <template v-slot:append>
+                <el-button type="success" icon="el-icon-search" @click="textSearch">Search</el-button>
+              </template>
+            </el-input>
             <span>
               <br/><br/>
               Examples:
@@ -45,7 +41,7 @@
       <el-main>
 <!--        Use CDN to speed up the production build: https://segmentfault.com/a/1190000015709430-->
         <el-row>
-          <el-col>
+          <el-col :offset="1" :span="22">
             <div>
               <router-view/>
             </div>
@@ -124,7 +120,8 @@ export default {
   data() {
     return {
       home: 'home',
-      activeMenuItem:'',
+      activeMenuItem: '',
+      searchTerm: '',
       loading: false,
       url: require('./assets/ampsphere_logo.svg'),
     };
@@ -159,5 +156,15 @@ export default {
       return new Date().getFullYear();
     }
   },
+  methods: {
+    textSearch(){
+      if (this.searchTerm.startsWith('AMP')) {
+        window.open('/AMP?accession=' + this.searchTerm, '_blank')
+      } else if (this.searchTerm.startsWith('SPHERE')) {
+        window.open('/family?accession=' + this.searchTerm, '_blank')
+      } else {
+        window.open(encodeURI('/text_search?query=' + this.searchTerm), '_blank')}
+      }
+  }
 }
 </script>

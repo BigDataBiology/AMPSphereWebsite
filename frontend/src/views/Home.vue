@@ -69,12 +69,13 @@
         <el-col :span="7" :offset="1" type="flex" justify="middle">
           <el-row>
             <div style="text-align: left">
-              Paste peptide sequences here (fasta format). <br/><br/>
+              Paste (&leq; 10) peptide sequences here (fasta format). <br/><br/>
               <el-input
                   type="textarea"
-                  :autosize="{ minRows: 8, maxRows: 40}"
+                  :rows="20"
+                  :autosize="{ minRows: 15, maxRows: 20}"
                   :placeholder="exampleSequences"
-                  v-model="text">
+                  v-model="sequences">
               </el-input>
             </div>
             <br/>
@@ -109,9 +110,10 @@
           <el-row>
             <!--                TODO FIXME-->
             <el-radio v-model="searchMethod" label="MMseqs">MMseqs</el-radio>
-            <el-radio v-model="searchMethod" label="HMMSearch">HMMSearch</el-radio>
+            <el-radio v-model="searchMethod" label="HMMER">HMMSearch</el-radio>
             <el-button type="primary"
-                       icon="el-icon-search">
+                       icon="el-icon-search"
+                       @click="sequenceSearch">
               Search
             </el-button>
 
@@ -171,7 +173,8 @@
             ">AMP10.000_003 | SPHERE-III.001_008\n" +
             "GRVIGKQGRIAKAIRVVMRAAAVRVDEKVLVEID\n",
         searchMethod: 'MMseqs',
-        fastaFile: [],
+        sequences: '',
+        // fastaFile: [],
       }
     },
     mounted () {
@@ -210,6 +213,22 @@
             console.log(error);
           });
       },
+      sequenceSearch(){
+        if ((this.sequences.match(/\n/g) || '').length + 1 > 20){
+          this.$message('Please input no more than 10 sequences.')
+        } else {
+          if (this.sequences === ''){
+            window.open(
+                encodeURI('/sequence_search?method=' + this.searchMethod + '&queries=' + this.exampleSequences),
+                '_blank')
+          }
+          else{
+            window.open(
+                encodeURI('/sequence_search?method=' + this.searchMethod + '&queries=' + this.sequences),
+                '_blank')
+          }
+        }
+      }
     }
   }
 </script>

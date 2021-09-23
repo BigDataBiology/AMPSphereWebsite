@@ -1,7 +1,7 @@
 <template>
   <div class="BrowseData">
     <el-row>
-      <el-col :span="22" :offset="1">
+      <el-col :span="24">
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
           <el-breadcrumb-item :to="{ path: '/browse_data' }">Browse data</el-breadcrumb-item>

@@ -7,6 +7,8 @@ import Help from '../views/Help.vue'
 import AMP_card from '../views/AMP_Card-1.vue'
 import About from '../views/About.vue'
 import Contact from '../views/Contact.vue'
+import SequenceSearch from "../views/SequenceSearch";
+import TextSearch from "../views/TextSearch";
 
 
 const routes = [
@@ -28,6 +30,22 @@ const routes = [
         component: BrowseData,
         meta:{
             title: 'AMPSphere: Browse data'
+        }
+    },
+    {
+        path: "/text_search",
+        name: "Text_search",
+        component: TextSearch,
+        meta:{
+            title: 'AMPSphere: Text search'
+        }
+    },
+    {
+        path: "/sequence_search",
+        name: "Sequence_search",
+        component: SequenceSearch,
+        meta:{
+            title: 'AMPSphere: Sequence search'
         }
     },
     {
