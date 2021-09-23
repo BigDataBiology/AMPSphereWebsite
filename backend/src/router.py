@@ -271,7 +271,7 @@ async def download_file(file: str):
 
 
 @default_router.get(path="/search/text",
-                    response_model=schemas.List[schemas.AMP],
+                    response_model=schemas.PagedAMPs,
                     summary=default_route_summary)
 def text_search(db: Session = Depends(get_db),
                 query: str = 'AMP10.000_000',

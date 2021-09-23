@@ -208,7 +208,12 @@ def search_by_text(db: Session, text: str, page: int, page_size: int):
     ))
 
     accessions = query.offset(page * page_size).limit(page_size).all()
-    return [get_amp(accession, db) for accession, in accessions]
+    amps_data = [get_amp(accession, db) for accession, in accessions]
+    page_info = get_page_info(kind='search', page=page, page_size=page_size, db=db, search_text=text)
+    paged_searchresult = types.SimpleNamespace()
+    paged_searchresult.info = page_info
+    paged_searchresult.data = amps_data
+    return paged_searchresult
 
 
 def get_statistics(db: Session):
@@ -230,7 +235,8 @@ def get_statistics(db: Session):
     )
 
 
-def get_page_info(kind: str, page_size: int, page: int, db: Session, accession: str = None):
+def get_page_info(kind: str, page_size: int, page: int, db: Session,
+                  accession: str = None, search_text: str = None):
     if kind == 'amp':
         total_items = db.query(models.AMP.accession).count()
     elif kind == 'family':
@@ -241,6 +247,16 @@ def get_page_info(kind: str, page_size: int, page: int, db: Session, accession: 
     elif kind == 'family.metadata':
         total_items = db.query(models.Metadata.GMSC).outerjoin(models.AMP). \
             filter(models.AMP.family == accession).count()
+    elif kind == 'search':
+        total_items = db.query(models.AMP.accession).outerjoin(models.Metadata).\
+            filter(or_(
+            models.AMP.accession.like(search_text),
+            models.AMP.family.like(search_text),
+            models.Metadata.GMSC.like(search_text),
+            models.Metadata.sample.like(search_text),
+            models.Metadata.microontology.like(search_text),
+            models.Metadata.origin_scientific_name.like(search_text),
+            models.Metadata.host_scientific_name.like(search_text))).distinct().count()
     else:
         total_items = 0
     total_page = math.ceil(total_items / page_size)
