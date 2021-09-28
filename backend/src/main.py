@@ -27,8 +27,8 @@ app = FastAPI(
         "name": "MIT",
         "url": "https://github.com/BigDataBiology/AMPSphereWebsite/blob/main/LICENSE",
     },
-    docs_url='/',
-    redoc_url='/redoc',
+    docs_url='/redoc',
+    redoc_url='/',
     openapi_url='/openapi.json'
 )
 
