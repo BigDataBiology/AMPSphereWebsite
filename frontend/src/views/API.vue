@@ -7,7 +7,9 @@
           <el-breadcrumb-item :to="{ path: '/api' }">API</el-breadcrumb-item>
         </el-breadcrumb>
         <pre class="preview pre"></pre>
-        <textarea class="textarea"></textarea>
+        <div>
+          <json-viewer :value="briefAPI" expand-depth="5" boxed expanded style="alignment: left; text-align: left"/>
+        </div>
       </el-col>
     </el-row>
   </div>
@@ -16,6 +18,59 @@
 <script>
 export default {
   name: "API",
+  data (){
+    return {
+      urlPrefix: "http://18.140.248.253:443/v1/",
+    }
+  },
+  computed: {
+    briefAPI () {
+      return {
+        data: {
+          Browse: {
+            "Statistics": {
+              url: this.urlPrefix + "statistics",
+              example: this.urlPrefix + "statistics"},
+            "AMPs": {
+              url: this.urlPrefix + "amps",
+              example: this.urlPrefix + "amps" + "?page_size=5&page=0"},
+            "Families": {
+              url: this.urlPrefix + "families",
+              example: this.urlPrefix + "families" + "?page_size=5&page=0"},
+          },
+          Retrieve: {
+            "AMP": {
+              url: this.urlPrefix + "amps/{accession}",
+              example: this.urlPrefix + "amps/AMP10.000_000"},
+            "Family": {
+              url: this.urlPrefix + "families/{accession}",
+              example: this.urlPrefix + "families/SPHERE-III.000_000"},
+            "AMP features": {
+              url: this.urlPrefix + "amps/{accession}/features",
+              example: this.urlPrefix + "amps/AMP10.000_000/features"},
+            "AMP metadata": {
+              url: this.urlPrefix + "amps/{accession}/metadata",
+              example: this.urlPrefix + "amps/AMP10.000_000/metadata"},
+            "Family features": {
+              url: this.urlPrefix + "families/{accession}/features",
+              example: this.urlPrefix + "families/SPHERE-III.000_000/features"
+            }
+          },
+          // Search: {
+          //   "Text search": {
+          //     url: this.urlPrefix + "search/text",
+          //     example: this.urlPrefix + "search/text?query=aquatic"},
+          //   "mmSeqs search": {
+          //     url: this.urlPrefix + "search/mmseqs",
+          //     // example: this.urlPrefix + "search/mmseqs"},
+          //   "HMMER search": {
+          //     url: this.urlPrefix + "search/hmmer",
+          //     // example: this.urlPrefix + "search/hmmer"},
+          // }
+      }
+      }
+    }
+  },
   methods: {
   }
 }

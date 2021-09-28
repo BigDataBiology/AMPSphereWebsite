@@ -9,6 +9,7 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import imageZoom from 'vue-image-zoomer'
 import { Download, More } from '@element-plus/icons'
+import JsonViewer from "vue3-json-viewer"
 
 
 router.beforeEach((to, from, next) => {
@@ -29,10 +30,11 @@ const app = createApp(
 app.use(router)
 app.use(ElementPLus, {locale})
 app.use(VueAxios, axios)
+app.use(JsonViewer)
 //app.use(VueSidebarMenu)
 const ImageZoom = require('vue-image-zoomer').default
 app.component('image-zoom', ImageZoom)
 app.component(More.name, More)
 app.component(Download.name, Download)
-axios.defaults.baseURL = 'http://119.3.63.164:443/v1'
+axios.defaults.baseURL = 'http://18.140.248.253:443/v1'
 app.mount('#app')
