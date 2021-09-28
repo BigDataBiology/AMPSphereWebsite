@@ -3,8 +3,8 @@ import Home from "../views/Home.vue"
 import BrowseData from "../views/Browse_Data.vue"
 import API from '../views/API.vue'
 import Downloads from '../views/Downloads.vue'
-import Help from '../views/Help.vue'
-import AMP_card from '../views/AMP_Card-1.vue'
+// import Help from '../views/Help.vue'
+import AMP_card from '../views/AMP_Card.vue'
 import About from '../views/About.vue'
 import Contact from '../views/Contact.vue'
 import SequenceSearch from "../views/SequenceSearch";
@@ -72,14 +72,14 @@ const routes = [
             title: 'AMPSphere: Downloads'
         }
     },
-    {
-        path: '/help',
-        name: 'Help',
-        component: Help,
-        meta:{
-            title: 'AMPSphere: Help'
-        }
-    },
+    // {
+    //     path: '/help',
+    //     name: 'Help',
+    //     component: Help,
+    //     meta:{
+    //         title: 'AMPSphere: Help'
+    //     }
+    // },
     {
         path: '/contact',
         name: 'Contact',
