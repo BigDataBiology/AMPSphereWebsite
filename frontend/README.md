@@ -32,7 +32,9 @@ lighthouse http://119.3.63.164/home --chrome-flags="--window-size=1920,1080" --v
 
 ### Serve the production build on server
 ```shell
-serve -s -l tcp://0.0.0.0:80 dist
+npm install --global yarn
+yarn global add serve
+npx serve -s -l tcp://0.0.0.0:80 dist
 ```
 
 ### Customize configuration
