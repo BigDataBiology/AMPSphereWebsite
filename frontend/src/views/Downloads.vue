@@ -21,7 +21,7 @@
 <!--        <div class="subsection-title">Full AMPSphere data</div>-->
         <div style="text-align: left">
           Browse our
-          <el-link href="https://zenodo.org/record/4606582#.YVLSBZ6A4_Y" type="primary">
+          <el-link href="https://doi.org/10.5281/zenodo.4574468" type="primary">
             Zenodo page
           </el-link>
           to see all the resources.
