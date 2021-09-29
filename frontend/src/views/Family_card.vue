@@ -1,724 +1,730 @@
 <template>
-    <div class="Family_Card">
-        <el-row :gutter="12" type="flex" justify="end">
-            <el-col :span="8" type="flex" justify="middle">
-                <el-input v-model="familyId" :maxlength="16" show-word-limit
-                          placeholder="Input a Family ID like 'GAF531'"
-                          clearable></el-input>
-            </el-col>
-            <el-col :span="3" type="flex" justify="middle">
-                <el-button size="medium" :type="type" :loading="searchLoading" icon="el-icon-search"
-                           @click="clickSearch">
-                    Search
-                </el-button>
-            </el-col>
-        </el-row>
+  <div class="Family_card">
+    <el-row>
+      <el-col :span="24">
+        <el-container>
+          <el-main>
+            <div class="title">Antimicrobial peptide family: {{ accession }}
+              <el-button class="button" @click="downloadCurrPage()" type="primary" icon="el-icon-download" plain></el-button>
+            </div>
+            <!--          TODO test: move this description down to the overview tab-->
+            <div class="description">
+              The family contains
+              <el-link href="#amps" type="primary">
+                <span class="description">{{ num_amps }}</span>
+              </el-link>
+              antimicrobial peptides.
+            </div>
 
-        <el-row type="flex" justify="left">
-            <el-col :span="4" :offset="1" type="flex" justify="middle">
-                <h2>Family Card</h2>
-            </el-col>
-            <el-col :span="6" type="flex" justify="middle">
-                <h3 v-if="!isNull">
-                    <el-tag type="success" effect="dark">
-                        {{Family_AMP[0].Family_ID}}
-                    </el-tag>
-                </h3>
-                <h3 v-else-if="tabLoading" effect="dark">
-                    <el-tag type="danger">
-                        Searching
-                    </el-tag>
-                </h3>
-                <h3 v-else>
-                    <el-tag type="warning" effect="dark">
-                        No Data. Just search it:)
-                    </el-tag>
-                </h3>
-            </el-col>
-        </el-row>
+            <el-tabs type="border-card">
+              <el-tab-pane label="Overview">
+                <el-row style="text-align: left">
+                  <el-col :span="6" style="margin-left: 30px">
+<!--                    <div class="info-item" id="sequence">-->
+<!--                      Peptide sequence-->
+<!--                      <el-button @click="CopyPeptideSequence()" icon="el-icon-document-copy" -->
+<!--                                 size="mini" type="primary" plain>-->
+<!--                      </el-button>-->
+<!--                    </div>-->
+<!--                    <pre><code id="aa-sequence">{{ sequence }}</code></pre>-->
+                    <div style="alignment: left;">
+                      <div class="info-item" id="secondary-structure">Secondary Structure</div>
+                      <Plotly :data="SecStructurePieData()"
+                              :layout="{title: {text: 'Secondary Structure'},
+                            margin: {l: 0, r: 0, t: 0, b: 0, pad: 0},
+                            showlegend: false, height: 240, width: 240}"
+                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                    </div>
 
-        <el-row type="flex" justify="center">
-            <el-col type="flex" justify="middle">
-                <el-card :shadow="shadow">
-                    <el-row type="flex" justify="center">
-                        <el-col type="flex" justify="middle">
-                            <el-tabs v-loading="tabLoading" element-loading-spinner="el-icon-loading"
-                                     v-model="activeName" tab-position="left">
-                                <el-tab-pane label="Basic" name="basic">
-                                    <el-table
-                                            :data="Family_AMP"
-                                            stripe
-                                            border>
-                                        <el-table-column
-                                                prop="AMP_Count"
-                                                label="Sequences"
-                                                header-align="center"
-                                                align="center">
-                                            <template v-slot="scope">
-                                                <router-link
-                                                        :to="{path:'/amp',query:{Family_ID:scope.row.Family_ID}}">
-                                                    <el-tag type="info">
-                                                        <i class="el-icon-connection"></i>{{scope.row.AMP_Count}}
-                                                    </el-tag>
-                                                </router-link>
-                                            </template>
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="Length_Avg"
-                                                label="Avg Length"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                label="Clustering level"
-                                                header-align="center"
-                                                align="center">
-                                            3
-                                        </el-table-column>
-                                    </el-table>
-                                    <el-row type="flex" justify="center">
-                                        <h4>Environments</h4>
-                                    </el-row>
-                                    <router-link v-if="Family_Environment.Freshwater!='0'" :to="{path:'/environment',query:{Environment:'Freshwater'}}">
-                                        <el-tag style="margin-right: 18px; margin-bottom: 18px" type="info">
-                                            <i class="el-icon-connection"></i>Freshwater
-                                        </el-tag>
-                                    </router-link>
-                                    <router-link v-if="Family_Environment.Gut!='0'" :to="{path:'/environment',query:{Environment:'Gut'}}">
-                                        <el-tag style="margin-right: 18px; margin-bottom: 18px" type="info">
-                                            <i class="el-icon-connection"></i>Gut
-                                        </el-tag>
-                                    </router-link>
-                                    <router-link v-if="Family_Environment.Marine!='0'" :to="{path:'/environment',query:{Environment:'Marine'}}">
-                                        <el-tag style="margin-right: 18px; margin-bottom: 18px" type="info">
-                                            <i class="el-icon-connection"></i>Marine
-                                        </el-tag>
-                                    </router-link>
-                                    <router-link v-if="Family_Environment.Milk!='0'" :to="{path:'/environment',query:{Environment:'Milk'}}">
-                                        <el-tag style="margin-right: 18px; margin-bottom: 18px" type="info">
-                                            <i class="el-icon-connection"></i>Milk
-                                        </el-tag>
-                                    </router-link>
-                                    <router-link v-if="Family_Environment.Oral_Cavity!='0'" :to="{path:'/environment',query:{Environment:'Oral_Cavity'}}">
-                                        <el-tag style="margin-right: 18px; margin-bottom: 18px" type="info">
-                                            <i class="el-icon-connection"></i>Oral_Cavity
-                                        </el-tag>
-                                    </router-link>
-                                    <router-link v-if="Family_Environment.Respiratory_Tract!='0'" :to="{path:'/environment',query:{Environment:'Respiratory_Tract'}}">
-                                        <el-tag style="margin-right: 18px; margin-bottom: 18px" type="info">
-                                            <i class="el-icon-connection"></i>Respiratory_Tract
-                                        </el-tag>
-                                    </router-link>
-                                    <router-link v-if="Family_Environment.Skin!='0'" :to="{path:'/environment',query:{Environment:'Skin'}}">
-                                        <el-tag style="margin-right: 18px; margin-bottom: 18px" type="info">
-                                            <i class="el-icon-connection"></i>Skin
-                                        </el-tag>
-                                    </router-link>
-                                    <router-link v-if="Family_Environment.Soil!='0'" :to="{path:'/environment',query:{Environment:'Soil'}}">
-                                        <el-tag style="margin-right: 18px; margin-bottom: 18px" type="info">
-                                            <i class="el-icon-connection"></i>Soil
-                                        </el-tag>
-                                    </router-link>
-                                    <router-link v-if="Family_Environment.Surface!='0'" :to="{path:'/environment',query:{Environment:'Surface'}}">
-                                        <el-tag style="margin-right: 18px; margin-bottom: 18px" type="info">
-                                            <i class="el-icon-connection"></i>Surface
-                                        </el-tag>
-                                    </router-link>
-                                    <router-link v-if="Family_Environment.Vagina!='0'" :to="{path:'/environment',query:{Environment:'Vagina'}}">
-                                        <el-tag style="margin-right: 18px; margin-bottom: 18px" type="info">
-                                            <i class="el-icon-connection"></i>Vagina
-                                        </el-tag>
-                                    </router-link>
-                                    <router-link v-if="Family_Environment.Wastewater!='0'" :to="{path:'/environment',query:{Environment:'Wastewater'}}">
-                                        <el-tag style="margin-right: 18px; margin-bottom: 18px" type="info">
-                                            <i class="el-icon-connection"></i>Wastewater
-                                        </el-tag>
-                                    </router-link>
-                                    <el-divider></el-divider>
-                                    <el-row type="flex" justify="center">
-                                        <h4>Downloads</h4>
-                                    </el-row>
-                                    <el-table
-                                            :data="Family_Avg_Feature"
-                                            stripe
-                                            border>
-                                        <el-table-column
-                                                label="HMM Logo"
-                                                header-align="center"
-                                                align="center">
-                                            <el-button icon="el-icon-picture" circle
-                                                       @click=logoDownload(familyId)>
-                                            </el-button>
-                                        </el-table-column>
-                                        <el-table-column
-                                                label="Tree Figure"
-                                                header-align="center"
-                                                align="center">
-                                            <el-button icon="el-icon-s-fold" circle
-                                                       @click=treesFiguresDownload(familyId)>
-                                            </el-button>
-                                        </el-table-column>
-                                        <el-table-column
-                                                label="Alignment"
-                                                header-align="center"
-                                                align="center">
-                                            <el-button icon="el-icon-files" circle
-                                                       @click=alnDownload(familyId)>
-                                            </el-button>
-                                        </el-table-column>
-                                        <el-table-column
-                                                label="Tree"
-                                                header-align="center"
-                                                align="center">
-                                            <el-button icon="el-icon-notebook-2" circle
-                                                       @click=treesDownload(familyId)>
-                                            </el-button>
-                                        </el-table-column>
-                                        <el-table-column
-                                                label="HMM"
-                                                header-align="center"
-                                                align="center">
-                                            <el-button icon="el-icon-document" circle
-                                                       @click=hmmDownload(familyId)>
-                                            </el-button>
-                                        </el-table-column>
-                                        <el-table-column
-                                                label="Features"
-                                                header-align="center"
-                                                align="center">
-                                            <el-button icon="el-icon-data-analysis" circle
-                                                       @click=familyFeatureDownload(familyId)>
-                                            </el-button>
-                                        </el-table-column>
-                                    </el-table>
-                                </el-tab-pane>
-                                <el-tab-pane label="Avg Features" name="avg_feature">
-                                    <el-table
-                                            :data="Family_Avg_Feature"
-                                            stripe
-                                            border>
-                                        <el-table-column
-                                                prop="tinyAA"
-                                                label="tinyAA"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="smallAA"
-                                                label="smallAA"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="aliphaticAA"
-                                                label="aliphaticAA"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="aromaticAA"
-                                                label="aromaticAA"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="nonpolarAA"
-                                                label="nonpolarAA"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="polarAA"
-                                                label="polarAA"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="chargedAA"
-                                                label="chargedAA"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="basicAA"
-                                                label="basicAA"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                    </el-table>
-                                    <el-table
-                                            :data="Family_Avg_Feature"
-                                            stripe
-                                            border>
-                                        <el-table-column
-                                                prop="acidicAA"
-                                                label="acidicAA"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="charge"
-                                                label="charge"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="pI"
-                                                label="pI"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="aindex"
-                                                label="aindex"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="instaindex"
-                                                label="instaindex"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="boman"
-                                                label="boman"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="hydrophobicity"
-                                                label="hydrophobicity"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="hmoment"
-                                                label="hmoment"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                    </el-table>
-                                    <el-table
-                                            :data="Family_Avg_Feature"
-                                            stripe
-                                            border>
-                                        <el-table-column
-                                                prop="SA_Group1_residue0"
-                                                label="SA.Group1.residue0"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="SA_Group2_residue0"
-                                                label="SA.Group2.residue0"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="SA_Group3_residue0"
-                                                label="SA.Group3.residue0"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="HB_Group1_residue0"
-                                                label="HB.Group1.residue0"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="HB_Group2_residue0"
-                                                label="HB.Group2.residue0"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="HB_Group3_residue0"
-                                                label="HB.Group3.residue0"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                    </el-table>
-                                    <el-table
-                                            :data="Family_Avg_Feature"
-                                            stripe
-                                            border>
-                                        <el-table-column
-                                                prop="AGG"
-                                                label="AGG"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="AMYLO"
-                                                label="AMYLO"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="TURN"
-                                                label="TURN"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="HELIX"
-                                                label="HELIX"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="HELAGG"
-                                                label="HELAGG"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="BETA"
-                                                label="BETA"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                    </el-table>
-                                </el-tab-pane>
-                                <el-tab-pane label="Std Features" name="std_feature">
-                                    <el-table
-                                            :data="Family_Std_Feature"
-                                            stripe
-                                            border>
-                                        <el-table-column
-                                                prop="tinyAA"
-                                                label="tinyAA"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="smallAA"
-                                                label="smallAA"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="aliphaticAA"
-                                                label="aliphaticAA"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="aromaticAA"
-                                                label="aromaticAA"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="nonpolarAA"
-                                                label="nonpolarAA"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="polarAA"
-                                                label="polarAA"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="chargedAA"
-                                                label="chargedAA"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="basicAA"
-                                                label="basicAA"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                    </el-table>
-                                    <el-table
-                                            :data="Family_Std_Feature"
-                                            stripe
-                                            border>
-                                        <el-table-column
-                                                prop="acidicAA"
-                                                label="acidicAA"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="charge"
-                                                label="charge"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="pI"
-                                                label="pI"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="aindex"
-                                                label="aindex"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="instaindex"
-                                                label="instaindex"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="boman"
-                                                label="boman"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="hydrophobicity"
-                                                label="hydrophobicity"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="hmoment"
-                                                label="hmoment"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                    </el-table>
-                                    <el-table
-                                            :data="Family_Std_Feature"
-                                            stripe
-                                            border>
-                                        <el-table-column
-                                                prop="SA_Group1_residue0"
-                                                label="SA.Group1.residue0"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="SA_Group2_residue0"
-                                                label="SA.Group2.residue0"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="SA_Group3_residue0"
-                                                label="SA.Group3.residue0"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="HB_Group1_residue0"
-                                                label="HB.Group1.residue0"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="HB_Group2_residue0"
-                                                label="HB.Group2.residue0"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="HB_Group3_residue0"
-                                                label="HB.Group3.residue0"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                    </el-table>
-                                    <el-table
-                                            :data="Family_Std_Feature"
-                                            stripe
-                                            border>
-                                        <el-table-column
-                                                prop="AGG"
-                                                label="AGG"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="AMYLO"
-                                                label="AMYLO"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="TURN"
-                                                label="TURN"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="HELIX"
-                                                label="HELIX"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="HELAGG"
-                                                label="HELAGG"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="BETA"
-                                                label="BETA"
-                                                header-align="center"
-                                                align="center">
-                                        </el-table-column>
-                                    </el-table>
-                                </el-tab-pane>
-                            </el-tabs>
-                        </el-col>
-                    </el-row>
-                </el-card>
-            </el-col>
-        </el-row>
-    </div>
+                  </el-col>
+                  <el-col :span="14" :offset="2">
+                    <!--                   TODO Geographical distribution -->
+                    <div id="global distribution">
+                      <Plotly :data="GeoPlotData()"
+                              :layout="GeoPlotLayout()"
+                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                    </div>
+                  </el-col>
+                </el-row>
+
+                <el-divider></el-divider>
+
+                <el-row>
+                  <el-col style="margin-left: 30px" :offset="1">
+                    <h3 id="distribution" class="subsection-title">Distribution</h3>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="10" style="magrin-left: 30px">
+                    <!--                    TODO Bigger title  and figure captions-->
+                    <h4 id="distribution-across-habitats">Habitats</h4>
+                    <div>
+                      <Plotly :data="EnvPlotData()"
+                              :layout="EnvPlotLayout()"
+                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                    </div>
+                  </el-col>
+                  <el-col :span="3" style="line-height: 100px">
+                    <el-divider direction="vertical"></el-divider>
+                  </el-col>
+
+                  <el-col :span="10">
+                    <!--                    TODO Bigger title and figure captions -->
+                    <h4 id="distribution-across-hosts">Hosts</h4>
+                    <div>
+                      <Plotly :data="HostPlotData()"
+                              :layout="HostPlotLayout()"
+                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                    </div>
+                  </el-col>
+                  <!--                <div>-->
+                  <!--                  <Plotly :data="DistributionGraphData()"-->
+                  <!--                          :layout="DistributionGraphLayout()"-->
+                  <!--                          :toImageButtonOptions="{format: 'svg', scale: 1}"/>-->
+                  <!--                </div>-->
+                </el-row>
+                <br/>
+                <el-divider></el-divider>
+                <el-row>
+                  <el-col style="margin-left: 30px" :offset="1">
+                    <h3 id="amps" class="subsection-title">Associated AMPs</h3>
+                    <!--                    TODO add download button here -->
+                    <el-table :data="associatedAMPs.currentData" stripe style="width: 100%"
+                              v-loading="loading"
+                              element-loading-text="Loading..."
+                              element-loading-spinner="el-icon-loading">
+                      <el-table-column label="Accession" width="200">
+                        <template #default="props">
+                          <el-button @click="AMPDetail(props.row.accession)" type="text">{{ props.row.accession }}</el-button>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="Peptide sequence" width="500%">
+                        <template #default="props">
+                          <pre><code><small>{{ props.row.sequence }}</small></code></pre>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="# smORF genes" width="150%">
+                        <template #default="props">
+                          <!--                <el-tooltip class="item" effect="dark" content="Associated number of small ORF genes." placement="right">-->
+                          <span>{{ props.row.metadata.info.totalItem }}</span>
+                          <!--                </el-tooltip>-->
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="Tag" width="150%">
+                        <template #default="props">
+                          <el-tag :type="props.row.quality_tag.level"> {{ props.row.quality_tag.msg }} </el-tag>
+                          <!--                <el-tag type="warning"> {{ props.row.quality_tag.msg }} </el-tag>-->
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                    <el-pagination
+                        @size-change="setAMPsPageSize"
+                        @current-change="setAMPsPage"
+                        :page-sizes="[5, 10, 20, 50, 100]"
+                        :page-size="5"
+                        layout="total, sizes, prev, pager, next, jumper"
+                        :total="associatedAMPs.info.totalRow"
+                    >
+                    </el-pagination>
+<!--                    <el-table :data="associatedAmps" stripe :default-sort="{prop: 'GMSC', order: 'ascending'}" width="100%">-->
+<!--                      <el-table-column prop="GMSC" label="Gene" sortable width="260%"/>-->
+<!--                      <el-table-column label="Gene sequense" sortable width="400%">-->
+<!--                        <template #default="props">-->
+<!--                          <pre><code><small>{{ props.row.gene_sequence }}</small></code></pre>-->
+<!--                        </template>-->
+<!--                      </el-table-column>-->
+<!--                      <el-table-column prop="sample" label="Sample/Genome" sortable width="150%"/>-->
+<!--                      <el-table-column prop="host_scientific_name" label="Host" sortable width="150%"/>-->
+<!--                      <el-table-column prop="origin_scientific_name" label="Origin" sortable width="150%"/>-->
+<!--                    </el-table>-->
+<!--                    <div class="block">-->
+<!--                      <el-pagination-->
+<!--                          @size-change="setMetadataPageSize"-->
+<!--                          @current-change="setMetadataPage"-->
+<!--                          :page-sizes="[5, 10, 20, 50, 100]"-->
+<!--                          :page-size="5"-->
+<!--                          layout="total, sizes, prev, pager, next, jumper"-->
+<!--                          :total="metadata.info.totalRow"-->
+<!--                      >-->
+<!--                      </el-pagination>-->
+<!--                    </div>-->
+
+                  </el-col>
+                </el-row>
+              </el-tab-pane>
+              <el-tab-pane label="Features">
+                <h3 id="properties">Biochemical properties</h3>
+<!--                <el-col :span="12">-->
+<!--                  <div style="text-align: left">-->
+<!--&lt;!&ndash;                    should be a table &ndash;&gt;-->
+<!--                    <div>-->
+<!--                      <span class="info-item" id="charge-neutral-pH">Charge at pH 7.0: </span>-->
+<!--                      <span class="info-item-value">{{ features.Charge_at_pH_7 }} </span>-->
+<!--                    </div>-->
+<!--                    <div>-->
+<!--                      <span class="info-item" id="isoeletric-point">Isoeletric point: </span>-->
+<!--                      <span class="info-item-value"> {{ features.Isoelectric_point }} </span>-->
+<!--                    </div>-->
+<!--                    <div>-->
+<!--                      <span class="info-item" id="molar-extinction">Molar extinction: </span>-->
+<!--                      <span class="info-item-value">-->
+<!--                      {{ features.Molar_extinction.cysteines_reduced }}-->
+<!--                      {{ features.Molar_extinction.cystines_residues }}-->
+<!--                    </span>-->
+<!--                    </div>-->
+<!--                    <div>-->
+<!--                      <span class="info-item" id="aromaticity">Aromaticity: </span>-->
+<!--                      <span class="info-item-value">{{ features.Aromaticity }}</span>-->
+<!--                    </div>-->
+<!--                    <div>-->
+<!--                      <span class="info-item" id="gravy">GRAVY: </span>-->
+<!--                      <span class="info-item-value"> {{ features.GRAVY }}</span>-->
+<!--                    </div>-->
+<!--                    <div>-->
+<!--                      <span class="info-item" id="instability-index">Instability index: </span>-->
+<!--                      <span class="info-item-value">{{ features.Instability_index }}</span>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </el-col>-->
+<!--                <br>-->
+<!--                &lt;!&ndash;            <h3 id="graphs">Graphs</h3>&ndash;&gt;-->
+<!--                <el-row>-->
+<!--                  <el-col>-->
+<!--                    &lt;!&ndash;                  <h4 id="features">Features</h4>&ndash;&gt;-->
+<!--                    <div>-->
+<!--                      <Plotly :data="featureGraphData()"-->
+<!--                              :layout="featureGraphLayout()"-->
+<!--                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>-->
+<!--                    </div>-->
+<!--                    EZenergy.  xxxxx. Flexibility.  xxxxx.  Hydrophobicity Parker. xxxxx.-->
+<!--                  </el-col>-->
+<!--                </el-row>-->
+<!--                <br/>-->
+              </el-tab-pane>
+              <el-tab-pane label="Downloads">
+                <el-table :data="downloads" v-loading="loading">
+                  <el-table-column prop="name" label="Name"></el-table-column>
+                  <el-table-column prop="file" label="File">
+                    <template #default="props">
+                      <el-link :href="props.row.file" type="primary"> Download </el-link>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="desc" label="Description"></el-table-column>
+                </el-table>
+              </el-tab-pane>
+            </el-tabs>
+          </el-main>
+        </el-container>
+      </el-col>
+    </el-row>
+
+  </div>
 </template>
 
 <style>
-    .el-tabs__item {
-        font-size: 17px;
-    }
+.nav-section {
+  font-size: medium;
+  font-weight: bold
+}
+.nav-subsection{
+  line-height: 1.5;
+  font-size: medium;
+  font-weight: normal;
+}
+.el-carousel__item h3 {
+  color: #475669;
+  font-size: 14px;
+  opacity: 0.75;
+  line-height: 200px;
+  margin: 0;
+}
+.el-tabs__item {
+  font-size: 17px;
+}
+.el-aside {
+  /*background-color: #D3DCE6;*/
+  color: #333;
+  text-align: center;
+  line-height: 200px;
+}
+
+.el-main {
+  color: #333;
+  text-align: center;
+}
 </style>
 
 <script>
-    export default {
-        name: 'Family_Card',
+import Plotly from "../components/Plotly"
+import * as clipboard from "clipboard-polyfill/text";
 
-        data() {
-            return {
-                familyId: '',
-                type: 'primary',
-                searchLoading: false,
 
-                isNull: true,
-                tabLoading: false,
-                activeName: 'basic',
-                Family_AMP: [],
-                Family_Environment: [],
-                Family_Avg_Feature: [],
-                Family_Std_Feature: [],
-            }
-        },
-
-        computed: {
-            shadow: function () {
-                if (this.isNull) {
-                    return 'never';
-                } else {
-                    return 'always';
-                }
-            }
-        },
-
-        mounted() {
-            if (Object.keys(this.$route.query).length !== 0) {
-                if (this.$route.query.Family_ID) {
-                    this.familyId = this.$route.query.Family_ID;
-                }
-                this.isNull = true;
-                this.tabLoading = true;
-                this.search();
-            }
-        },
-
-        methods: {
-            clickSearch() {
-                if (this.familyId !== "") {
-                    this.type = "danger";
-                    this.searchLoading = true;
-                    this.isNull = true;
-                    this.tabLoading = true;
-                    this.search();
-                } else {
-                    this.Family_AMP = [];
-                    this.Family_Environment = [];
-                    this.Family_Avg_Feature = [];
-                    this.Family_Std_Feature = [];
-                    this.isNull = true;
-                }
-            },
-
-            search() {
-                let self = this;
-                this.axios.get('/families/', {
-                    params: {
-                        familyId: this.familyId,
-                    }
-                }).then(function (response) {
-                    if (response.status === 200) {
-                        self.Family_AMP = response.data['Family_AMP'];
-                        self.Family_Environment = response.data['Family_Environment'][0];
-                        self.Family_Avg_Feature = response.data['Family_Avg_Feature'];
-                        self.Family_Std_Feature = response.data['Family_Std_Feature'];
-                        self.isNull = false;
-                    } else if (response.status === 204) {
-                        self.Family_AMP = [];
-                        self.Family_Environment = response.data['Family_Environment'][0];
-                        self.Family_Avg_Feature = [];
-                        self.Family_Std_Feature = [];
-                        self.isNull = true;
-                    }
-                    self.type = 'primary';
-                    self.searchLoading = false;
-                    self.tabLoading = false;
-                }).catch(function (error) {
-                    console.log(error);
-                });
-            },
-
-            logoDownload(file) {
-                this.download("logo/", file + ".pdf");
-            },
-
-            treesFiguresDownload(file) {
-                this.download("trees_figures/", file + ".ascII.txt");
-            },
-
-            alnDownload(file) {
-                this.download("aln/", file + ".aln");
-            },
-
-            treesDownload(file) {
-                this.download("trees/", file + ".nwk");
-            },
-
-            hmmDownload(file) {
-                this.download("hmm/", file + ".hmm");
-            },
-
-            familyFeatureDownload(file) {
-                this.download("family_feature/", file + ".feat");
-            },
-
-            download(path, file) {
-                let self = this;
-                this.tabLoading = true;
-                this.axios.get('/family/download', {
-                    params: {
-                        url: path + file
-                    },
-                    responseType: "blob"
-                }).then(function (response) {
-                    if (response.status === 200) {
-                        var url = window.URL.createObjectURL(response.data);
-                        var a = document.createElement("a");
-                        document.body.appendChild(a);
-                        a.href = url;
-                        a.download = file;
-                        a.click();
-                    }
-                    self.tabLoading = false;
-                }).catch(function (error) {
-                    console.log(error);
-                });
-            }
+export default {
+  name: 'Family_card',
+  components: {
+    Plotly
+  },
+  data() {
+    let features_base = {
+          MW: 0,
+          Length: 0,
+          Molar_extinction: {cysteines_reduced: 0, cystines_residues: 0},
+          Aromaticity: 0,
+          GRAVY: 0,
+          Instability_index: 0,
+          Isoelectric_point: 0,
+          Charge_at_pH_7: 0,
+          Secondary_structure: {helix: 0, turn: 0, sheet: 0},
         }
+    return {
+      loading: false,
+      accession: this.$route.query.accession,
+      consensusSequence: '',
+      num_amps: 0,
+      feature_statistics: {
+        count: features_base, mean: features_base, std: features_base,
+        min: features_base, '25%': features_base, '50%': features_base, '75%': features_base, max: features_base
+      },
+      associatedAMPs: {
+        info: {
+          pageSize: 5,
+          totalPage: 1,
+          totalRow: 1,
+          currentPage: 1,
+        },
+        currentData: [],
+      },
+      distribution: {
+        geo: {
+          type: "bubble map",
+          lat: [], lon: [], size: [], colors: []
+        },
+        habitat: {
+          type: "sunburst plot",
+          labels: [], parents: [], values: [], colorway: []
+        },
+        host: {
+          type: "sunburst plot",
+          labels: [], parents: [], values: [], colorway: []
+        },
+        origin: {
+          type: "sunburst plot",
+          labels: [], parents: [], values: [], colorway: []
+        }
+      },
+      downloads: []
     }
+  },
+  created() {
+    let self = this
+    // https://stackoverflow.com/questions/50768678/axios-ajax-show-loading-when-making-ajax-request
+    this.axios.interceptors.request.use((config) => {
+      self.loading = true
+      // trigger 'loading=true' event here
+      return config;
+    }, (error) => {
+      self.loading = false
+      // trigger 'loading=false' event here
+      return Promise.reject(error);
+    });
+    this.axios.interceptors.response.use((response) => {
+      self.loading = false
+      // trigger 'loading=false' event here
+      return response;
+    }, (error) => {
+      self.loading = false
+      // trigger 'loading=false' event here
+      return Promise.reject(error);
+    });
+    this.getFamily()
+    this.setAMPsPageSize(5)
+  },
+  mounted() {
+
+  },
+  computed: {
+    currentMetadata () {
+      return this.metadata.currentData
+    }
+  },
+  methods: {
+    getFamily(){
+      let self = this
+      let fam_accession = this.accession
+      this.axios.get('/families/' + fam_accession, {})
+          .then(function (response) {
+            console.log(response.data)
+            // self.consensusSequence = response.data.sequence
+            self.num_amps = response.data.num_amps;
+            self.feature_statistics = response.data.feature_statistics
+            self.distribution = response.data.distributions
+            self.downloads = self.toDownloadsTable(response.data.downloads)
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
+      // let config = {
+      //   params: {
+      //     family: fam_accession
+      //   }
+      // }
+      // this.axios.get('amps', config)
+      //     .then(function (response) {
+      //       self.associatedAmps.currentData = response.data.data
+      //       self.associatedAmps.info.currentPage = 1
+      //       self.associatedAmps.info.totalPage = response.data.info.totalPage
+      //       self.associatedAmps.info.totalRow = response.data.info.totalItem
+      //     })
+      //     .catch(function(error) {
+      //       console.log(error)
+      //     })
+    },
+    SecStructurePieData(){
+      let strucData = this.feature_statistics.mean.Secondary_structure
+      strucData.disordered = 1 - strucData.turn - strucData.helix - strucData.sheet
+      return [{
+        type: 'pie', values: Object.values(strucData), labels: Object.keys(strucData),
+        marker: {colors: this.ColorPalette('quanlitative')},
+        textinfo: "label+percent", insidetextorientation: "radial"}]
+    },
+    setAMPsPage(page) {
+      // this.$message('setting to ' + page + 'th page')
+      // Important: page index starting from zero.
+      this.associatedAMPs.info.currentPage = page - 1
+      console.log(this.associatedAMPs.info.currentPage)
+      let config = {
+        params: {
+          family: this.accession,
+          page: this.associatedAMPs.info.currentPage,
+          page_size: this.associatedAMPs.info.pageSize
+        }
+      }
+      let self = this
+      this.axios.get('/amps/', config)
+          .then(function (response) {
+            console.log(response.data)
+            self.associatedAMPs.currentData = self.initQualityTag(response.data.data)
+            self.associatedAMPs.info.totalPage = response.data.info.totalPage
+            self.associatedAMPs.info.totalRow = response.data.info.totalItem
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
+    },
+    setAMPsPageSize(size) {
+      this.associatedAMPs.info.pageSize = size
+      this.setAMPsPage(1)
+    },
+    GeoPlotData(){
+      let data = this.distribution.geo
+      return [{
+        type: 'scattergeo',
+        //locationmode: 'USA-states',
+        lat: data.lat,
+        lon: data.lon,
+        marker: {
+          size: data.size,
+          sizeref: 10,
+          // FIXME
+          // color: this.MapColors(data.colors, this.ColorPalette('quanlitative')),
+          line: {
+            color: 'black',
+            size: 2
+          }
+        },
+      }]
+    },
+    GeoPlotLayout(){
+      return {
+        showlegend: false,
+        geo: {
+          scope: 'global',
+          resolution: 50,
+          showland: true,
+          landcolor: 'rgb(217, 217, 217)',
+          subunitwidth: 1,
+          countrywidth: 1,
+          subunitcolor: 'rgb(255,255,255)',
+          countrycolor: 'rgb(255,255,255)'
+        },
+        margin: {
+          l: 0,
+          r: 0,
+          t: 0,
+          b: 0
+        }
+      }
+    },
+    EnvPlotData(){
+      let data = this.distribution
+      let env_data = {
+        type: "sunburst",
+        labels: data.habitat.labels, //["Eve", "Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
+        parents: data.habitat.parents, //["", "Eve", "Eve", "Seth", "Seth", "Eve", "Eve", "Awan", "Eve" ],
+        values:  data.habitat.values, //[65, 14, 12, 10, 2, 6, 6, 4, 4],
+        leaf: {opacity: 0.4},
+        // marker: {line: {"width": 2}},
+        branchvalues: 'total'
+      }
+      return [env_data]
+    },
+    EnvPlotLayout(){
+      return {
+        margin: {l: 40, r: 40, b: 40, t: 40}, autosize: true,
+        sunburstcolorway: this.ColorPalette('quanlitative')
+      };
+    },
+    HostPlotData(){
+      let data = this.distribution
+      let host_data = {
+        type: "sunburst",
+        labels: data.host.labels, //["Eve", "Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
+        parents: data.host.parents, //["", "Eve", "Eve", "Seth", "Seth", "Eve", "Eve", "Awan", "Eve" ],
+        values:  data.host.values, //[65, 14, 12, 10, 2, 6, 6, 4, 4],
+        leaf: {opacity: 0.4},
+        // marker: {line: {"width": 2}},
+        branchvalues: 'total'
+      }
+      return [host_data]
+    },
+    HostPlotLayout(){
+      return {
+        margin: {l: 40, r: 40, b: 40, t: 40}, autosize: true,
+        sunburstcolorway: this.ColorPalette('quanlitative')
+      };
+    },
+    DistributionGraphData(){
+      let data = this.distribution
+      let habitat_data = {
+        type: "sunburst",
+        labels: data.habitat.labels, //["Eve", "Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
+        parents: data.habitat.parents, //["", "Eve", "Eve", "Seth", "Seth", "Eve", "Eve", "Awan", "Eve" ],
+        values:  data.habitat.values, //[65, 14, 12, 10, 2, 6, 6, 4, 4],
+        leaf: {opacity: 0.4},
+        // marker: {line: {"width": 2}},
+        branchvalues: 'total'
+      }
+      let host_data = {
+        type: "sunburst",
+        labels: data.host.labels, //['Viruses', "Anelloviridae", "unclassified Anelloviridae", "Small anellovirus", "cellular organisms", "Bacteria", "Terrabacteria group", "Actinobacteria"],
+        parents: data.host.parents, // ["", 'Viruses', "Anelloviridae", "unclassified Anelloviridae", "", "cellular organisms", "Bacteria", "Terrabacteria group"],
+        values: data.host.values, //[14, 14, 14, 14, 6, 6, 6, 6],
+        outsidetextfont: {size: 20, color: "#377eb8"},
+        leaf: {opacity: 0.4},
+        // marker: {line: {width: 2}},
+        branchvalues: 'total',
+        visible: false,
+      }
+      return [habitat_data, host_data]
+    },
+    DistributionGraphLayout(){
+      return {
+        height: 400, margin: {l: 40, r: 40, b: 40, t: 40}, autosize: true,
+        sunburstcolorway: this.ColorPalette('quanlitative'),
+        updatemenus: [{
+          direction: 'left', type: 'buttons', pad: {r: 10, t: 10},
+          showactive: true, x: 0.5, y: 1.2, yanchor: 'top', xanchor: 'center',
+          buttons: [{
+            method: 'update',
+            args: [{'visible': this.makeTraceVisible(0, 2)}],
+            label: 'Habitats'
+          }, {
+            method: 'update',
+            args: [{'visible': this.makeTraceVisible(1, 2)}],
+            label: 'Hosts'},
+          ]}
+        ]}
+    },
+    featureGraphData(){
+      let self = this
+      let data = self.feature_statistics.graph_points
+      let line = {color: 'blue'}
+      return [
+
+        {x: data.transfer_energy.x, y: data.transfer_energy.y, line: line, marker: {color: data.transfer_energy.c}, visible: true,},
+        {x: data.flexibility.x, y: data.flexibility.y, line: line, visible: false},
+        {x: data.hydrophobicity_parker.x, y: data.hydrophobicity_parker.y, line: line, visible: false},
+        {x: data.surface_accessibility.x, y: data.surface_accessibility.y, line: line, visible: false}
+      ]
+    },
+    featureGraphLayout(){
+      return {
+        height: 400, margin: {l: 100, r: 100, b: 80, t: 40},
+        // xaxis: {
+        //   title: {
+        //     text: 'Window start position'
+        //   },
+        //   showticklabels: true,
+        //   tickfont: {
+        //     // family: 'Old Standard TT, serif',
+        //     size: 10,
+        //     tickangle: 90,
+        //     color: ['green', 'red', 'blue']//this.features.graph_points.surface_accessibility.c
+        //   },
+        //   // label: {
+        //   //   font: {
+        //   //     size: 10,
+        //   //     color: this.features.graph_points.surface_accessibility.c
+        //   //   }
+        //   // }
+        // },
+        // yaxis: {
+        //   title: {
+        //     text: 'Selected feature'
+        //   }
+        // },
+        updatemenus: [
+          {
+            direction: 'left', type: 'buttons', pad: {r: 10, t: 10},
+            showactive: true, x: 0.5, y: 1.2, yanchor: 'top', xanchor: 'center',
+            buttons: [
+              {method: 'restyle', args: ['visible', this.makeTraceVisible(0, 4)], label: 'EZ energy'},
+              {method: 'restyle', args: ['visible', this.makeTraceVisible(1, 4)], label: 'Flexibility'},
+              {method: 'restyle', args: ['visible', this.makeTraceVisible(2, 4)], label: 'Hydrophobicity - Parker'},
+              {method: 'restyle', args: ['visible', this.makeTraceVisible(3, 4)], label: 'Surface Accessibility'}
+            ]
+          }],
+      }
+    },
+    comparisonGraphData(){
+      function makeTrace(i) {
+        return {
+          y: Array.apply(null, Array(100)).map(() => Math.random()),
+          line: {
+            color: 'black'
+          },
+          visible: i === 0,
+          //name: ['EZenergy', 'Flexibility', 'Hydrophobicity Parker', 'SA AMPs'].slice(i),
+        };
+      }
+      return [0, 1, 2, 3, 4, 5, 6, 7].map(makeTrace)
+    },
+    comparisonGraphLayout(){
+      return {
+        direction: 'left', type: 'buttons', pad: {r: 10, t: 10},
+        updatemenus: [
+          {
+            direction: 'left', type: 'buttons', pad: {'r': 10, 't': 10},
+            showactive: true, x: 0.5, y: 1.4, yanchor: 'top', xanchor: 'center',
+            buttons: [
+              {method: 'restyle', args: ['visible', this.makeTraceVisible(4, 12)], label: 'aa composition diviation'},
+              {method: 'restyle', args: ['visible', this.makeTraceVisible(5, 12)], label: 'aindex_z'},
+              {method: 'restyle', args: ['visible', this.makeTraceVisible(6, 12)], label: 'boman_z'},
+              {method: 'restyle', args: ['visible', this.makeTraceVisible(7, 12)], label: 'charge_z'}],
+          },
+          {
+            direction: 'left', type: 'buttons', pad: {'r': 10, 't': 10},
+            showactive: true, x: 0.5, y: 1.2, yanchor: 'top', xanchor: 'center',
+            buttons: [
+              {method: 'restyle', args: ['visible', this.makeTraceVisible(8, 12)], label: 'hmoment_z'},
+              {method: 'restyle', args: ['visible', this.makeTraceVisible(9, 12)], label: 'hydrophobicity z'},
+              {method: 'restyle', args: ['visible', this.makeTraceVisible(10, 12)], label: 'instaindex_z'},
+              {method: 'restyle', args: ['visible', this.makeTraceVisible(11, 12)], label: 'pI_z'}]
+          }
+        ]
+      }
+    },
+    MapColors(categories, colors){
+      const levels = [...new Set(categories)]
+      console.log(levels)
+      const mapping = []
+      for (let i=0; i<=categories.length; i++){
+        mapping[levels[i]] = colors[i]
+      }
+      return categories.map(function (cate) {
+        return mapping[cate]
+      })
+    },
+    ColorPalette(kind){
+      if (kind === 'sequential'){
+        return ['#ffffe5', '#fff7bc', '#fee391', '#fec44f', '#fe9929', '#ec7014', '#cc4c02', '#8c2d04']
+      }
+      else if (kind === 'diverging'){
+        return ['#8c510a', '#bf812d', '#dfc27d', '#f6e8c3', '#c7eae5', '#80cdc1', '#35978f', '#01665e']
+      }
+      else if (kind === 'quanlitative'){
+        return ['#1b9e77', '#d95f02', '#7570b3', '#e7298a', '#66a61e', '#e6ab02', '#a6761d', '#666666']
+      }
+      else{
+        console.log('please set the `kind` option for color palette.')
+        return null
+      }
+    },
+    exportSVG(){
+      return {
+        toImageButtonOptions: {
+          format: 'svg', // one of png, svg, jpeg, webp
+          filename: 'custom_image',
+          height: 500,
+          width: 700,
+          scale: 1 // Multiply title/legend/axis/canvas sizes by this factor
+        }
+      }
+    },
+    getFamilyPageURL(){
+      return "http://119.3.63.164/family?accession=" + this.family
+    },
+    CopyPeptideSequence(){
+      clipboard.writeText(this.sequence).then(
+          () => { console.log("success!"); },
+          () => { console.log("error!"); }
+      )
+      this.$message('Amino acid sequence copied!')
+    },
+    makeTraceVisible(index, totalTrace){
+      var visibility = []
+      for (var i=0; i<totalTrace; i++){
+        visibility[i] = false
+      }
+      visibility[index] = true
+      console.log(visibility)
+      return visibility
+    },
+    UnpackCol(rows, key) {
+      return rows.map(function(row) { return row[key]; });
+    },
+    initQualityTag(amps){
+      for (let i=0; i < amps.length; i++) {
+        Object.assign(amps[i], {quality_tag: {msg: 'Not available', level: 'warning'}})
+      }
+      return amps
+    },
+    downloadCurrPage(){
+      print()
+    },
+    AMPDetail(accession){
+      window.open('/amp?accession='+accession, '_blank')
+    },
+    toDownloadsTable(downloads){
+      let tableData = []
+      for(const [key, value] of Object.entries(downloads)){
+        let desc = ''
+        if (key === "alignment"){
+          desc = ''
+        } else if (key === "sequences") {
+          desc = ''
+        } else if (key === "hmm_logo") {
+          desc = ''
+        } else if (key === "hmm_profile") {
+          desc = ''
+        } else if (key === "sequence_logo") {
+          desc = ''
+        } else if (key === "tree_figure") {
+          desc = ''
+        } else if (key === "tree_nwk") {
+          desc = ''
+        } else {
+          console.log('unknown type of download.')
+        }
+        tableData.push({name: key, file: value, desc: desc})
+      }
+      return tableData
+    },
+  }
+}
+// window.addEventListener("DOMContentLoaded", function () {
+//   const button = document.body.appendChild(document.createElement("button"));
+//   button.textContent = "Copy";
+//   button.addEventListener("click", this.CopyPeptideSequence);
+// });
 </script>

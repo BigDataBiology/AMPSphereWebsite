@@ -5,6 +5,7 @@ import API from '../views/API.vue'
 import Downloads from '../views/Downloads.vue'
 // import Help from '../views/Help.vue'
 import AMP_card from '../views/AMP_Card.vue'
+import Family_card from "../views/Family_Card";
 import About from '../views/About.vue'
 import Contact from '../views/Contact.vue'
 import SequenceSearch from "../views/SequenceSearch";
@@ -54,6 +55,14 @@ const routes = [
         component: AMP_card,
         meta:{
             title: 'AMPSphere: AMP'
+        },
+    },
+    {
+        path: "/family",
+        name: "Family",
+        component: Family_card,
+        meta:{
+            title: 'AMPSphere: Family'
         },
     },
     {
