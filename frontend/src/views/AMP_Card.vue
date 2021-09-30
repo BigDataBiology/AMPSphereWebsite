@@ -19,7 +19,7 @@
             <el-tabs type="border-card">
               <el-tab-pane label="Overview">
                 <el-row style="text-align: left">
-                  <el-col :span="6" style="margin-left: 30px">
+                  <el-col :span="6" class="margin-col">
                     <div class="info-item" id="sequence">
                       Peptide sequence
                       <el-button @click="CopyPeptideSequence()" icon="el-icon-document-copy"
@@ -125,72 +125,103 @@
                 </el-row>
               </el-tab-pane>
               <el-tab-pane label="Features">
-                <h3 id="properties">Biochemical properties</h3>
-                <el-col :span="12">
-                  <div style="text-align: left">
-                    <div>
-                    <span class="info-item" id="charge-neutral-pH">Charge at pH 7.0: </span>
-                    <span class="info-item-value">{{ features.Charge_at_pH_7 }} </span>
-                    </div>
-                    <div>
-                    <span class="info-item" id="isoeletric-point">Isoeletric point: </span>
-                    <span class="info-item-value"> {{ features.Isoelectric_point }} </span>
-                    </div>
-                    <div>
-                    <span class="info-item" id="molar-extinction">Molar extinction: </span>
-                    <span class="info-item-value">
+                <el-col class="margin-col">
+                  <h3 class="info-item" id="properties">Biochemical properties</h3>
+                  <el-row>
+                    <el-col :span="12">
+                      <div style="text-align: left">
+                        <div>
+                          <span class="info-item" id="charge-neutral-pH">Charge at pH 7.0: </span>
+                          <span class="info-item-value">{{ features.Charge_at_pH_7 }} </span>
+                        </div>
+                        <div>
+                          <span class="info-item" id="isoeletric-point">Isoeletric point: </span>
+                          <span class="info-item-value"> {{ features.Isoelectric_point }} </span>
+                        </div>
+                        <div>
+                          <span class="info-item" id="molar-extinction">Molar extinction: </span>
+                          <span class="info-item-value">
                       {{ features.Molar_extinction.cysteines_reduced }}
                       {{ features.Molar_extinction.cystines_residues }}
                     </span>
-                    </div>
-                    <div>
-                    <span class="info-item" id="aromaticity">Aromaticity: </span>
-                    <span class="info-item-value">{{ features.Aromaticity }}</span>
-                    </div>
-                    <div>
-                    <span class="info-item" id="gravy">GRAVY: </span>
-                    <span class="info-item-value"> {{ features.GRAVY }}</span>
-                    </div>
-                    <div>
-                    <span class="info-item" id="instability-index">Instability index: </span>
-                    <span class="info-item-value">{{ features.Instability_index }}</span>
-                    </div>
-                  </div>
-                </el-col>
-                <el-col :span="6" :offset="2">
-                  <div style="text-align: center" id="helical-wheel">
-                    <el-link :href="helicalwheel"
-                             target="_blank"
-                             type="primary">
-                      <span class="medium">Helical wheel</span>
-                    </el-link>
+                        </div>
+                        <div>
+                          <span class="info-item" id="aromaticity">Aromaticity: </span>
+                          <span class="info-item-value">{{ features.Aromaticity }}</span>
+                        </div>
+                        <div>
+                          <span class="info-item" id="gravy">GRAVY: </span>
+                          <span class="info-item-value"> {{ features.GRAVY }}</span>
+                        </div>
+                        <div>
+                          <span class="info-item" id="instability-index">Instability index: </span>
+                          <span class="info-item-value">{{ features.Instability_index }}</span>
+                        </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="6" :offset="2">
+                      <div style="text-align: center" id="helical-wheel">
+                        <el-link :href="helicalwheel"
+                                 target="_blank"
+                                 type="primary">
+                          <span class="medium">Helical wheel</span>
+                        </el-link>
+                        <br/>
+                        Amino acids helical wheel with the H-moment indicated.
+                      </div>
+                      <div style="align-content: center; text-align: center;">
+                        <el-image :src="helicalwheel"></el-image>
+                        <!--                  TODO directly include svg file here, not inplace generation-->
+                        <!--                  TODO https://observablehq.com/@smsaladi/helical-wheel-visualization-wip-2019_05_10-->
+                        <!--                  TODO inplacely generate helicalwheel using echarts-->
+                        <!--                  https://github.com/ecomfe/vue-echarts/blob/5.x/README.zh_CN.md-->
+                        <!--                  https://echarts.apache.org/examples/zh/editor.html?c=graph-circular-layout-->
+                      </div>
+                    </el-col>
+                  </el-row>
+                  <el-divider></el-divider>
+                  <el-row>
+                    <br>
+                      <div style="alignment: center; text-align: center">
+                          <Plotly :data="featureGraphData()"
+                                  :layout="featureGraphLayout()"
+                                  :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                      </div>
+                        <div>
+                          <span class="caption-bold">EZenergy.</span> Profile of {{ accession }} residues free energy of transfer from water to membrane lipid.
+                        </div>
+                        <div>
+                          <span class="caption-bold">Flexibility.</span> Profile of flexibility of {{ accession }}. The normalized flexibility parameters (B-values) from <el-link href="https://onlinelibrary.wiley.com/doi/10.1002/prot.340190207" type="primary">Vihinen (1994)</el-link> was the scale adopted in the profile calculation.
+                        </div>
+                        <div>
+                          <span class="caption-bold">Hydrophobicity Parker.</span> Profile of hydrophobicity of residues of {{ accession }} using the relative scale of Parker.
+                        </div>
+                        <div>
+                          <span class="caption-bold">Surface accessibility.</span> Profile of solvent accessibility of residues of {{ accession }}.
+                        </div>
                     <br/>
-                    Amino acids helical wheel with the H-moment indicated.
-                  </div>
-                  <div style="align-content: center; text-align: center;">
-                    <el-image :src="helicalwheel"></el-image>
-                    <!--                  TODO directly include svg file here, not inplace generation-->
-                    <!--                  TODO https://observablehq.com/@smsaladi/helical-wheel-visualization-wip-2019_05_10-->
-                    <!--                  TODO inplacely generate helicalwheel using echarts-->
-                    <!--                  https://github.com/ecomfe/vue-echarts/blob/5.x/README.zh_CN.md-->
-                    <!--                  https://echarts.apache.org/examples/zh/editor.html?c=graph-circular-layout-->
-                  </div>
+                  </el-row>
+<!--                  <el-divider></el-divider>-->
+<!--                  <el-row>-->
+<!--                    <br>-->
+<!--                    <div style="alignment: center; text-align: center">-->
+<!--                      <v-chart :option="echartOption"></v-chart>-->
+<!--                    </div>-->
+<!--                    <div>-->
+<!--                      <span class="caption-bold">EZenergy.</span> Profile of {{ accession }} residues free energy of transfer from water to membrane lipid.-->
+<!--                    </div>-->
+<!--                    <div>-->
+<!--                      <span class="caption-bold">Flexibility.</span> Profile of flexibility of {{ accession }}. The normalized flexibility parameters (B-values) from <el-link href="https://onlinelibrary.wiley.com/doi/10.1002/prot.340190207" type="primary">Vihinen (1994)</el-link> was the scale adopted in the profile calculation.-->
+<!--                    </div>-->
+<!--                    <div>-->
+<!--                      <span class="caption-bold">Hydrophobicity Parker.</span> Profile of hydrophobicity of residues of {{ accession }} using the relative scale of Parker.-->
+<!--                    </div>-->
+<!--                    <div>-->
+<!--                      <span class="caption-bold">Surface accessibility.</span> Profile of solvent accessibility of residues of {{ accession }}.-->
+<!--                    </div>-->
+<!--                    <br/>-->
+<!--                  </el-row>-->
                 </el-col>
-
-                <br>
-                <!--            <h3 id="graphs">Graphs</h3>-->
-                <el-row>
-                  <el-col>
-                    <!--                  <h4 id="features">Features</h4>-->
-                    <div>
-                      <Plotly :data="featureGraphData()"
-                              :layout="featureGraphLayout()"
-                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>
-                    </div>
-                    EZenergy.  xxxxx. Flexibility.  xxxxx.  Hydrophobicity Parker. xxxxx.
-                  </el-col>
-                </el-row>
-                <br/>
               </el-tab-pane>
             </el-tabs>
           </el-main>
@@ -237,18 +268,30 @@
 <script>
 import Plotly from "../components/Plotly"
 import * as clipboard from "clipboard-polyfill/text";
-//import { tsvParse } from 'd3-dsv'
-// import * as d3 from "d3-dsv";
-
 
 
 export default {
   name: 'AMP_card',
   components: {
-    Plotly
+    Plotly,
   },
   data() {
     return {
+      echartOption: {
+        xAxis: {
+          type: 'category',
+          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [
+          {
+            data: [150, 230, 224, 218, 135, 147, 260],
+            type: 'line'
+          }
+        ]
+      },
       accession: this.$route.query.accession,
       sequence: '',
       length: 0,
@@ -505,7 +548,7 @@ export default {
     },
     featureGraphLayout(){
       return {
-        height: 400, margin: {l: 100, r: 100, b: 80, t: 40},
+        height: 600, width: 1000, margin: {l: 100, r: 100, b: 80, t: 40},
         // xaxis: {
         //   title: {
         //     text: 'Window start position'
@@ -618,7 +661,7 @@ export default {
       }
     },
     getFamilyPageURL(){
-      return "http://119.3.63.164/family?accession=" + this.family
+      return "http://18.140.248.253/family?accession=" + this.family
     },
     CopyPeptideSequence(){
       clipboard.writeText(this.sequence).then(
