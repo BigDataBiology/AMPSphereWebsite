@@ -139,7 +139,7 @@
       return {
         statistics: {
           num_amps: 863498,
-          num_families: 530194,
+          num_families: 8535,
           num_genomes: 49757,
           num_habitats: 57,
           num_hosts: 195,
@@ -148,7 +148,7 @@
         distributionData: {
           amps_families: [
             {number: (863498).toLocaleString('en-US'), type: 'AMPs'},
-            {number: (530194).toLocaleString('en-US'), type: 'families'},
+            {number: (8535).toLocaleString('en-US'), type: 'families'},
           ],
           genomes_metagenomes: [
             {number: (49757).toLocaleString('en-US'), type: 'genomes'},
