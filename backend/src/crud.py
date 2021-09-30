@@ -170,12 +170,13 @@ def get_distributions(accession: str, db: Session):
 
 def get_fam_downloads(accession, db: Session):
     # TODO change prefix here for easier maintenance.
+    local_ip = utils.cfg['local_ip']
     q = db.query(models.AMP.family).filter(models.AMP.family == accession).first()
     in_db = bool(q)
     if not in_db:
         raise HTTPException(status_code=400, detail='invalid accession received.')
     else:
-        prefix = pathlib.Path('https://119.3.63.164:443/v1/families/' + accession + '/downloads/')
+        prefix = pathlib.Path(local_ip + ':443/v1/families/' + accession + '/downloads/')
     path_bases = dict(
         alignment=str(prefix.joinpath('{}.aln')),
         sequences=str(prefix.joinpath('{}.faa')),
@@ -185,7 +186,7 @@ def get_fam_downloads(accession, db: Session):
         tree_figure=str(prefix.joinpath('{}.ascii')),
         tree_nwk=str(prefix.joinpath('{}.nwk'))
     )
-    return {key: item.format(accession) for key, item in path_bases.items()}
+    return {key: 'http://' + item.format(accession) for key, item in path_bases.items()}
 
 
 def search_by_text(db: Session, text: str, page: int, page_size: int):

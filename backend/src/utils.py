@@ -112,7 +112,19 @@ def get_graph_points(seq):
 
 
 def fam_download_file(accession: str, file: str):
-    file = pathlib.Path(cfg['pre_computed_data'] + 'families').joinpath(accession).joinpath(file)
+    extention = file.split('.')[-1]
+    # aln  fastas  hmm_logo  hmm_profiles  seqlogos  tree_figs  tree_nwk
+    folders = dict(
+        aln='aln',
+        faa='fastas',
+        png='hmm_logo',
+        hmm='hmm_profiles',
+        pdf='seqlogos',
+        ascii='tree_figs',
+        nwk='tree_nwk'
+    )
+    file = pathlib.Path(cfg['pre_computed_data']).joinpath('families').joinpath(folders[extention]).joinpath(file)
+    print('file exists? ', file.exists())
     return file
 
 
