@@ -22,6 +22,7 @@
     font-size: 150%;
     font-family: 'Helvetica', 'Arial', sans-serif;
     line-height: 40px;
+    text-align: left;
 }
 .info-item-value {
     font-weight: normal;
@@ -59,4 +60,11 @@ code:focus {
         -webkit-user-select: text;
         user-select: text;
     }
+}
+.margin-col {
+    margin-left: 30px;
+}
+.caption-bold {
+    font-weight: bold;
+
 }

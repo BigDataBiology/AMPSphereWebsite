@@ -8,25 +8,26 @@
               <el-button class="button" @click="downloadCurrPage()" type="primary" icon="el-icon-download" plain></el-button>
             </div>
             <!--          TODO test: move this description down to the overview tab-->
-            <div class="description">
-              The family contains
-              <el-link href="#amps" type="primary">
-                <span class="description">{{ num_amps }}</span>
-              </el-link>
-              antimicrobial peptides.
-            </div>
 
             <el-tabs type="border-card">
-              <el-tab-pane label="Overview">
+              <el-tab-pane label="Overview" id="#overview">
                 <el-row style="text-align: left">
-                  <el-col :span="6" style="margin-left: 30px">
-<!--                    <div class="info-item" id="sequence">-->
-<!--                      Peptide sequence-->
-<!--                      <el-button @click="CopyPeptideSequence()" icon="el-icon-document-copy" -->
-<!--                                 size="mini" type="primary" plain>-->
-<!--                      </el-button>-->
-<!--                    </div>-->
-<!--                    <pre><code id="aa-sequence">{{ sequence }}</code></pre>-->
+                  <el-col :span="6" class="margin-col">
+                    <span class="info-item">
+                      Number of AMPs:
+<!--                      </span>-->
+<!--                    <span>-->
+                      <el-link href="#amps" type="primary">
+                        <span class="info-item-value">{{ num_amps }}</span>
+                      </el-link>
+                    </span>
+                    <div class="info-item" id="sequence">
+                      Consensus sequence
+                      <el-button @click="CopyPeptideSequence()" icon="el-icon-document-copy"
+                                 size="mini" type="primary" plain>
+                      </el-button>
+                    </div>
+                    <pre><code id="aa-sequence">{{ sequence }}</code></pre>
                     <div style="alignment: left;">
                       <div class="info-item" id="secondary-structure">Secondary Structure</div>
                       <Plotly :data="SecStructurePieData()"
@@ -55,7 +56,7 @@
                   </el-col>
                 </el-row>
                 <el-row>
-                  <el-col :span="10" style="magrin-left: 30px">
+                  <el-col :span="10" class="margin-col">
                     <!--                    TODO Bigger title  and figure captions-->
                     <h4 id="distribution-across-habitats">Habitats</h4>
                     <div>
@@ -86,7 +87,7 @@
                 <br/>
                 <el-divider></el-divider>
                 <el-row>
-                  <el-col style="margin-left: 30px" :offset="1">
+                  <el-col :offset="1" class="margin-col">
                     <h3 id="amps" class="subsection-title">Associated AMPs</h3>
                     <!--                    TODO add download button here -->
                     <el-table :data="associatedAMPs.currentData" stripe style="width: 100%"
@@ -123,94 +124,54 @@
                         :page-sizes="[5, 10, 20, 50, 100]"
                         :page-size="5"
                         layout="total, sizes, prev, pager, next, jumper"
-                        :total="associatedAMPs.info.totalRow"
-                    >
+                        :total="associatedAMPs.info.totalRow">
                     </el-pagination>
-<!--                    <el-table :data="associatedAmps" stripe :default-sort="{prop: 'GMSC', order: 'ascending'}" width="100%">-->
-<!--                      <el-table-column prop="GMSC" label="Gene" sortable width="260%"/>-->
-<!--                      <el-table-column label="Gene sequense" sortable width="400%">-->
-<!--                        <template #default="props">-->
-<!--                          <pre><code><small>{{ props.row.gene_sequence }}</small></code></pre>-->
-<!--                        </template>-->
-<!--                      </el-table-column>-->
-<!--                      <el-table-column prop="sample" label="Sample/Genome" sortable width="150%"/>-->
-<!--                      <el-table-column prop="host_scientific_name" label="Host" sortable width="150%"/>-->
-<!--                      <el-table-column prop="origin_scientific_name" label="Origin" sortable width="150%"/>-->
-<!--                    </el-table>-->
-<!--                    <div class="block">-->
-<!--                      <el-pagination-->
-<!--                          @size-change="setMetadataPageSize"-->
-<!--                          @current-change="setMetadataPage"-->
-<!--                          :page-sizes="[5, 10, 20, 50, 100]"-->
-<!--                          :page-size="5"-->
-<!--                          layout="total, sizes, prev, pager, next, jumper"-->
-<!--                          :total="metadata.info.totalRow"-->
-<!--                      >-->
-<!--                      </el-pagination>-->
-<!--                    </div>-->
 
                   </el-col>
                 </el-row>
               </el-tab-pane>
-              <el-tab-pane label="Features">
-                <h3 id="properties">Biochemical properties</h3>
-<!--                <el-col :span="12">-->
-<!--                  <div style="text-align: left">-->
-<!--&lt;!&ndash;                    should be a table &ndash;&gt;-->
-<!--                    <div>-->
-<!--                      <span class="info-item" id="charge-neutral-pH">Charge at pH 7.0: </span>-->
-<!--                      <span class="info-item-value">{{ features.Charge_at_pH_7 }} </span>-->
-<!--                    </div>-->
-<!--                    <div>-->
-<!--                      <span class="info-item" id="isoeletric-point">Isoeletric point: </span>-->
-<!--                      <span class="info-item-value"> {{ features.Isoelectric_point }} </span>-->
-<!--                    </div>-->
-<!--                    <div>-->
-<!--                      <span class="info-item" id="molar-extinction">Molar extinction: </span>-->
-<!--                      <span class="info-item-value">-->
-<!--                      {{ features.Molar_extinction.cysteines_reduced }}-->
-<!--                      {{ features.Molar_extinction.cystines_residues }}-->
-<!--                    </span>-->
-<!--                    </div>-->
-<!--                    <div>-->
-<!--                      <span class="info-item" id="aromaticity">Aromaticity: </span>-->
-<!--                      <span class="info-item-value">{{ features.Aromaticity }}</span>-->
-<!--                    </div>-->
-<!--                    <div>-->
-<!--                      <span class="info-item" id="gravy">GRAVY: </span>-->
-<!--                      <span class="info-item-value"> {{ features.GRAVY }}</span>-->
-<!--                    </div>-->
-<!--                    <div>-->
-<!--                      <span class="info-item" id="instability-index">Instability index: </span>-->
-<!--                      <span class="info-item-value">{{ features.Instability_index }}</span>-->
-<!--                    </div>-->
-<!--                  </div>-->
-<!--                </el-col>-->
-<!--                <br>-->
-<!--                &lt;!&ndash;            <h3 id="graphs">Graphs</h3>&ndash;&gt;-->
-<!--                <el-row>-->
-<!--                  <el-col>-->
-<!--                    &lt;!&ndash;                  <h4 id="features">Features</h4>&ndash;&gt;-->
-<!--                    <div>-->
-<!--                      <Plotly :data="featureGraphData()"-->
-<!--                              :layout="featureGraphLayout()"-->
-<!--                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>-->
-<!--                    </div>-->
-<!--                    EZenergy.  xxxxx. Flexibility.  xxxxx.  Hydrophobicity Parker. xxxxx.-->
-<!--                  </el-col>-->
-<!--                </el-row>-->
-<!--                <br/>-->
+              <el-tab-pane label="Features" id="#features">
+                <el-row>
+                  <el-col class="margin-col">
+                    <h3 id="properties" class="info-item">Biochemical properties</h3>
+                    <el-table :data="Object.values(feature_statistics).slice(1)" v-loading="loading">
+                      <el-table-column type="index" :index="indexByStatsName" width="100%"></el-table-column>
+                      <el-table-column prop="Aromaticity" label="Aromaticity" width="100%"></el-table-column>
+                      <el-table-column prop="Charge_at_pH_7" label="Charge at pH 7" width="150%"></el-table-column>
+                      <el-table-column prop="GRAVY" label="GRAVY" width="100%"></el-table-column>
+                      <el-table-column prop="Instability_index" label="Instability index" width="150%"></el-table-column>
+                      <el-table-column prop="Isoelectric_point" label="Isoelectric point" width="150%"></el-table-column>
+                      <el-table-column prop="MW" label="Molecular Weight" width="150%"></el-table-column>
+                      <el-table-column label="Molar extinction" width="150%">
+                        <template #default="props">
+                          {{ props.row.Molar_extinction.cysteines_reduced }}
+                          {{ props.row.Molar_extinction.cystines_residues }}
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                    Maybe replace this with a boxplot...
+                  </el-col>
+                </el-row>
               </el-tab-pane>
-              <el-tab-pane label="Downloads">
-                <el-table :data="downloads" v-loading="loading">
-                  <el-table-column prop="name" label="Name"></el-table-column>
-                  <el-table-column prop="file" label="File">
-                    <template #default="props">
-                      <el-link :href="props.row.file" type="primary"> Download </el-link>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="desc" label="Description"></el-table-column>
-                </el-table>
+              <el-tab-pane label="Downloads" id="#downloads">
+                <el-row>
+                  <el-col class="margin-col">
+                    <h3 id="downloads" class="info-item">Downloads</h3>
+                    <el-table :data="downloads" v-loading="loading">
+                      <el-table-column prop="name" label="Name" width="150%"></el-table-column>
+                      <el-table-column prop="file" label="File" width="150%">
+                        <template #default="props">
+                          <el-link @click.prevent="download(props.row.file)" type="primary"> Download </el-link>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="Description" width="800%">
+                        <template #default="props">
+                          <div class="download-desc">{{ props.row.desc }}</div>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </el-col>
+                </el-row>
               </el-tab-pane>
             </el-tabs>
           </el-main>
@@ -237,6 +198,10 @@
   opacity: 0.75;
   line-height: 200px;
   margin: 0;
+}
+.download-desc {
+  white-space: pre-wrap;
+  word-break: keep-all;
 }
 .el-tabs__item {
   font-size: 17px;
@@ -345,6 +310,9 @@ export default {
   computed: {
     currentMetadata () {
       return this.metadata.currentData
+    },
+    featureStatisticsTable() {
+      return this.generateTable()
     }
   },
   methods: {
@@ -355,7 +323,7 @@ export default {
           .then(function (response) {
             console.log(response.data)
             // self.consensusSequence = response.data.sequence
-            self.num_amps = response.data.num_amps;
+            self.num_amps = response.data.num_amps
             self.feature_statistics = response.data.feature_statistics
             self.distribution = response.data.distributions
             self.downloads = self.toDownloadsTable(response.data.downloads)
@@ -363,21 +331,6 @@ export default {
           .catch(function (error) {
             console.log(error);
           })
-      // let config = {
-      //   params: {
-      //     family: fam_accession
-      //   }
-      // }
-      // this.axios.get('amps', config)
-      //     .then(function (response) {
-      //       self.associatedAmps.currentData = response.data.data
-      //       self.associatedAmps.info.currentPage = 1
-      //       self.associatedAmps.info.totalPage = response.data.info.totalPage
-      //       self.associatedAmps.info.totalRow = response.data.info.totalItem
-      //     })
-      //     .catch(function(error) {
-      //       console.log(error)
-      //     })
     },
     SecStructurePieData(){
       let strucData = this.feature_statistics.mean.Secondary_structure
@@ -540,7 +493,6 @@ export default {
       let data = self.feature_statistics.graph_points
       let line = {color: 'blue'}
       return [
-
         {x: data.transfer_energy.x, y: data.transfer_energy.y, line: line, marker: {color: data.transfer_energy.c}, visible: true,},
         {x: data.flexibility.x, y: data.flexibility.y, line: line, visible: false},
         {x: data.hydrophobicity_parker.x, y: data.hydrophobicity_parker.y, line: line, visible: false},
@@ -695,30 +647,48 @@ export default {
     AMPDetail(accession){
       window.open('/amp?accession='+accession, '_blank')
     },
+    indexByStatsName(index){
+      return Object.keys(this.feature_statistics)[index + 1]
+    },
     toDownloadsTable(downloads){
       let tableData = []
       for(const [key, value] of Object.entries(downloads)){
         let desc = ''
+        let name = ''
         if (key === "alignment"){
-          desc = ''
+          name = 'Alignment'
+          desc = 'Alignment - protein-aligned sequences belonging to this family in fasta format'
         } else if (key === "sequences") {
-          desc = ''
+          name = 'Sequences'
+          desc = 'Sequences - fasta file containing the peptide sequences belonging to this family'
         } else if (key === "hmm_logo") {
-          desc = ''
+          name = 'HMM-logo'
+          desc = 'HMM-logo - graphical representation of the Hidden Markov Model describing the peptides of this family'
         } else if (key === "hmm_profile") {
-          desc = ''
+          name = 'HMM-profile'
+          desc = 'HMM-profile - Statistical Hidden Markov Model describing the peptides of this family, used to sequence searching'
         } else if (key === "sequence_logo") {
-          desc = ''
+          name = 'Sequence-logo'
+          desc = 'Sequence-logo - graphical representation of the peptides alignment, the bit-wise information per position is shown'
         } else if (key === "tree_figure") {
-          desc = ''
+          name = 'Tree-figure'
+          desc = 'Tree-figure - ASCII graphical representation of the phylogenetic tree of peptides composing this family. Branches were drawn proportionally to the substitution distance and the node support is given as bootstrap of 1000 pseudoreplicates'
         } else if (key === "tree_nwk") {
-          desc = ''
+          name = 'Tree-newick'
+          desc = 'Tree-newick - phylogenetic tree of peptides composing the family in Newick format, compatible to different tree rendering programs, obtained using FastTree2.'
         } else {
           console.log('unknown type of download.')
         }
-        tableData.push({name: key, file: value, desc: desc})
+        tableData.push({name: name, file: value, desc: desc})
       }
       return tableData
+    },
+    download(url){
+      console.log(url)
+      window.open(encodeURI(url), '_blank')
+    },
+    descStyle(){
+      return 'download-desc'
     },
   }
 }
