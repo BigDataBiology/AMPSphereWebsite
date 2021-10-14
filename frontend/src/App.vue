@@ -8,18 +8,22 @@
             <el-image style="height: 150px; width: 150px" :src="url" lazy></el-image>
           </div>
           <div class="search-box">
-            <el-input placeholder="Text search" v-model="searchTerm" @keyup.enter="textSearch" clearable
-                      maxlength="40" show-word-limit=true>
-              <template v-slot:append>
-                <el-button type="success" icon="el-icon-search" @click="textSearch">Search</el-button>
+            <span>
+              <el-input placeholder="Text search" v-model="searchTerm" @keyup.enter="textSearch" clearable
+                                    maxlength="40" show-word-limit=true>
+              <template #append>
+                <el-button type="primary" icon="el-icon-search" @click="textSearch">Search</el-button>
               </template>
-            </el-input>
+              </el-input>
+<!--              <el-button type="primary" icon="el-icon-search" @click="textSearch">Search</el-button>-->
+            </span>
             <span>
               <br/><br/>
               Examples:
               <el-link href="/AMP?accession=AMP10.000_000" target="_blank" type="primary">AMP10.000_000</el-link>,
-              <el-link href="/family?accession=SPHERE-III.001_396" target="_blank" type="primary">SPHERE-III.001_396</el-link>
-
+              <el-link href="/family?accession=SPHERE-III.001_396" target="_blank" type="primary">SPHERE-III.001_396</el-link>,
+              <el-link href="/text_search?query=Aquatic" target="_blank" type="primary">Aquatic</el-link>,
+              <el-link href="/text_search?query=Homo sapiens" target="_blank" type="primary">Homo sapiens</el-link>
             </span>
           </div>
           <div class="menu">
