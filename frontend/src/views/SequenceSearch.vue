@@ -1,5 +1,38 @@
 <template>
   <div id="SequenceSearch">
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/sequence_search' }">Sequence search</el-breadcrumb-item>
+    </el-breadcrumb>
+    <br/>
+    <el-row>
+      <el-col :span="18">
+        <br/>
+<!--        <div v-if="method === 'MMseqs'" class="desc">-->
+<!--          <el-collapse>-->
+<!--            MMseqs version<el-tag size="small">13.45111</el-tag>-->
+<!--            <el-collapse-item title="Search command" name="search_command">-->
+<!--              <pre><code><small>{{ search_command }}</small></code></pre>-->
+<!--            </el-collapse-item>-->
+<!--          </el-collapse>-->
+<!--&lt;!&ndash;            Search parameters:&ndash;&gt;-->
+<!--&lt;!&ndash;            <el-table :data="searchParameters" title="Search parameters">&ndash;&gt;-->
+<!--&lt;!&ndash;              <el-table-column prop="param_name" label="Parameter"></el-table-column>&ndash;&gt;-->
+<!--&lt;!&ndash;              <el-table-column prop="value" label="Value"></el-table-column>&ndash;&gt;-->
+<!--&lt;!&ndash;            </el-table>&ndash;&gt;-->
+<!--        </div>-->
+<!--        <div v-if="method === 'HMMER'" class="desc">-->
+<!--          You searched for AMP families with {{ queryFilters.length }} sequences.-->
+<!--        </div>-->
+      </el-col>
+      <el-col :span="4">
+        <el-button @click="downloadSearchResults" type="primary">
+          <BootstrapIcon icon="cloud-download" variant="light" size="1x" />
+          Download results as csv
+        </el-button>
+      </el-col>
+    </el-row>
+    <br/>
     <div v-if="method === 'MMseqs'">
       <el-table :data="result" stripe style="width: 100%" v-loading="loading">
         <el-table-column label="Query" prop="query_identifier"
@@ -18,18 +51,7 @@
         <el-table-column label="E value" sortable prop="E_value"></el-table-column>
         <el-table-column label="Bit score" sortable prop="bit_score"></el-table-column>
       </el-table>
-<!--        "query_identifier": "submitted_sequence",-->
-<!--        "target_identifier": "AMP10.000_000",-->
-<!--        "sequence_identity": 0.942,-->
-<!--        "alignment_length": 27,-->
-<!--        "number_mismatches": 2,-->
-<!--        "number_gap_openings": 0,-->
-<!--        "domain_start_position_query": 1,-->
-<!--        "domain_end_position_query": 27,-->
-<!--        "domain_start_position_target": 1,-->
-<!--        "domain_end_position_target": 27,-->
-<!--        "E_value": 2.42e-11,-->
-<!--        "bit_score": 56-->
+
     </div>
     <div v-else-if="method === 'HMMER'">
       <el-table :data="result" stripe style="width: 100%" v-loading="loading">
@@ -72,12 +94,22 @@
 </template>
 
 <script>
+import { saveAs } from 'file-saver';
+
+
 export default {
   name: "SequenceSearch",
   data() {
     return {
       method: '',
       sequences: '',
+      searchParameters: [
+        {param_name: '...', value: '...'}
+        // TODO update this
+      ],
+      searchCommand: 'mmseqs createdb {query_seq} {query_seq}.mmseqsdb &&  \\\n' +
+          'mmseqs search {query_seq}.mmseqsdb  {database} {out}.mmseqsdb {tmp_dir} &&  \\\n' +
+          'mmseqs convertalis {query_seq}.mmseqsdb {database} {out}.mmseqsdb {out}',
       result: [],
       queryFilters: [],
       loading: false
@@ -182,8 +214,14 @@ export default {
     },
     familyDetail(accession){
       window.open('/family?accession='+accession, '_blank')
-
-    }
+    },
+    async downloadSearchResults() {
+      const ObjectsToCsv = require('objects-to-csv');
+      const data = new ObjectsToCsv(this.result);
+      const str = await data.toString()
+      const blob = new Blob([str], {type: "text/plain;charset=utf-8"});
+      saveAs(blob, "searchResults.csv");
+    },
   }
 }
 </script>
