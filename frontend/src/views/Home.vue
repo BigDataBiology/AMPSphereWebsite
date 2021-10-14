@@ -79,45 +79,23 @@
               </el-input>
             </div>
             <br/>
-<!--            <div style="text-align: left">-->
-<!--              Or upload a file (amino acid sequences, size &lt; 50kb)-->
-<!--              <br/><br/>-->
-<!--              <el-upload-->
-<!--                  class="upload-demo"-->
-<!--                  drag-->
-<!--                  action="https://jsonplaceholder.typicode.com/posts/"-->
-<!--                  :on-preview="handlePreview"-->
-<!--                  :on-remove="handleRemove"-->
-<!--                  :file-list="fileList"-->
-<!--                  multiple-->
-<!--              >-->
-<!--                <i class="el-icon-upload"></i>-->
-<!--                <div class="el-upload__text">Drop file here or <em>click to upload</em></div>-->
-<!--              </el-upload>-->
-<!--&lt;!&ndash;              <el-upload&ndash;&gt;-->
-<!--&lt;!&ndash;                action="https://jsonplaceholder.typicode.com/posts/"&ndash;&gt;-->
-<!--&lt;!&ndash;                :limit="1"&ndash;&gt;-->
-<!--&lt;!&ndash;                :file-list="fastaFile"&ndash;&gt;-->
-<!--&lt;!&ndash;                style="text-align: left"&ndash;&gt;-->
-<!--&lt;!&ndash;            >&ndash;&gt;-->
-<!--&lt;!&ndash;              <el-button size="small" type="primary">Upload a fasta file</el-button>&ndash;&gt;-->
-<!--&lt;!&ndash;&lt;!&ndash;              <template #tip>&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;&lt;!&ndash;                <div class="el-upload__tip"></div>&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;&lt;!&ndash;              </template>&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;            </el-upload>&ndash;&gt;-->
-<!--            </div>-->
           </el-row>
           <el-row>
-            <!--                TODO FIXME-->
-            <el-radio v-model="searchMethod" label="MMseqs">MMseqs</el-radio>
-            <el-radio v-model="searchMethod" label="HMMER">HMMSearch</el-radio>
-            <el-button type="primary"
-                       icon="el-icon-search"
-                       @click="sequenceSearch">
+          <!--                TODO FIXME-->
+            <el-tooltip content="Search for AMP" placement="bottom">
+              <el-radio v-model="searchMethod" label="MMseqs">
+                MMseqs
+              </el-radio>
+            </el-tooltip>
+            <el-tooltip content="Search for family" placement="bottom">
+              <el-radio v-model="searchMethod" label="HMMER">
+                HMMSearch
+              </el-radio>
+            </el-tooltip>
+            <el-button type="primary" @click="sequenceSearch">
+              <BootstrapIcon icon="search" variant="light" size="1x" />
               Search
             </el-button>
-
-
           </el-row>
         </el-col>
       </el-row>
