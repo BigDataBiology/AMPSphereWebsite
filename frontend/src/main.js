@@ -10,6 +10,7 @@ import VueAxios from 'vue-axios'
 import imageZoom from 'vue-image-zoomer'
 import { Download, More } from '@element-plus/icons'
 import JsonViewer from "vue3-json-viewer"
+import BootstrapIcon from '@dvuckovic/vue3-bootstrap-icons';
 
 
 router.beforeEach((to, from, next) => {
@@ -36,5 +37,6 @@ const ImageZoom = require('vue-image-zoomer').default
 app.component('image-zoom', ImageZoom)
 app.component(More.name, More)
 app.component(Download.name, Download)
+app.component('BootstrapIcon', BootstrapIcon);
 axios.defaults.baseURL = 'http://18.140.248.253:443/v1'
 app.mount('#app')
