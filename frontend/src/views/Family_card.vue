@@ -30,10 +30,10 @@
                     <pre><code id="aa-sequence">{{ sequence }}</code></pre>
                     <div style="alignment: left;">
                       <div class="info-item" id="secondary-structure">Secondary Structure</div>
-                      <Plotly :data="SecStructurePieData()"
-                              :layout="{title: {text: 'Secondary Structure'},
-                            margin: {l: 0, r: 0, t: 0, b: 0, pad: 0},
-                            showlegend: false, height: 240, width: 240}"
+<!--                      TODO change this to an error bars chart.-->
+<!--                      https://codepen.io/plotly/pen/VvEVgq-->
+                      <Plotly :data="secondaryStructureGraphData"
+                              :layout="secondaryStructureLayout()"
                               :toImageButtonOptions="{format: 'svg', scale: 1}"/>
                     </div>
 
@@ -134,22 +134,52 @@
                 <el-row>
                   <el-col class="margin-col">
                     <h3 id="properties" class="info-item">Biochemical properties</h3>
-                    <el-table :data="Object.values(feature_statistics).slice(1)" v-loading="loading">
-                      <el-table-column type="index" :index="indexByStatsName" width="100%"></el-table-column>
-                      <el-table-column prop="Aromaticity" label="Aromaticity" width="100%"></el-table-column>
-                      <el-table-column prop="Charge_at_pH_7" label="Charge at pH 7" width="150%"></el-table-column>
-                      <el-table-column prop="GRAVY" label="GRAVY" width="100%"></el-table-column>
-                      <el-table-column prop="Instability_index" label="Instability index" width="150%"></el-table-column>
-                      <el-table-column prop="Isoelectric_point" label="Isoelectric point" width="150%"></el-table-column>
-                      <el-table-column prop="MW" label="Molecular Weight" width="150%"></el-table-column>
-                      <el-table-column label="Molar extinction" width="150%">
-                        <template #default="props">
-                          {{ props.row.Molar_extinction.cysteines_reduced }}
-                          {{ props.row.Molar_extinction.cystines_residues }}
-                        </template>
-                      </el-table-column>
-                    </el-table>
-                    Maybe replace this with a boxplot...
+                    <el-row>
+                      <el-col :span="5" :offset="2">
+                        <Plotly :data="featuresGraphData.MW"
+                                :layout="featuresBoxplotLayout('Molecular weight')" />
+                      </el-col>
+                      <el-col :span="5" :offset="2">
+                        <Plotly :data="featuresGraphData.Aromaticity"
+                                :layout="featuresBoxplotLayout('Aromaticity')" />
+                      </el-col>
+                      <el-col :span="5" :offset="2">
+                        <Plotly :data="featuresGraphData.GRAVY"
+                                :layout="featuresBoxplotLayout('GRAVY')" />
+                      </el-col>
+                    </el-row>
+                    <el-row>
+                      <el-col :span="5" :offset="2">
+                        <Plotly :data="featuresGraphData.Instability_index"
+                                :layout="featuresBoxplotLayout('Instability index')" />
+                      </el-col>
+                      <el-col :span="5" :offset="2">
+                        <Plotly :data="featuresGraphData.Isoelectric_point"
+                                :layout="featuresBoxplotLayout('Isoelectric point')" />
+                      </el-col>
+                      <el-col :span="5" :offset="2">
+                        <Plotly :data="featuresGraphData.Charge_at_pH_7"
+                                :layout="featuresBoxplotLayout('Charge at pH 7.0')" />
+                      </el-col>
+                    </el-row>
+
+
+<!--                    <el-table :data="Object.values(feature_statistics).slice(1)" v-loading="loading">-->
+<!--                      <el-table-column type="index" :index="indexByStatsName" width="100%"></el-table-column>-->
+<!--                      <el-table-column prop="Aromaticity" label="Aromaticity" width="100%"></el-table-column>-->
+<!--                      <el-table-column prop="Charge_at_pH_7" label="Charge at pH 7" width="150%"></el-table-column>-->
+<!--                      <el-table-column prop="GRAVY" label="GRAVY" width="100%"></el-table-column>-->
+<!--                      <el-table-column prop="Instability_index" label="Instability index" width="150%"></el-table-column>-->
+<!--                      <el-table-column prop="Isoelectric_point" label="Isoelectric point" width="150%"></el-table-column>-->
+<!--                      <el-table-column prop="MW" label="Molecular Weight" width="150%"></el-table-column>-->
+<!--                      <el-table-column label="Molar extinction" width="150%">-->
+<!--                        <template #default="props">-->
+<!--                          {{ props.row.Molar_extinction.cysteines_reduced }}-->
+<!--                          {{ props.row.Molar_extinction.cystines_residues }}-->
+<!--                        </template>-->
+<!--                      </el-table-column>-->
+<!--                    </el-table>-->
+<!--                    Maybe replace this with a boxplot...-->
                   </el-col>
                 </el-row>
               </el-tab-pane>
@@ -222,7 +252,7 @@
 <script>
 import Plotly from "../components/Plotly"
 import * as clipboard from "clipboard-polyfill/text";
-
+import { std, mean } from 'mathjs'
 
 export default {
   name: 'Family_card',
@@ -246,10 +276,9 @@ export default {
       accession: this.$route.query.accession,
       consensusSequence: '',
       num_amps: 0,
-      feature_statistics: {
-        count: features_base, mean: features_base, std: features_base,
-        min: features_base, '25%': features_base, '50%': features_base, '75%': features_base, max: features_base
-      },
+      features: {'': features_base},
+      secondaryStructureGraphData: [],
+      featuresGraphData: {},
       associatedAMPs: {
         info: {
           pageSize: 5,
@@ -305,7 +334,6 @@ export default {
     this.setAMPsPageSize(5)
   },
   mounted() {
-
   },
   computed: {
     currentMetadata () {
@@ -324,21 +352,61 @@ export default {
             console.log(response.data)
             // self.consensusSequence = response.data.sequence
             self.num_amps = response.data.num_amps
-            self.feature_statistics = response.data.feature_statistics
+            self.features = response.data.feature_statistics
             self.distribution = response.data.distributions
             self.downloads = self.toDownloadsTable(response.data.downloads)
+            self.secondaryStructureGraphData = self.SecStructureBarData()
+            self.featuresGraphData = self.featuresBoxplotData()
+            console.log(self.secondaryStructureGraphData)
+            console.log(self.featuresGraphData)
           })
           .catch(function (error) {
             console.log(error);
           })
     },
-    SecStructurePieData(){
-      let strucData = this.feature_statistics.mean.Secondary_structure
-      strucData.disordered = 1 - strucData.turn - strucData.helix - strucData.sheet
-      return [{
-        type: 'pie', values: Object.values(strucData), labels: Object.keys(strucData),
-        marker: {colors: this.ColorPalette('quanlitative')},
-        textinfo: "label+percent", insidetextorientation: "radial"}]
+    SecStructureBarData(){
+      let probabilities = {
+        helix: [],
+        sheet: [],
+        turn: [],
+        disordered: []
+      }
+      Object.values(this.features).forEach(function(amp_features) {
+        console.log(amp_features)
+        const amp_structure = amp_features.Secondary_structure
+        console.log(amp_structure)
+        probabilities.helix.push(amp_structure.helix)
+        probabilities.sheet.push(amp_structure.sheet)
+        probabilities.turn.push(amp_structure.turn)
+        probabilities.disordered.push(1 - amp_structure.helix - amp_structure.sheet - amp_structure.turn)
+      })
+      console.log(probabilities)
+      let data = [{
+        x: ['Alpha helix', 'Beta sheet', 'Beta turn', 'Disordered'],
+        y: [mean(probabilities.helix), mean(probabilities.sheet),
+          mean(probabilities.turn), mean(probabilities.disordered)],
+        name: '',
+        marker: {color: this.ColorPalette('quanlitative'), size: 4},
+        error_y: {
+          type: 'data',
+          array: [std(probabilities.helix), std(probabilities.sheet),
+            std(probabilities.turn), std(probabilities.disordered)],
+          visible: true
+        },
+        type: 'bar'
+      }]
+      console.log(data)
+      return data
+    },
+    secondaryStructureLayout(){
+      return {
+        title: {text: ''},
+        yaxis: {title: 'Probability'},
+        margin: {l: 80, r: 40, t: 20, b: 60, pad: 0},
+        showlegend: false,
+        height: 300,
+        width: 300
+      }
     },
     setAMPsPage(page) {
       // this.$message('setting to ' + page + 'th page')
@@ -371,19 +439,12 @@ export default {
     GeoPlotData(){
       let data = this.distribution.geo
       return [{
-        type: 'scattergeo',
-        //locationmode: 'USA-states',
-        lat: data.lat,
-        lon: data.lon,
+        type: 'scattergeo', lat: data.lat, lon: data.lon,
         marker: {
-          size: data.size,
-          sizeref: 10,
-          // FIXME
+          size: data.size, sizeref: 10,
+          // TODO
           // color: this.MapColors(data.colors, this.ColorPalette('quanlitative')),
-          line: {
-            color: 'black',
-            size: 2
-          }
+          line: {color: 'black', size: 2}
         },
       }]
     },
@@ -400,12 +461,7 @@ export default {
           subunitcolor: 'rgb(255,255,255)',
           countrycolor: 'rgb(255,255,255)'
         },
-        margin: {
-          l: 0,
-          r: 0,
-          t: 0,
-          b: 0
-        }
+        margin: {l: 0, r: 0, t: 0, b: 0}
       }
     },
     EnvPlotData(){
@@ -576,6 +632,70 @@ export default {
         ]
       }
     },
+    featuresBoxplotData(){
+      let colors = ['rgba(93, 164, 214, 0.5)', 'rgba(255, 144, 14, 0.5)', 'rgba(44, 160, 101, 0.5)',
+        'rgba(255, 65, 54, 0.5)', 'rgba(207, 114, 255, 0.5)', 'rgba(127, 96, 0, 0.5)',
+        'rgba(255, 140, 184, 0.5)', 'rgba(79, 90, 117, 0.5)', 'rgba(222, 223, 0, 0.5)']
+      let MW = [],
+          Aromaticity = [],
+          GRAVY = [],
+          Instability_index = [],
+          Isoelectric_point = [],
+          Charge_at_pH_7 = []
+      // console.log(MW)
+      // let Molar_extinction = {
+      //   cysteines_reduced: [],
+      //   cystines_residues: []
+      // }
+      for (const amp_features of Object.values(this.features)){
+        MW.push(amp_features.MW)
+        // console.log(Molar_extinction)
+        // console.log(Molar_extinction.cystines_residues)
+        // Molar_extinction.cystines_residues.push(amp_features.Molar_extinction.cystines_residues)
+        // Molar_extinction.cysteines_reduced.push(amp_features.Molar_extinction.cysteines_reduced)
+        Aromaticity.push(amp_features.Aromaticity)
+        GRAVY.push(amp_features.GRAVY)
+        Instability_index.push(amp_features.Instability_index)
+        Isoelectric_point.push(amp_features.Isoelectric_point)
+        Charge_at_pH_7.push(amp_features.Charge_at_pH_7)
+      }
+      return {
+        MW: [this.makeTrace(MW, colors[0])],
+        // this.makeTrace(Molar_extinction.cysteines_reduced, "Molar extinction (cysteines_reduced)", colors[2]),
+        // this.makeTrace(Molar_extinction.cystines_residues, "Molar extinction (cystines residues)", colors[3]),
+        Aromaticity: [this.makeTrace(Aromaticity, colors[4])],
+        GRAVY: [this.makeTrace(GRAVY, colors[5])],
+        Instability_index: [this.makeTrace(Instability_index, colors[6])],
+        Isoelectric_point: [this.makeTrace(Isoelectric_point, colors[7])],
+        Charge_at_pH_7: [this.makeTrace(Charge_at_pH_7, colors[8])],
+      }
+    },
+    featuresBoxplotLayout(name){
+      return {
+        title: name,
+        autosize: true,
+        margin: {l: 50, r: 20, b: 20, t: 80},
+        // height: 300,
+        // width: 300,
+      }
+    },
+    makeTrace(data, color){
+      return {
+        name: '',
+        type: 'box',
+        y: data,
+        hoverinfo: 'y',
+        // xaxis:{
+        //   ticks: '',
+        // },
+        // boxpoints: 'all',
+        // jitter: 0.5,
+        // whiskerwidth: 0.2,
+        // fillcolor: 'cls',
+        marker: {size: 2, color: color},
+        line: {width: 1}
+      };
+    },
     MapColors(categories, colors){
       const levels = [...new Set(categories)]
       console.log(levels)
@@ -648,7 +768,7 @@ export default {
       window.open('/amp?accession='+accession, '_blank')
     },
     indexByStatsName(index){
-      return Object.keys(this.feature_statistics)[index + 1]
+      return Object.keys(this.features)[index + 1]
     },
     toDownloadsTable(downloads){
       let tableData = []
