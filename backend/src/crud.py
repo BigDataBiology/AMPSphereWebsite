@@ -143,12 +143,14 @@ def get_fam_metadata(accession: str, db: Session, page: int, page_size: int):
 def get_fam_features(accession: str, db: Session):
     amps = db.query(models.AMP).filter(models.AMP.family == accession).all()
     features = [utils.get_amp_features(amp.sequence, include_graph_points=False) for amp in amps]
+    accessions = [amp.accession for amp in amps]
     if len(features) == 0:
         raise HTTPException(status_code=400, detail='invalid accession received.')
     else:
-        statstics = pd.json_normalize(features).describe().round(3)
-        stats = statstics.index.tolist()
-        return dict(zip(stats, utils.df_to_formatted_json(statstics)))
+        statistics = pd.json_normalize(features).round(3)
+        # statistics.index = accessions
+        # print(statistics)
+        return dict(zip(accessions, utils.df_to_formatted_json(statistics)))
 
 
 def get_associated_amps(accession, db):
