@@ -128,38 +128,11 @@
                 <el-col class="margin-col">
                   <h3 class="info-item" id="properties">Biochemical properties</h3>
                   <el-row>
-                    <el-col :span="12">
-                      <div style="text-align: left">
-                        <div>
-                          <span class="info-item" id="charge-neutral-pH">Charge at pH 7.0: </span>
-                          <span class="info-item-value">{{ features.Charge_at_pH_7 }} </span>
-                        </div>
-                        <div>
-                          <span class="info-item" id="isoeletric-point">Isoeletric point: </span>
-                          <span class="info-item-value"> {{ features.Isoelectric_point }} </span>
-                        </div>
-                        <div>
-                          <span class="info-item" id="molar-extinction">Molar extinction: </span>
-                          <span class="info-item-value">
-                      {{ features.Molar_extinction.cysteines_reduced }}
-                      {{ features.Molar_extinction.cystines_residues }}
-                    </span>
-                        </div>
-                        <div>
-                          <span class="info-item" id="aromaticity">Aromaticity: </span>
-                          <span class="info-item-value">{{ features.Aromaticity }}</span>
-                        </div>
-                        <div>
-                          <span class="info-item" id="gravy">GRAVY: </span>
-                          <span class="info-item-value"> {{ features.GRAVY }}</span>
-                        </div>
-                        <div>
-                          <span class="info-item" id="instability-index">Instability index: </span>
-                          <span class="info-item-value">{{ features.Instability_index }}</span>
-                        </div>
-                      </div>
+                    <el-col :span="7" :offset="1">
+                      <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.MW)"
+                              :layout="familyFeatureGraphLayout(features.MW, 'Molecular weight')"/>
                     </el-col>
-                    <el-col :span="6" :offset="2">
+                    <el-col :span="7">
                       <div style="text-align: center" id="helical-wheel">
                         <el-link :href="helicalwheel"
                                  target="_blank"
@@ -178,29 +151,62 @@
                         <!--                  https://echarts.apache.org/examples/zh/editor.html?c=graph-circular-layout-->
                       </div>
                     </el-col>
+                    <el-col :span="7">
+                      <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Aromaticity)"
+                              :layout="familyFeatureGraphLayout(features.Aromaticity, 'Aromaticity')" />
+                    </el-col>
                   </el-row>
-                  <el-divider></el-divider>
                   <el-row>
-                    <br>
-                      <div style="alignment: center; text-align: center">
-                          <Plotly :data="featureGraphData()"
-                                  :layout="featureGraphLayout()"
-                                  :toImageButtonOptions="{format: 'svg', scale: 1}"/>
-                      </div>
-                        <div>
-                          <span class="caption-bold">EZenergy.</span> Profile of {{ accession }} residues free energy of transfer from water to membrane lipid.
-                        </div>
-                        <div>
-                          <span class="caption-bold">Flexibility.</span> Profile of flexibility of {{ accession }}. The normalized flexibility parameters (B-values) from <el-link href="https://onlinelibrary.wiley.com/doi/10.1002/prot.340190207" type="primary">Vihinen (1994)</el-link> was the scale adopted in the profile calculation.
-                        </div>
-                        <div>
-                          <span class="caption-bold">Hydrophobicity Parker.</span> Profile of hydrophobicity of residues of {{ accession }} using the relative scale of Parker.
-                        </div>
-                        <div>
-                          <span class="caption-bold">Surface accessibility.</span> Profile of solvent accessibility of residues of {{ accession }}.
-                        </div>
-                    <br/>
+                    <el-col :span="7" :offset="1">
+                      <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.GRAVY)"
+                              :layout="familyFeatureGraphLayout(features.GRAVY, 'GRAVY')" />
+                    </el-col>
+                    <el-col :span="7">
+                      <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Instability_index)"
+                              :layout="familyFeatureGraphLayout(features.Instability_index, 'Instability index')" />
+                    </el-col>
+                    <el-col :span="7">
+                      <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Isoelectric_point)"
+                              :layout="familyFeatureGraphLayout(features.Isoelectric_point, 'Isoelectric point')" />
+                    </el-col>
                   </el-row>
+                  <el-row>
+                    <el-col :span="7" :offset="1">
+                      <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Charge_at_pH_7)"
+                              :layout="familyFeatureGraphLayout(features.Charge_at_pH_7, 'Charge at pH 7.0')" />
+                    </el-col>
+                    <el-col :span="7">
+                      <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Molar_extinction.cystines_residues)"
+                              :layout="familyFeatureGraphLayout(features.Molar_extinction.cystines_residues, 'Molar extinction (cystines residues)')" />
+                    </el-col>
+                    <el-col :span="7">
+                      <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Molar_extinction.cysteines_reduced)"
+                              :layout="familyFeatureGraphLayout(features.Molar_extinction.cysteines_reduced, 'Molar extinction (ccysteines reduced)')" />
+                    </el-col>
+                  </el-row>
+<!--                  TODO update this later, remove this for a while-->
+<!--                  <el-divider></el-divider>-->
+<!--                  <el-row>-->
+<!--                    <br>-->
+<!--                      <div style="alignment: center; text-align: center">-->
+<!--                          <Plotly :data="featureGraphData()"-->
+<!--                                  :layout="featureGraphLayout()"-->
+<!--                                  :toImageButtonOptions="{format: 'svg', scale: 1}"/>-->
+<!--                      </div>-->
+<!--                        <div>-->
+<!--                          <span class="caption-bold">EZenergy.</span> Profile of {{ accession }} residues free energy of transfer from water to membrane lipid.-->
+<!--                        </div>-->
+<!--                        <div>-->
+<!--                          <span class="caption-bold">Flexibility.</span> Profile of flexibility of {{ accession }}. The normalized flexibility parameters (B-values) from <el-link href="https://onlinelibrary.wiley.com/doi/10.1002/prot.340190207" type="primary">Vihinen (1994)</el-link> was the scale adopted in the profile calculation.-->
+<!--                        </div>-->
+<!--                        <div>-->
+<!--                          <span class="caption-bold">Hydrophobicity Parker.</span> Profile of hydrophobicity of residues of {{ accession }} using the relative scale of Parker.-->
+<!--                        </div>-->
+<!--                        <div>-->
+<!--                          <span class="caption-bold">Surface accessibility.</span> Profile of solvent accessibility of residues of {{ accession }}.-->
+<!--                        </div>-->
+<!--                    <br/>-->
+<!--                  </el-row>-->
 <!--                  <el-divider></el-divider>-->
 <!--                  <el-row>-->
 <!--                    <br>-->
@@ -277,21 +283,21 @@ export default {
   },
   data() {
     return {
-      echartOption: {
-        xAxis: {
-          type: 'category',
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: [
-          {
-            data: [150, 230, 224, 218, 135, 147, 260],
-            type: 'line'
-          }
-        ]
-      },
+      // echartOption: {
+      //   xAxis: {
+      //     type: 'category',
+      //     data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      //   },
+      //   yAxis: {
+      //     type: 'value'
+      //   },
+      //   series: [
+      //     {
+      //       data: [150, 230, 224, 218, 135, 147, 260],
+      //       type: 'line'
+      //     }
+      //   ]
+      // },
       accession: this.$route.query.accession,
       sequence: '',
       length: 0,
@@ -313,6 +319,17 @@ export default {
           flexibility: {type: "line plot", x: [], y: [], c: []}
         }
       },
+      famFeaturesGraphData: {
+        MW: [],
+        Length: [],
+        Molar_extinction: {cysteines_reduced: [], cystines_residues: []},
+        Aromaticity: [],
+        GRAVY: [],
+        Instability_index: [],
+        Isoelectric_point: [],
+        Charge_at_pH_7: [],
+        Secondary_structure: {helix: [], turn: [], sheet: []},
+        },
       metadata: {
         info: {
           pageSize: 5,
@@ -369,6 +386,7 @@ export default {
           self.metadata.info.currentPage = 1
           self.metadata.info.totalPage = response.data.metadata.info.totalPage
           self.metadata.info.totalRow = response.data.metadata.info.totalItem
+          self.getFamilyFeatures()
         })
         .catch(function (error) {
           console.log(error);
@@ -379,6 +397,17 @@ export default {
           self.distribution = response.data
         })
         .catch(function (error) {
+          console.log(error)
+        })
+    },
+    getFamilyFeatures(){
+      let self = this
+      this.axios.get('/families/' + self.family + '/features', {})
+        .then(function (response) {
+          console.log(response.data)
+          self.updateFamilyFeatures(response.data)
+        })
+        .catch(function (error){
           console.log(error)
         })
     },
@@ -533,6 +562,96 @@ export default {
             label: 'Hosts'},
           ]}
         ]}
+    },
+    initFamilyFeatures(){
+      this.famFeaturesGraphData = {
+        MW: [],
+        Length: [],
+        Molar_extinction: {cysteines_reduced: [], cystines_residues: []},
+        Aromaticity: [],
+        GRAVY: [],
+        Instability_index: [],
+        Isoelectric_point: [],
+        Charge_at_pH_7: [],
+        Secondary_structure: {helix: [], turn: [], sheet: []},
+      }
+    },
+    updateFamilyFeatures(data){
+      this.initFamilyFeatures()
+      console.log(data)
+      let self = this 
+      Object.values(data).forEach(function(amp_features){
+        self.famFeaturesGraphData.Instability_index.push(amp_features.Instability_index)
+        self.famFeaturesGraphData.GRAVY.push(amp_features.GRAVY)
+        self.famFeaturesGraphData.MW.push(amp_features.MW)
+        self.famFeaturesGraphData.Aromaticity.push(amp_features.Aromaticity)
+        self.famFeaturesGraphData.Charge_at_pH_7.push(amp_features.Charge_at_pH_7)
+        self.famFeaturesGraphData.Isoelectric_point.push(amp_features.Isoelectric_point)
+        self.famFeaturesGraphData.Molar_extinction.cysteines_reduced.push(amp_features.Molar_extinction.cysteines_reduced)
+        self.famFeaturesGraphData.Molar_extinction.cystines_residues.push(amp_features.Molar_extinction.cystines_residues)
+        // self.famFeaturesGraphData.Secondary_structure.helix.push(amp_features.Secondary_structure.helix)
+        // self.famFeaturesGraphData.Secondary_structure.turn.push(amp_features.SecStructureBarData.turn)
+        // self.famFeaturesGraphData.Secondary_structure.sheet.push(amp_features.Secondary_structure.sheet)
+          }
+      )
+    },
+    makeFamilyFeatureTraces(data){
+      return [
+        {
+          type: 'violin',
+          y: data,
+          points: 'all',
+          box: {
+            visible: true
+          },
+          hoverinfo: 'y',
+          boxpoints: 'none',
+          line: {
+            color: 'black'
+          },
+          fillcolor: '#8dd3c7',
+          opacity: 0.6,
+          meanline: {
+            visible: true
+          },
+          name: ''
+          // x0: ''
+        }
+        ]
+    },
+    familyFeatureGraphLayout(value, name){
+      return {
+        title: name,
+        autosize: true,
+        margin: {l: 50, r: 20, b: 20, t: 80},
+        annotations: [{
+          x: 0,
+          xanchor: 'left',
+          y: value,
+          yanchor: 'bottom',
+          text: this.accession,
+          showarrow: true,
+          font:{
+            size: 16,
+            color: 'red'
+          },
+          align: 'center',
+          arrowhead: 1,
+          arrowcolor: 'red',
+          ax: 20,
+          ay: -20,
+        }],
+        // shapes: [
+        //   {
+        //     type: 'scatter',
+        //     x0: [0],
+        //     y0: [value],
+        //     marker: {
+        //       color: 'red',
+        //     }
+        //   }
+        // ]
+      }
     },
     featureGraphData(){
       let self = this
