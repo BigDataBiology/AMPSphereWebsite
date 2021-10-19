@@ -4,7 +4,7 @@ import types
 from pprint import pprint
 
 import pandas as pd
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, Query
 from sqlalchemy import or_
 from src import models
 from src import utils
@@ -34,7 +34,7 @@ def get_amps(db: Session, page: int = 0, page_size: int = 20, **kwargs):
     # if len(accessions) == 0:
     #     raise HTTPException(status_code=400, detail='invalid filter applied.')
     data = [get_amp(accession, db) for accession, in accessions]
-    info = get_page_info(kind='amp', page=page, page_size=page_size, db=db)
+    info = get_query_page_info(q=query, page=page, page_size=page_size)
     paged_amps = types.SimpleNamespace()
     paged_amps.info = info
     paged_amps.data = data
@@ -59,7 +59,7 @@ def get_amp(accession: str, db: Session):
 
 
 def get_amp_metadata(accession: str, db: Session, page: int, page_size: int):
-    data = db.query(
+    query = db.query(
         models.Metadata.AMPSphere_code,
         models.Metadata.GMSC,
         models.GMSC.gene_sequence,
@@ -76,10 +76,11 @@ def get_amp_metadata(accession: str, db: Session, page: int, page_size: int):
         models.GMSC, models.Metadata.GMSC == models.GMSC.accession
     ).filter(
         models.Metadata.AMPSphere_code == accession
-    ).offset(page * page_size).limit(page_size).all()
+    )
+    data = query.offset(page * page_size).limit(page_size).all()
     if len(data) == 0:
         raise HTTPException(status_code=400, detail='invalid accession received.')
-    metadata_info = get_page_info(kind='amp.metadata', accession=accession, page_size=page_size, page=page, db=db)
+    metadata_info = get_query_page_info(q=query, page_size=page_size, page=page)
     metadata = types.SimpleNamespace()
     metadata.info = metadata_info
     metadata.data = data
@@ -111,7 +112,7 @@ def get_families(db: Session, page: int, page_size: int, **kwargs):
     # if len(accessions) == 0:
     #     raise HTTPException(status_code=400, detail='invalid filter applied.')
     data = [get_family(accession, db) for accession, in accessions]
-    info = get_page_info(kind='family', page=page, page_size=page_size, db=db)
+    info = get_query_page_info(q=query, page=page, page_size=page_size)
     paged_families = types.SimpleNamespace()
     paged_families.info = info
     paged_families.data = data
@@ -212,7 +213,7 @@ def search_by_text(db: Session, text: str, page: int, page_size: int):
 
     accessions = query.offset(page * page_size).limit(page_size).all()
     amps_data = [get_amp(accession, db) for accession, in accessions]
-    page_info = get_page_info(kind='search', page=page, page_size=page_size, db=db, search_text=text)
+    page_info = get_query_page_info(q=query, page=page, page_size=page_size)
     paged_searchresult = types.SimpleNamespace()
     paged_searchresult.info = page_info
     paged_searchresult.data = amps_data
@@ -238,30 +239,8 @@ def get_statistics(db: Session):
     )
 
 
-def get_page_info(kind: str, page_size: int, page: int, db: Session,
-                  accession: str = None, search_text: str = None):
-    if kind == 'amp':
-        total_items = db.query(models.AMP.accession).count()
-    elif kind == 'family':
-        total_items = db.query(models.AMP.family).distinct().count()
-    elif kind == 'amp.metadata':
-        total_items = db.query(models.Metadata.GMSC). \
-            filter(models.Metadata.AMPSphere_code == accession).count()
-    elif kind == 'family.metadata':
-        total_items = db.query(models.Metadata.GMSC).outerjoin(models.AMP). \
-            filter(models.AMP.family == accession).count()
-    elif kind == 'search':
-        total_items = db.query(models.AMP.accession).outerjoin(models.Metadata).\
-            filter(or_(
-            models.AMP.accession.like(search_text),
-            models.AMP.family.like(search_text),
-            models.Metadata.GMSC.like(search_text),
-            models.Metadata.sample.like(search_text),
-            models.Metadata.microontology.like(search_text),
-            models.Metadata.origin_scientific_name.like(search_text),
-            models.Metadata.host_scientific_name.like(search_text))).distinct().count()
-    else:
-        total_items = 0
+def get_query_page_info(q: Query, page_size: int, page: int):
+    total_items = q.count()
     total_page = math.ceil(total_items / page_size)
     current_page = page
     # info = types.SimpleNamespace()
@@ -280,6 +259,7 @@ def get_page_info(kind: str, page_size: int, page: int, db: Session,
 
 def get_filters(db: Session):
     # FIXME not using the first 100 rows.
+    # TODO use query API to get filter suggestion, not all available filters (impossible).
     family, = zip(*db.query(models.AMP.family).limit(100).distinct())
     habitat, = zip(*db.query(models.Metadata.microontology).limit(100).distinct())
     host, = zip(*db.query(models.Metadata.host_scientific_name).limit(100).distinct())
