@@ -4,8 +4,9 @@
       <el-col :span="24">
         <el-container>
           <el-main>
-            <div class="title">Antimicrobial peptide: {{ accession }}
-              <el-button class="button" @click="downloadCurrPage()" type="primary" icon="el-icon-download" plain></el-button>
+            <div class="title">
+              Antimicrobial peptide: {{ accession }}
+<!--              <el-button class="button" @click="downloadCurrPage()" type="primary" icon="el-icon-download" plain></el-button>-->
             </div>
 <!--          TODO test: move this description down to the overview tab-->
             <div class="description">
@@ -144,11 +145,6 @@
                       </div>
                       <div style="align-content: center; text-align: center;">
                         <el-image :src="helicalwheel"></el-image>
-                        <!--                  TODO directly include svg file here, not inplace generation-->
-                        <!--                  TODO https://observablehq.com/@smsaladi/helical-wheel-visualization-wip-2019_05_10-->
-                        <!--                  TODO inplacely generate helicalwheel using echarts-->
-                        <!--                  https://github.com/ecomfe/vue-echarts/blob/5.x/README.zh_CN.md-->
-                        <!--                  https://echarts.apache.org/examples/zh/editor.html?c=graph-circular-layout-->
                       </div>
                     </el-col>
                     <el-col :span="7">
