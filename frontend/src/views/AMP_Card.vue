@@ -128,24 +128,38 @@
               <el-tab-pane label="Features">
                 <el-col class="margin-col">
                   <h3 class="info-item" id="properties">Biochemical properties</h3>
+                  <div class="info-item-value">
+                    The feature value of {{ accession }} was pointed out in the distribution among its entire AMP family.
+                  </div>
+                  <div class="info-item-value">
+                    The features below were calculated by using the
+                    <el-link href="https://biopython.org/docs/1.79/api/Bio.SeqUtils.ProtParam.html" type="primary">
+                      Bio.SeqUtils.ProtParam.ProteinAnalysis
+                    </el-link>
+                    module from
+                    <el-link href="https://doi.org/10.1093/bioinformatics/btp163" type="primary">
+                      BioPython
+                    </el-link> (version 1.79).
+                  </div>
                   <el-row>
-                    <el-col :span="7" :offset="1">
-                      <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.MW)"
-                              :layout="familyFeatureGraphLayout(features.MW, 'Molecular weight')"/>
-                    </el-col>
                     <el-col :span="7">
                       <div style="text-align: center" id="helical-wheel">
+                        <br/><br/>
                         <el-link :href="helicalwheel"
                                  target="_blank"
                                  type="primary">
                           <span class="medium">Helical wheel</span>
                         </el-link>
                         <br/>
-                        Amino acids helical wheel with the H-moment indicated.
+                        Amino acids helical wheel with the H-moment indicated, calculated by using <el-link>HelicalWheel</el-link> from <el-link>Modlamp</el-link>
                       </div>
                       <div style="align-content: center; text-align: center;">
                         <el-image :src="helicalwheel"></el-image>
                       </div>
+                    </el-col>
+                    <el-col :span="7" :offset="1">
+                      <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.MW)"
+                              :layout="familyFeatureGraphLayout(features.MW, 'Molecular weight')"/>
                     </el-col>
                     <el-col :span="7">
                       <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Aromaticity)"
