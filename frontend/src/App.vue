@@ -30,13 +30,10 @@
             <el-menu mode="horizontal" :default-active="activeMenuItem" :router="true">
               <el-menu-item index="home">Home</el-menu-item>
               <el-menu-item index="browse_data">Browse data</el-menu-item>
-<!--              <el-menu-item index="tools">Tools</el-menu-item>-->
               <el-menu-item index="api">API</el-menu-item>
-              <el-menu-item index="downloads">Downloads</el-menu-item>
-<!--              <el-menu-item index="citation">Citation</el-menu-item>-->
-<!--              <el-menu-item index="help">Help</el-menu-item>-->
-              <el-menu-item index="contact">Contact</el-menu-item>
               <el-menu-item index="about">About</el-menu-item>
+              <el-menu-item index="downloads">Downloads</el-menu-item>
+              <el-menu-item index="contact">Contact</el-menu-item>
             </el-menu>
           </div>
         </div>
