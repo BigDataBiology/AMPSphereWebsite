@@ -33,42 +33,52 @@
       </el-col>
     </el-row>
     <br/>
-    <div v-if="method === 'MMseqs'">
-      <el-table :data="result" stripe style="width: 100%" v-loading="loading">
-        <el-table-column label="Query" prop="query_identifier"
-                         :filters="queryFilters" :filter-method="filterTable">
+    <div>
+<!--      {{ result }}-->
+      <div v-if="result.length === 0">
+        <span class="info-item-value">
+          There is no match for your sequence(s).
+        </span>
+<!--        <el-empty :image-size="200" description=""></el-empty>-->
+      </div>
+      <div v-else-if="method === 'MMseqs'">
+        <el-table :data="result" stripe style="width: 100%" v-loading="loading">
+          <el-table-column label="Query" prop="query_identifier"
+                           :filters="queryFilters" :filter-method="filterTable">
 
-        </el-table-column>
-        <el-table-column label="Target" width="200">
-          <template #default="props">
-            <el-button type="text" @click="AMPDetail(props.row.target_identifier)">{{ props.row.target_identifier }}</el-button>
-          </template>
-        </el-table-column>
-        <el-table-column label="Identity" sortable prop="sequence_identity"></el-table-column>
-        <el-table-column label="Aligned length" sortable prop="alignment_length"></el-table-column>
-        <el-table-column label="# mismatches" sortable prop="number_mismatches"></el-table-column>
-        <el-table-column label="# gap" sortable prop="number_gap_openings"></el-table-column>
-        <el-table-column label="E value" sortable prop="E_value"></el-table-column>
-        <el-table-column label="Bit score" sortable prop="bit_score"></el-table-column>
-      </el-table>
+          </el-table-column>
+          <el-table-column label="Target" width="200">
+            <template #default="props">
+              <el-button type="text" @click="AMPDetail(props.row.target_identifier)">{{ props.row.target_identifier }}</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column label="Identity" sortable prop="sequence_identity"></el-table-column>
+          <el-table-column label="Aligned length" sortable prop="alignment_length"></el-table-column>
+          <el-table-column label="# mismatches" sortable prop="number_mismatches"></el-table-column>
+          <el-table-column label="# gap" sortable prop="number_gap_openings"></el-table-column>
+          <el-table-column label="E value" sortable prop="E_value"></el-table-column>
+          <el-table-column label="Bit score" sortable prop="bit_score"></el-table-column>
+        </el-table>
 
+      </div>
+      <div v-else-if="method === 'HMMER'">
+        <el-table :data="result" stripe style="width: 100%" v-loading="loading">
+          <el-table-column label="Query" prop="query_name" :filters="queryFilters" :filter-method="filterTable"></el-table-column>
+          <el-table-column label="Target" width="200">
+            <template #default="props">
+              <el-button type="text" @click="familyDetail(props.row.target_name)">{{ props.row.target_name }}</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column label="Reliability" sortable prop="acc"></el-table-column>
+          <el-table-column label="Bias" sortable prop="bias"></el-table-column>
+          <el-table-column label="E-value" sortable prop="E_value"></el-table-column>
+          <el-table-column label="C E-value" sortable prop="c_Evalue"></el-table-column>
+          <el-table-column label="I E-value" sortable prop="i_Evalue"></el-table-column>
+          <el-table-column label="Bit score" sortable prop="score"></el-table-column>
+        </el-table>
+      </div>
     </div>
-    <div v-else-if="method === 'HMMER'">
-      <el-table :data="result" stripe style="width: 100%" v-loading="loading">
-        <el-table-column label="Query" prop="query_name" :filters="queryFilters" :filter-method="filterTable"></el-table-column>
-        <el-table-column label="Target" width="200">
-          <template #default="props">
-            <el-button type="text" @click="familyDetail(props.row.target_name)">{{ props.row.target_name }}</el-button>
-          </template>
-        </el-table-column>
-        <el-table-column label="Reliability" sortable prop="acc"></el-table-column>
-        <el-table-column label="Bias" sortable prop="bias"></el-table-column>
-        <el-table-column label="E-value" sortable prop="E_value"></el-table-column>
-        <el-table-column label="C E-value" sortable prop="c_Evalue"></el-table-column>
-        <el-table-column label="I E-value" sortable prop="i_Evalue"></el-table-column>
-        <el-table-column label="Bit score" sortable prop="score"></el-table-column>
-      </el-table>
-    </div>
+
 <!--        "query_accession": "-",-->
 <!--        "query_length": 27,-->
 <!--        "query_name": "SPHERE-III.001_396",-->
