@@ -21,13 +21,26 @@
                         <span class="info-item-value">{{ num_amps }}</span>
                       </el-link>
                     </span>
-                    <div class="info-item" id="sequence">
-                      Consensus sequence
-                      <el-button @click="CopyPeptideSequence()" icon="el-icon-document-copy"
-                                 size="mini" type="primary" plain>
-                      </el-button>
-                    </div>
-                    <pre><code id="aa-sequence">{{ sequence }}</code></pre>
+<!--                    <div class="info-item" id="sequence">-->
+<!--                      Consensus sequence-->
+<!--                      <el-button @click="CopyPeptideSequence()" icon="el-icon-document-copy"-->
+<!--                                 size="mini" type="primary" plain>-->
+<!--                      </el-button>-->
+<!--                    </div>-->
+<!--                    <pre><code id="aa-sequence">{{ sequence }}</code></pre>-->
+<!--                    TODO update this-->
+<!--                    <div>-->
+<!--                      <el-button type="text" @click="SeqLogoDialogVisible = true">-->
+<!--                        Sequence logo-->
+<!--                      </el-button>-->
+<!--                      <el-dialog-->
+<!--                          v-model="SeqLogoDialogVisible"-->
+<!--                          title="Tips"-->
+<!--                          width="30%"-->
+<!--                          :before-close="handleDialogClose">-->
+<!--                        <span> {{ downloads[4].file }}</span>-->
+<!--                      </el-dialog>-->
+<!--                    </div>-->
                     <div style="alignment: left;">
                       <div class="info-item" id="secondary-structure">Secondary Structure</div>
 <!--                      TODO change this to an error bars chart.-->
@@ -133,31 +146,41 @@
               <el-tab-pane label="Features" id="#features">
                 <el-row>
                   <el-col class="margin-col">
-                    <h3 id="properties" class="info-item">Biochemical properties</h3>
+                    <h3 id="properties" class="info-item">Biochemical property distributions</h3>
+                    <div class="info-item-value">
+                      These features below were calculated by using the
+                      <el-link href="https://biopython.org/docs/1.79/api/Bio.SeqUtils.ProtParam.html" type="primary">
+                        Bio.SeqUtils.ProtParam.ProteinAnalysis
+                      </el-link>
+                      module from
+                      <el-link href="https://doi.org/10.1093/bioinformatics/btp163" type="primary">
+                        BioPython
+                      </el-link> (version 1.79).
+                    </div>
                     <el-row>
-                      <el-col :span="5" :offset="2">
+                      <el-col :span="7">
                         <Plotly :data="featuresGraphData.MW"
                                 :layout="featuresBoxplotLayout('Molecular weight')" />
                       </el-col>
-                      <el-col :span="5" :offset="2">
+                      <el-col :span="7">
                         <Plotly :data="featuresGraphData.Aromaticity"
                                 :layout="featuresBoxplotLayout('Aromaticity')" />
                       </el-col>
-                      <el-col :span="5" :offset="2">
+                      <el-col :span="7">
                         <Plotly :data="featuresGraphData.GRAVY"
-                                :layout="featuresBoxplotLayout('GRAVY')" />
+                                :layout="featuresBoxplotLayout('GRAVY (grand average of hydropathy)')" />
                       </el-col>
                     </el-row>
                     <el-row>
-                      <el-col :span="5" :offset="2">
+                      <el-col :span="7">
                         <Plotly :data="featuresGraphData.Instability_index"
                                 :layout="featuresBoxplotLayout('Instability index')" />
                       </el-col>
-                      <el-col :span="5" :offset="2">
+                      <el-col :span="7">
                         <Plotly :data="featuresGraphData.Isoelectric_point"
                                 :layout="featuresBoxplotLayout('Isoelectric point')" />
                       </el-col>
-                      <el-col :span="5" :offset="2">
+                      <el-col :span="7">
                         <Plotly :data="featuresGraphData.Charge_at_pH_7"
                                 :layout="featuresBoxplotLayout('Charge at pH 7.0')" />
                       </el-col>
@@ -273,6 +296,7 @@ export default {
         }
     return {
       loading: false,
+      SeqLogoDialogVisible: false,
       accession: this.$route.query.accession,
       consensusSequence: '',
       num_amps: 0,
@@ -435,6 +459,9 @@ export default {
     setAMPsPageSize(size) {
       this.associatedAMPs.info.pageSize = size
       this.setAMPsPage(1)
+    },
+    handleDialogClose(){
+      console.log('dialog closed')
     },
     GeoPlotData(){
       let data = this.distribution.geo
@@ -660,14 +687,14 @@ export default {
         Charge_at_pH_7.push(amp_features.Charge_at_pH_7)
       }
       return {
-        MW: [this.makeTrace(MW, colors[0])],
+        MW: [this.makefeaturesBoxplotTrace(MW, colors[0])],
         // this.makeTrace(Molar_extinction.cysteines_reduced, "Molar extinction (cysteines_reduced)", colors[2]),
         // this.makeTrace(Molar_extinction.cystines_residues, "Molar extinction (cystines residues)", colors[3]),
-        Aromaticity: [this.makeTrace(Aromaticity, colors[4])],
-        GRAVY: [this.makeTrace(GRAVY, colors[5])],
-        Instability_index: [this.makeTrace(Instability_index, colors[6])],
-        Isoelectric_point: [this.makeTrace(Isoelectric_point, colors[7])],
-        Charge_at_pH_7: [this.makeTrace(Charge_at_pH_7, colors[8])],
+        Aromaticity: [this.makefeaturesBoxplotTrace(Aromaticity, colors[4])],
+        GRAVY: [this.makefeaturesBoxplotTrace(GRAVY, colors[5])],
+        Instability_index: [this.makefeaturesBoxplotTrace(Instability_index, colors[6])],
+        Isoelectric_point: [this.makefeaturesBoxplotTrace(Isoelectric_point, colors[7])],
+        Charge_at_pH_7: [this.makefeaturesBoxplotTrace(Charge_at_pH_7, colors[8])],
       }
     },
     featuresBoxplotLayout(name){
@@ -679,22 +706,42 @@ export default {
         // width: 300,
       }
     },
-    makeTrace(data, color){
+    makefeaturesBoxplotTrace(data, color){
       return {
-        name: '',
-        type: 'box',
+        type: 'violin',
         y: data,
+        points: 'all',
+        box: {
+          visible: true
+        },
         hoverinfo: 'y',
-        // xaxis:{
-        //   ticks: '',
-        // },
-        // boxpoints: 'all',
-        // jitter: 0.5,
-        // whiskerwidth: 0.2,
-        // fillcolor: 'cls',
-        marker: {size: 2, color: color},
-        line: {width: 1}
-      };
+        boxpoints: 'none',
+        line: {
+          color: 'black'
+        },
+        fillcolor: color,
+        opacity: 0.6,
+        meanline: {
+          visible: true
+        },
+        name: ''
+        // x0: ''
+      }
+      // return {
+      //   name: '',
+      //   type: 'violin',
+      //   y: data,
+      //   hoverinfo: 'y',
+      //   // xaxis:{
+      //   //   ticks: '',
+      //   // },
+      //   // boxpoints: 'none',
+      //   // jitter: 0.5,
+      //   // whiskerwidth: 0.2,
+      //   // fillcolor: 'cls',
+      //   marker: {size: 2, color: color},
+      //   line: {width: 1}
+      // };
     },
     MapColors(categories, colors){
       const levels = [...new Set(categories)]
