@@ -5,7 +5,7 @@
         <el-container>
           <el-main>
             <div class="title">Antimicrobial peptide family: {{ accession }}
-              <el-button class="button" @click="downloadCurrPage()" type="primary" icon="el-icon-download" plain></el-button>
+<!--              <el-button class="button" @click="downloadCurrPage()" type="primary" icon="el-icon-download" plain></el-button>-->
             </div>
             <!--          TODO test: move this description down to the overview tab-->
 
