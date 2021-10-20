@@ -149,7 +149,7 @@
                           <span class="medium">Helical wheel</span>
                         </el-link>
                         <br/>
-                        Amino acids helical wheel with the H-moment indicated, calculated by using <el-link>HelicalWheel</el-link> from <el-link>Modlamp</el-link>
+                        Amino acids helical wheel with the H-moment indicated, calculated by using <el-link href="https://modlamp.org/modlamp.html?highlight=helical%20wheel#modlamp.plot.helical_wheel">helical_wheel</el-link> from <el-link href="https://modlamp.org/">modlAMP</el-link>
                       </div>
                       <div style="align-content: center; text-align: center;">
                         <el-image :src="helicalwheel"></el-image>

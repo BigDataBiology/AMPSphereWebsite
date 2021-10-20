@@ -20,7 +20,7 @@
             <span>
               <br/><br/>
               Examples:
-              <el-link href="/AMP?accession=AMP10.000_000" target="_blank" type="primary">AMP10.000_000</el-link>,
+              <el-link href="/AMP?accession=AMP10.000_001" target="_blank" type="primary">AMP10.000_001</el-link>,
               <el-link href="/family?accession=SPHERE-III.001_396" target="_blank" type="primary">SPHERE-III.001_396</el-link>,
               <el-link href="/text_search?query=Aquatic" target="_blank" type="primary">Aquatic</el-link>,
               <el-link href="/text_search?query=Homo sapiens" target="_blank" type="primary">Homo sapiens</el-link>

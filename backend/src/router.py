@@ -57,7 +57,7 @@ def amps(db: Session = Depends(get_db),
 @amp_router.get(path="/{accession}",
                 response_model=schemas.AMP,
                 summary=default_route_summary)
-def amp(accession: str = 'AMP10.000_000',
+def amp(accession: str,
         db: Session = Depends(get_db)):
     """
     **tested**.
@@ -72,13 +72,15 @@ def amp(accession: str = 'AMP10.000_000',
 @amp_router.get(path="/{accession}/helicalwheel",
                 # response_class=FileResponse,
                 summary=default_route_summary)
-def amp_helicalwheel(accession: str = 'AMP10.000_000'):
+def amp_helicalwheel(accession: str):
     """
 
     :param accession:
     :return:
     """
-    return FileResponse(crud.get_amp_helicalwheel(accession))
+    path = crud.get_amp_helicalwheel(accession)
+    print(path)
+    return FileResponse(path)
 
 
 @amp_router.get(path="/{accession}/features",
