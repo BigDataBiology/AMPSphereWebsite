@@ -200,11 +200,11 @@ class PagedFamilies(BaseModel):
 
 
 # Object for Download page ------------------------------------------------
-class Download(BaseModel):
-    pass
-
-    class Config:
-        orm_mode = True
+# class Download(BaseModel):
+#     List of strings
+#
+#     class Config:
+#         orm_mode = True
 
 
 class mmSeqsSearchResult(BaseModel):

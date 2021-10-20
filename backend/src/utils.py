@@ -124,18 +124,32 @@ def fam_download_file(accession: str, file: str):
         nwk='tree_nwk'
     )
     file = pathlib.Path(cfg['pre_computed_data']).joinpath('families').joinpath(folders[extention]).joinpath(file)
-    print('file exists? ', file.exists())
+    # print('file exists? ', file.exists())
     return file
 
 
 def get_downloads():
-    pass
+    return ['main_db',
+            'search_db:mmseqs',
+            'search_db:hmmer',
+            'tables:AMPs',
+            'tables:Metadata',
+            'tables:GMSC',
+            'tables:Statistics'
+            ]
 
 
-def download(file: str):
-    # print(file)
-    # print(pathlib.Path(file).exists())
-    return file
+def download(file_type: str):
+    mapping = {
+        'main_db': './data/ampsphere_main_db/AMPSphere_v.2021-03.sqlite',
+        'search_db:mmseqs': './data/mmseqs_db/AMPSphere_v.2021-03.mmseqsdb',
+        'search_db:hmmer': './data/hmmprofile_db/AMPSphere_v2021-03.hmm',
+        'tables:AMP': 'data/tables/AMP.tsv',
+        'tables:Metadata': 'data/tables/Metadata.tsv',
+        'tables:GMSC': 'data/tables/GMSC.tsv',
+        'tables:Statistics': 'data/tables/Statistics.tsv'
+    }
+    return mapping[file_type]
 
 
 def mmseqs_search(seq: str):
@@ -165,11 +179,11 @@ def mmseqs_search(seq: str):
     try:
         # TODO redirect the stdout to a temporary file and return its content when there is no match.
         with open(stdout_file, 'w') as f:
-            subprocess.run(command, shell=True, check=True, stdout=f) ## FIXME
+            subprocess.run(command, shell=True, check=True, stdout=f)  ## FIXME
     except subprocess.CalledProcessError as e:
         print('error when executing the command (code {})'.format(e))
         print(e.output)
-        return None   # TODO better handle this
+        return None  # TODO better handle this
     else:
         columns = ['query_identifier', 'target_identifier', 'sequence_identity', 'alignment_length',
                    'number_mismatches', 'number_gap_openings', 'domain_start_position_query',
@@ -200,7 +214,7 @@ def hmmscan_search(seq: str):
     # with open(input_seq_file, 'w') as f:
     #     f.write(f'>submitted_sequence\n{seq}')
     with open(input_seq_file, 'w') as f:
-        f.write(seq) # already in fasta format
+        f.write(seq)  # already in fasta format
 
     command_base = 'hmmscan --domtblout {out} {hmm_profiles} {query_seq}'
     command = command_base.format_map({
@@ -296,8 +310,11 @@ def get_sunburst_data(paths_values, sep: str = None) -> dict:
     # print(values)
     tree.fill_with(values)
     tree.update_values()
+
     # print(vars(tree.get_node('a')))
-    def rm_prefix(identifier): return identifier.split(sep)[-1]
+    def rm_prefix(identifier):
+        return identifier.split(sep)[-1]
+
     id_parent_value = list(zip(*[(rm_prefix(nid), rm_prefix(tree.parent(nid).identifier), tree.get_node(nid).data)
                                  for nid in tree.expand_tree(mode=tree.WIDTH) if nid != '']))
     return dict(zip(['labels', 'parents', 'values'], id_parent_value))

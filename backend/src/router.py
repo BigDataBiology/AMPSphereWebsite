@@ -246,7 +246,7 @@ def get_filters(db: Session = Depends(get_db)):
 
 
 @default_router.get(path="/downloads",
-                    response_model=List[schemas.Download],
+                    response_model=List[str],
                     summary=default_route_summary)
 def get_downloads():
     """
