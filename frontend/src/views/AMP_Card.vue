@@ -365,7 +365,7 @@ export default {
           labels: [], parents: [], values: [], colorway: []
         }
       },
-      helicalwheel: require('./../assets/images/helicalwheel_AMP10.000_000.png'),
+      helicalwheel: ''
     }
     },
   created() {
@@ -389,6 +389,7 @@ export default {
           self.sequence = response.data.sequence
           self.length = response.data.sequence.length;
           self.family = response.data.family
+          self.helicalwheel = 'http://18.140.248.253:443/v1/amps/' + self.accession +  '/helicalwheel'
           self.features = response.data.features
           self.metadata.currentData = response.data.metadata.data
           self.metadata.info.currentPage = 1

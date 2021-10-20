@@ -51,11 +51,14 @@ def get_amp(accession: str, db: Session):
     features["graph_points"] = feature_graph_points
 
     metadata = get_amp_metadata(accession, db, page=0, page_size=5)
-
     setattr(amp_obj, "gene_sequences", gene_seqs)
     setattr(amp_obj, "features", features)
     setattr(amp_obj, "metadata", metadata)
     return amp_obj
+
+
+def get_amp_helicalwheel(accession):
+    return "data/pre_computed/amps/helical_wheels/helicalwheel_{}.svg".format(accession)
 
 
 def get_amp_metadata(accession: str, db: Session, page: int, page_size: int):

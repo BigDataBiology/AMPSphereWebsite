@@ -132,7 +132,6 @@ class AMP(BaseModel):
     accession: str
     sequence: str
     family: str
-    # helical_wheel_path: str
     features: AMPFeatures
     metadata: PagedMetadata
 
