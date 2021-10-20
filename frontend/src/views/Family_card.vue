@@ -393,7 +393,7 @@ export default {
         helix: [],
         sheet: [],
         turn: [],
-        disordered: []
+        // disordered: []
       }
       Object.values(this.features).forEach(function(amp_features) {
         console.log(amp_features)
@@ -402,30 +402,32 @@ export default {
         probabilities.helix.push(amp_structure.helix)
         probabilities.sheet.push(amp_structure.sheet)
         probabilities.turn.push(amp_structure.turn)
-        probabilities.disordered.push(1 - amp_structure.helix - amp_structure.sheet - amp_structure.turn)
+        // probabilities.disordered.push(1 - amp_structure.helix - amp_structure.sheet - amp_structure.turn)
       })
       console.log(probabilities)
       let data = [{
-        x: ['Alpha helix', 'Beta sheet', 'Beta turn', 'Disordered'],
-        y: [mean(probabilities.helix), mean(probabilities.sheet),
-          mean(probabilities.turn), mean(probabilities.disordered)],
+        // Deprecated since Oct 20 2021.
+        // x: ['Alpha helix', 'Beta sheet', 'Beta turn', 'Disordered'],
+        // y: [mean(probabilities.helix), mean(probabilities.sheet),
+        //   mean(probabilities.turn), mean(probabilities.disordered)],
+        x: ['Alpha helix', 'Beta turn', 'Beta sheet'],
+        y: [mean(probabilities.helix), mean(probabilities.turn), mean(probabilities.sheet)],
         name: '',
-        marker: {color: this.ColorPalette('quanlitative'), size: 4},
+        marker: {color: this.ColorPalette('quanlitative'), size: 3},
         error_y: {
           type: 'data',
-          array: [std(probabilities.helix), std(probabilities.sheet),
-            std(probabilities.turn), std(probabilities.disordered)],
+          array: [std(probabilities.helix), std(probabilities.turn), std(probabilities.sheet),
+           ],
           visible: true
         },
         type: 'bar'
       }]
-      console.log(data)
       return data
     },
     secondaryStructureLayout(){
       return {
         title: {text: ''},
-        yaxis: {title: 'Probability'},
+        yaxis: {title: 'Fraction of amino acids'},
         margin: {l: 80, r: 40, t: 20, b: 60, pad: 0},
         showlegend: false,
         height: 300,

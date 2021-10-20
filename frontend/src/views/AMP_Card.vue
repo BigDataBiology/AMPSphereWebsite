@@ -31,10 +31,8 @@
                     <pre><code id="aa-sequence">{{ sequence }}</code></pre>
                     <div style="alignment: left;">
                       <div class="info-item" id="secondary-structure">Secondary Structure</div>
-                      <Plotly :data="SecStructurePieData()"
-                              :layout="{title: {text: 'Secondary Structure'},
-                            margin: {l: 0, r: 0, t: 0, b: 0, pad: 0},
-                            showlegend: false, height: 240, width: 240}"
+                      <Plotly :data="SecStructureBarData()"
+                              :layout="secondaryStructureLayout()"
                               :toImageButtonOptions="{format: 'svg', scale: 1}"/>
                     </div>
 
@@ -421,13 +419,27 @@ export default {
           console.log(error)
         })
     },
-    SecStructurePieData(){
+    SecStructureBarData(){
       let strucData = this.features.Secondary_structure
-      strucData.disordered = 1 - strucData.turn - strucData.helix - strucData.sheet
+      // strucData.disordered = 1 - strucData.turn - strucData.helix - strucData.sheet
       return [{
-        type: 'pie', values: Object.values(strucData), labels: Object.keys(strucData),
-        marker: {colors: this.ColorPalette('quanlitative')},
-        textinfo: "label+percent", insidetextorientation: "radial"}]
+        type: 'bar',
+        name: '',
+        x: Object.keys(strucData),
+        y: Object.values(strucData),
+        marker: {color: this.ColorPalette('quanlitative')},
+        textinfo: "label+percent", insidetextorientation: "radial"
+      }]
+    },
+    secondaryStructureLayout(){
+      return {
+        title: {text: ''},
+        yaxis: {title: 'Fraction of amino acids'},
+        margin: {l: 80, r: 40, t: 20, b: 60, pad: 0},
+        showlegend: false,
+        height: 300,
+        width: 300
+      }
     },
     setMetadataPage(page) {
       // this.$message('setting to ' + page + 'th page')
