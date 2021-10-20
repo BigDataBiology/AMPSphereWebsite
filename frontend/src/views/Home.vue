@@ -70,6 +70,7 @@
           <el-row>
             <div style="text-align: left">
               Paste (&leq; 10) peptide sequences here (fasta format). <br/><br/>
+              Or try <el-link type="primary" href="http://18.140.248.253/downloads"> our search databases</el-link>.<br/><br/>
               <el-input
                   type="textarea"
                   :rows="20"
