@@ -616,7 +616,7 @@ function Node()
 		{
 			if ( this != highlightedNode )
 			{
-			//	document.body.style.cursor='pointer';
+			//	document.body.styles.cursor='pointer';
 			}
 			
 			highlightedNode = this;
@@ -1526,7 +1526,7 @@ function Node()
 			if ( patternAlpha )
 			{
 				svg +=
-					'<rect fill="url(#hiddenPattern)" style="stroke:none" ' +
+					'<rect fill="url(#hiddenPattern)" styles="stroke:none" ' +
 					'x="' + boxLeft + '" y="' + offset +
 					'" width="' + keySize + '" height="' + keySize + '"/>';
 			}
@@ -3520,10 +3520,10 @@ var options;
 function addOptionElement(position, innerHTML, title)
 {
 	var div = document.createElement("div");
-//	div.style.position = 'absolute';
-//	div.style.top = position + 'px';
+//	div.styles.position = 'absolute';
+//	div.styles.top = position + 'px';
 	div.innerHTML = innerHTML;
-//	div.style.display = 'block';
+//	div.styles.display = 'block';
 	div.style.padding = '2px';
 	
 	if ( title )
@@ -3554,13 +3554,13 @@ function addOptionElements(hueName, hueDefault)
 	details.style.right = '2%';
 	details.style.textAlign = 'right';
 	document.body.insertBefore(details, canvas);
-//		<div id="details" style="position:absolute;top:1%;right:2%;text-align:right;">
+//		<div id="details" styles="position:absolute;top:1%;right:2%;text-align:right;">
 
 	details.innerHTML = '\
-<span id="detailsName" style="font-weight:bold"></span>&nbsp;\
+<span id="detailsName" styles="font-weight:bold"></span>&nbsp;\
 <input type="button" id="detailsExpand" onclick="expand(focusNode);"\
 value="&harr;" title="Expand this wedge to become the new focus of the chart"/><br/>\
-<div id="detailsInfo" style="float:right"></div>';
+<div id="detailsInfo" styles="float:right"></div>';
 
 	keyControl = document.createElement('input');
 	keyControl.type = 'button';
@@ -3582,11 +3582,11 @@ value="&harr;" title="Expand this wedge to become the new focus of the chart"/><
 		logoImage = 'http://marbl.github.io/Krona/img/logo-med.png';
 	}
 	
-//	document.getElementById('options').style.fontSize = '9pt';
+//	document.getElementById('options').styles.fontSize = '9pt';
 	position = addOptionElement
 	(
 		position,
-'<a style="margin:2px" target="_blank" href="https://github.com/marbl/Krona/wiki"><img style="vertical-align:middle;width:108px;height:30px;" src="' + logoImage + '" alt="Logo of Krona"/></a><input type="button" id="back" value="&larr;" title="Go back (Shortcut: &larr;)"/>\
+'<a styles="margin:2px" target="_blank" href="https://github.com/marbl/Krona/wiki"><img styles="vertical-align:middle;width:108px;height:30px;" src="' + logoImage + '" alt="Logo of Krona"/></a><input type="button" id="back" value="&larr;" title="Go back (Shortcut: &larr;)"/>\
 <input type="button" id="forward" value="&rarr;" title="Go forward (Shortcut: &rarr;)"/> \
 &nbsp;Search: <input type="text" id="search"/>\
 <input id="searchClear" type="button" value="x" onclick="clearSearch()"/> \
@@ -3598,8 +3598,8 @@ value="&harr;" title="Expand this wedge to become the new focus of the chart"/><
 		var size = datasets < datasetSelectSize ? datasets : datasetSelectSize;
 		
 		var select =
-			'<table style="border-collapse:collapse;padding:0px"><tr><td style="padding:0px">' +
-			'<select id="datasets" style="min-width:100px" size="' + size + '" onchange="onDatasetChange()">';
+			'<table styles="border-collapse:collapse;padding:0px"><tr><td styles="padding:0px">' +
+			'<select id="datasets" styles="min-width:100px" size="' + size + '" onchange="onDatasetChange()">';
 		
 		for ( var i = 0; i < datasetNames.length; i++ )
 		{
@@ -3607,10 +3607,10 @@ value="&harr;" title="Expand this wedge to become the new focus of the chart"/><
 		}
 		
 		select +=
-			'</select></td><td style="vertical-align:top;padding:1px;">' +
-			'<input style="display:block" title="Previous dataset (Shortcut: &uarr;)" id="prevDataset" type="button" value="&uarr;" onclick="prevDataset()" disabled="true"/>' +
+			'</select></td><td styles="vertical-align:top;padding:1px;">' +
+			'<input styles="display:block" title="Previous dataset (Shortcut: &uarr;)" id="prevDataset" type="button" value="&uarr;" onclick="prevDataset()" disabled="true"/>' +
 			'<input title="Next dataset (Shortcut: &darr;)" id="nextDataset" type="button" value="&darr;" onclick="nextDataset()"/><br/></td>' +
-			'<td style="padding-top:1px;vertical-align:top"><input title="Switch to the last dataset that was viewed (Shortcut: TAB)" id="lastDataset" type="button" style="font:11px Times new roman" value="last" onclick="selectLastDataset()"/></td></tr></table>';
+			'<td styles="padding-top:1px;vertical-align:top"><input title="Switch to the last dataset that was viewed (Shortcut: TAB)" id="lastDataset" type="button" styles="font:11px Times new roman" value="last" onclick="selectLastDataset()"/></td></tr></table>';
 		
 		position = addOptionElement(position + 5, select);
 		
@@ -3654,7 +3654,7 @@ and including collapsed wedges.'
 		position = addOptionElement
 		(
 			position + 5,
-			'<input type="checkbox" id="useHue" style="float:left" ' +
+			'<input type="checkbox" id="useHue" styles="float:left" ' +
 			'/><div>Color by<br/>' + hueDisplayName +
 			'</div>'
 		);
@@ -3845,20 +3845,20 @@ function checkHighlight()
 	{
 		if ( highlightedNode == focusNode )
 		{
-//			canvas.style.display='none';
+//			canvas.styles.display='none';
 //			window.resizeBy(1,0);
-//			canvas.style.cursor='ew-resize';
+//			canvas.styles.cursor='ew-resize';
 //			window.resizeBy(-1,0);
-//			canvas.style.display='inline';
+//			canvas.styles.display='inline';
 		}
 		else
 		{
-//			canvas.style.cursor='pointer';
+//			canvas.styles.cursor='pointer';
 		}
 	}
 	else
 	{
-//		canvas.style.cursor='auto';
+//		canvas.styles.cursor='auto';
 	}
 	
 	if
@@ -4207,7 +4207,7 @@ function drawLegendSVG()
 	{
 		svgtest +=
 			'<stop offset="' + round(hueStopPositions[i] * 100) +
-			'%" style="stop-color:' + hueStopHsl[i] + '"/>';
+			'%" styles="stop-color:' + hueStopHsl[i] + '"/>';
 		
 		var textY = top + (1 - hueStopPositions[i]) * height;
 		
@@ -4226,7 +4226,7 @@ function drawLegendSVG()
 	//alert(svgtest);
 	svg += svgtest;
 	svg +=
-		'<rect style="fill:url(#gradient)" x="' + left + '" y="' + top +
+		'<rect styles="fill:url(#gradient)" x="' + left + '" y="' + top +
 		'" width="' + width + '" height="' + height + '"/>';
 	
 	svg += text;
@@ -4298,7 +4298,7 @@ function drawText(text, x, y, angle, anchor, bold, color)
 	{
 		svg +=
 			'<text x="' + (centerX + x) + '" y="' + (centerY + y) +
-			'" text-anchor="' + anchor + '" style="font-color:' + color + ';font-weight:' + (bold ? 'bold' : 'normal') +
+			'" text-anchor="' + anchor + '" styles="font-color:' + color + ';font-weight:' + (bold ? 'bold' : 'normal') +
 			'" transform="rotate(' + degrees(angle) + ',' + centerX + ',' + centerY + ')">' +
 			text + '</text>';
 	}
@@ -5323,7 +5323,7 @@ function mouseClick(e)
 	else if ( progress == 1 )//( highlightedNode != selectedNode )
 	{
 		setFocus(highlightedNode);
-//		document.body.style.cursor='ew-resize';
+//		document.body.styles.cursor='ew-resize';
 		draw();
 		checkHighlight();
 		var date = new Date();
@@ -6132,7 +6132,7 @@ function svgHeader()
 (datasets > 1 ? datasetNames[currentDataset] + ' - ' : '') + selectedNode.name +
 '</title>\
 <defs>\
-	<style type="text/css">\
+	<styles type="text/css">\
 	text {font-size: ' + fontSize + 'px; font-family: ' + fontFamily + '; dominant-baseline:central}\
 	path {stroke-width:' + thinLineWidth * fontSize / 12 + ';}\
 	path.wedge {stroke:none}\
@@ -6144,7 +6144,7 @@ function svgHeader()
 	rect {stroke:black;stroke-width:' + thinLineWidth * fontSize / 12 + ';}\
 	.highlight {stroke:black;stroke-width:'+ highlightLineWidth * fontSize / 12 + ';}\
 	.searchHighlight {fill:rgb(255, 255, 100);stroke:none;}\
-	</style>\
+	</styles>\
 <pattern id="hiddenPattern" patternUnits="userSpaceOnUse" \
 x="0" y="0" width="' + patternWidth + '" height="' + patternWidth + '">\
 <line class="pattern" x1="0" y1="0" x2="' + patternWidth / 2 + '" y2="' + patternWidth / 2 + '"/>\
@@ -6168,7 +6168,7 @@ function svgText(text, x, y, anchor, bold, color)
 	}
 	
 	return '<text x="' + x + '" y="' + y +
-		'" style="font-color:' + color + ';font-weight:' + (bold ? 'bold' : 'normal') +
+		'" styles="font-color:' + color + ';font-weight:' + (bold ? 'bold' : 'normal') +
 		'" text-anchor="' + anchor + '">' + text + '</text>';
 }
 

@@ -196,7 +196,7 @@
 <!--                  <el-divider></el-divider>-->
 <!--                  <el-row>-->
 <!--                    <br>-->
-<!--                      <div style="alignment: center; text-align: center">-->
+<!--                      <div styles="alignment: center; text-align: center">-->
 <!--                          <Plotly :data="featureGraphData()"-->
 <!--                                  :layout="featureGraphLayout()"-->
 <!--                                  :toImageButtonOptions="{format: 'svg', scale: 1}"/>-->
@@ -218,7 +218,7 @@
 <!--                  <el-divider></el-divider>-->
 <!--                  <el-row>-->
 <!--                    <br>-->
-<!--                    <div style="alignment: center; text-align: center">-->
+<!--                    <div styles="alignment: center; text-align: center">-->
 <!--                      <v-chart :option="echartOption"></v-chart>-->
 <!--                    </div>-->
 <!--                    <div>-->

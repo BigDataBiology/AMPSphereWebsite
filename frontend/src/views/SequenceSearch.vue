@@ -1,106 +1,90 @@
 <template>
   <div id="SequenceSearch">
-    <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/sequence_search' }">Sequence search</el-breadcrumb-item>
-    </el-breadcrumb>
-    <br/>
-    <el-row>
-      <el-col :span="18">
-        <br/>
-<!--        <div v-if="method === 'MMseqs'" class="desc">-->
-<!--          <el-collapse>-->
-<!--            MMseqs version<el-tag size="small">13.45111</el-tag>-->
-<!--            <el-collapse-item title="Search command" name="search_command">-->
-<!--              <pre><code><small>{{ search_command }}</small></code></pre>-->
-<!--            </el-collapse-item>-->
-<!--          </el-collapse>-->
-<!--&lt;!&ndash;            Search parameters:&ndash;&gt;-->
-<!--&lt;!&ndash;            <el-table :data="searchParameters" title="Search parameters">&ndash;&gt;-->
-<!--&lt;!&ndash;              <el-table-column prop="param_name" label="Parameter"></el-table-column>&ndash;&gt;-->
-<!--&lt;!&ndash;              <el-table-column prop="value" label="Value"></el-table-column>&ndash;&gt;-->
-<!--&lt;!&ndash;            </el-table>&ndash;&gt;-->
-<!--        </div>-->
-<!--        <div v-if="method === 'HMMER'" class="desc">-->
-<!--          You searched for AMP families with {{ queryFilters.length }} sequences.-->
-<!--        </div>-->
-      </el-col>
-      <el-col :span="4">
-        <el-button @click="downloadSearchResults" type="primary">
-          <BootstrapIcon icon="cloud-download" variant="light" size="1x" />
-          Download results as csv
-        </el-button>
-      </el-col>
-    </el-row>
-    <br/>
-    <div>
-<!--      {{ result }}-->
-      <div v-if="result.length === 0">
-        <span class="info-item-value">
-          There is no match for your sequence(s).
-        </span>
-<!--        <el-empty :image-size="200" description=""></el-empty>-->
-      </div>
-      <div v-else-if="method === 'MMseqs'">
-        <el-table :data="result" stripe style="width: 100%" v-loading="loading">
-          <el-table-column label="Query" prop="query_identifier"
-                           :filters="queryFilters" :filter-method="filterTable">
+    <div class="row justify-center">
+      <div class="col-xs-0 col-lg-2 bg-white"></div>
+      <div class="col-12 col-lg-8 justify-center q-pr-md q-ma-auto">
+        <div class="row">
+          <div class="col-12 col-lg-2 offset-lg-10">
+            <el-button @click="downloadSearchResults" type="primary">
+              <BootstrapIcon icon="cloud-download" variant="light" size="1x" />
+              Download results as csv
+            </el-button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12" v-if="result.length === 0">
+            <span class="info-item-value">
+              There is no match for your sequence(s).
+            </span>
+            <!--        <el-empty :image-size="200" description=""></el-empty>-->
+          </div>
+          <div class="col-12" v-else-if="method === 'MMseqs'">
+            <el-table :data="result" stripe style="width: 100%" v-loading="loading">
+              <el-table-column label="Query" prop="query_identifier"
+                               :filters="queryFilters" :filter-method="filterTable">
 
-          </el-table-column>
-          <el-table-column label="Target" width="200">
-            <template #default="props">
-              <el-button type="text" @click="AMPDetail(props.row.target_identifier)">{{ props.row.target_identifier }}</el-button>
-            </template>
-          </el-table-column>
-          <el-table-column label="Identity" sortable prop="sequence_identity"></el-table-column>
-          <el-table-column label="Aligned length" sortable prop="alignment_length"></el-table-column>
-          <el-table-column label="# mismatches" sortable prop="number_mismatches"></el-table-column>
-          <el-table-column label="# gap" sortable prop="number_gap_openings"></el-table-column>
-          <el-table-column label="E value" sortable prop="E_value"></el-table-column>
-          <el-table-column label="Bit score" sortable prop="bit_score"></el-table-column>
-        </el-table>
+              </el-table-column>
+              <el-table-column label="Target" width="200">
+                <template #default="props">
+                  <el-button type="text" @click="AMPDetail(props.row.target_identifier)">{{ props.row.target_identifier }}</el-button>
+                </template>
+              </el-table-column>
+              <el-table-column label="Identity" sortable prop="sequence_identity"></el-table-column>
+              <el-table-column label="Aligned length" sortable prop="alignment_length"></el-table-column>
+              <el-table-column label="# mismatches" sortable prop="number_mismatches"></el-table-column>
+              <el-table-column label="# gap" sortable prop="number_gap_openings"></el-table-column>
+              <el-table-column label="E value" sortable prop="E_value"></el-table-column>
+              <el-table-column label="Bit score" sortable prop="bit_score"></el-table-column>
+            </el-table>
 
+          </div>
+          <div class="col-12" v-else-if="method === 'HMMER'">
+            <el-table :data="result" stripe style="width: 100%" v-loading="loading">
+              <el-table-column label="Query" prop="query_name" :filters="queryFilters" :filter-method="filterTable"></el-table-column>
+              <el-table-column label="Target" width="200">
+                <template #default="props">
+                  <el-button type="text" @click="familyDetail(props.row.target_name)">{{ props.row.target_name }}</el-button>
+                </template>
+              </el-table-column>
+              <el-table-column label="Reliability" sortable prop="acc"></el-table-column>
+              <el-table-column label="Bias" sortable prop="bias"></el-table-column>
+              <el-table-column label="E-value" sortable prop="E_value"></el-table-column>
+              <el-table-column label="C E-value" sortable prop="c_Evalue"></el-table-column>
+              <el-table-column label="I E-value" sortable prop="i_Evalue"></el-table-column>
+              <el-table-column label="Bit score" sortable prop="score"></el-table-column>
+            </el-table>
+          </div>
+        </div>
       </div>
-      <div v-else-if="method === 'HMMER'">
-        <el-table :data="result" stripe style="width: 100%" v-loading="loading">
-          <el-table-column label="Query" prop="query_name" :filters="queryFilters" :filter-method="filterTable"></el-table-column>
-          <el-table-column label="Target" width="200">
-            <template #default="props">
-              <el-button type="text" @click="familyDetail(props.row.target_name)">{{ props.row.target_name }}</el-button>
-            </template>
-          </el-table-column>
-          <el-table-column label="Reliability" sortable prop="acc"></el-table-column>
-          <el-table-column label="Bias" sortable prop="bias"></el-table-column>
-          <el-table-column label="E-value" sortable prop="E_value"></el-table-column>
-          <el-table-column label="C E-value" sortable prop="c_Evalue"></el-table-column>
-          <el-table-column label="I E-value" sortable prop="i_Evalue"></el-table-column>
-          <el-table-column label="Bit score" sortable prop="score"></el-table-column>
-        </el-table>
-      </div>
+      <div class="col-xs-0 col-lg-2 bg-white"></div>
     </div>
+<!--    <el-breadcrumb separator-class="el-icon-arrow-right">-->
+<!--      <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>-->
+<!--      <el-breadcrumb-item :to="{ path: '/sequence_search' }">Sequence search</el-breadcrumb-item>-->
+<!--    </el-breadcrumb>-->
+<!--    <br/>-->
+<!--    <el-row>-->
+<!--      <el-col :span="18">-->
+<!--        <br/>-->
+<!--&lt;!&ndash;        <div v-if="method === 'MMseqs'" class="desc">&ndash;&gt;-->
+<!--&lt;!&ndash;          <el-collapse>&ndash;&gt;-->
+<!--&lt;!&ndash;            MMseqs version<el-tag size="small">13.45111</el-tag>&ndash;&gt;-->
+<!--&lt;!&ndash;            <el-collapse-item title="Search command" name="search_command">&ndash;&gt;-->
+<!--&lt;!&ndash;              <pre><code><small>{{ search_command }}</small></code></pre>&ndash;&gt;-->
+<!--&lt;!&ndash;            </el-collapse-item>&ndash;&gt;-->
+<!--&lt;!&ndash;          </el-collapse>&ndash;&gt;-->
+<!--&lt;!&ndash;&lt;!&ndash;            Search parameters:&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;&lt;!&ndash;            <el-table :data="searchParameters" title="Search parameters">&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;&lt;!&ndash;              <el-table-column prop="param_name" label="Parameter"></el-table-column>&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;&lt;!&ndash;              <el-table-column prop="value" label="Value"></el-table-column>&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;&lt;!&ndash;            </el-table>&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;        <div v-if="method === 'HMMER'" class="desc">&ndash;&gt;-->
+<!--&lt;!&ndash;          You searched for AMP families with {{ queryFilters.length }} sequences.&ndash;&gt;-->
+<!--&lt;!&ndash;        </div>&ndash;&gt;-->
+<!--      </el-col>-->
 
-<!--        "query_accession": "-",-->
-<!--        "query_length": 27,-->
-<!--        "query_name": "SPHERE-III.001_396",-->
-<!--        "target_accession": "-",-->
-<!--        "target_length": 27,-->
-<!--        "target_name": "submitted_sequence",-->
-<!--        "E_value": 7.1e-25,-->
-<!--        "acc": 0.99,-->
-<!--        "bias": 9.2,-->
-<!--        "c_Evalue": 7.399999999999999e-25,-->
-<!--        "i_Evalue": 7.399999999999999e-25,-->
-<!--        "num_domain": 1,-->
-<!--        "domain_index": 1,-->
-<!--        "score": 72.6,-->
-<!--        "from_ali": 1,-->
-<!--        "from_env": 1,-->
-<!--        "from_hmm": 1,-->
-<!--        "to_ali": 27,-->
-<!--        "to_env": 27,-->
-<!--        "to_hmm": 27,-->
-<!--        "description_of_target": "-"-->
-    </div>
+  </div>
 </template>
 
 <script>
@@ -120,7 +104,7 @@ export default {
       searchCommand: 'mmseqs createdb {query_seq} {query_seq}.mmseqsdb &&  \\\n' +
           'mmseqs search {query_seq}.mmseqsdb  {database} {out}.mmseqsdb {tmp_dir} &&  \\\n' +
           'mmseqs convertalis {query_seq}.mmseqsdb {database} {out}.mmseqsdb {out}',
-      result: [],
+      result: ['example'],
       queryFilters: [],
       loading: false
     }

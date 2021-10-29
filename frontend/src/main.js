@@ -1,8 +1,9 @@
 import { createApp, h } from 'vue'
 import App from './App.vue'
 import ElementPLus from 'element-plus'
-import './style/theme/index.css'
-import './style/main.css';
+import './styles/theme/index.css'
+import './styles/main.css';
+import "quasar/dist/quasar.sass"
 import locale from 'element-plus/lib/locale/lang/en'
 import router from './router'
 import axios from 'axios'
@@ -11,6 +12,8 @@ import imageZoom from 'vue-image-zoomer'
 import { Download, More } from '@element-plus/icons'
 import JsonViewer from "vue3-json-viewer"
 import BootstrapIcon from '@dvuckovic/vue3-bootstrap-icons';
+import { Quasar } from 'quasar'
+import quasarUserOptions from './quasar-user-options'
 
 
 router.beforeEach((to, from, next) => {
@@ -29,6 +32,7 @@ const app = createApp(
 
 
 app.use(router)
+app.use(Quasar, quasarUserOptions)
 app.use(ElementPLus, {locale})
 app.use(VueAxios, axios)
 app.use(JsonViewer)
