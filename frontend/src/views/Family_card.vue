@@ -1,237 +1,237 @@
 <template>
   <div class="Family_card">
-    <el-row>
-      <el-col :span="24">
-        <el-container>
-          <el-main>
-            <div class="title">Antimicrobial peptide family: {{ accession }}
-<!--              <el-button class="button" @click="downloadCurrPage()" type="primary" icon="el-icon-download" plain></el-button>-->
+    <div class="row justify-center">
+        <div class="col-xs-0 col-xl-2 bg-white"></div>
+        <div class="col-12 col-xl-8 justify-center q-pr-md q-ma-auto">
+          <div class="row">
+            <div class="title bg-primary">Antimicrobial peptide family: {{ accession }}
+              <!--              <el-button class="button" @click="downloadCurrPage()" type="primary" icon="el-icon-download" plain></el-button>-->
             </div>
-            <!--          TODO test: move this description down to the overview tab-->
-
-            <el-tabs type="border-card">
-              <el-tab-pane label="Overview" id="#overview">
-                <el-row style="text-align: left">
-                  <el-col :span="6" class="margin-col">
+          </div>
+          <!--          TODO test: move this description down to the overview tab-->
+          <div class="row bg-secondary">
+            <div class="col-12">
+              <q-tabs v-model="tabName" dense align="justify" class="bg-primary text-white shadow-2" :breakpoint="0">
+                <q-tab name="overview" label="Overview" />
+                <q-tab name="features" label="Features" />
+                <q-tab name="downloads" label="Downloads" />
+              </q-tabs>
+              <q-tab-panels v-model="tabName">
+                <q-tab-panel name="overview">
+                  <div class="row" style="text-align: left">
+                    <div class="col-12 col-md-3 q-pa-md">
                     <span class="info-item">
                       Number of AMPs:
-<!--                      </span>-->
-<!--                    <span>-->
+                      <!--                      </span>-->
+                      <!--                    <span>-->
                       <el-link href="#amps" type="primary">
                         <span class="info-item-value">{{ num_amps }}</span>
                       </el-link>
                     </span>
-<!--                    <div class="info-item" id="sequence">-->
-<!--                      Consensus sequence-->
-<!--                      <el-button @click="CopyPeptideSequence()" icon="el-icon-document-copy"-->
-<!--                                 size="mini" type="primary" plain>-->
-<!--                      </el-button>-->
-<!--                    </div>-->
-<!--                    <pre><code id="aa-sequence">{{ sequence }}</code></pre>-->
-<!--                    TODO update this-->
-<!--                    <div>-->
-<!--                      <el-button type="text" @click="SeqLogoDialogVisible = true">-->
-<!--                        Sequence logo-->
-<!--                      </el-button>-->
-<!--                      <el-dialog-->
-<!--                          v-model="SeqLogoDialogVisible"-->
-<!--                          title="Tips"-->
-<!--                          width="30%"-->
-<!--                          :before-close="handleDialogClose">-->
-<!--                        <span> {{ downloads[4].file }}</span>-->
-<!--                      </el-dialog>-->
-<!--                    </div>-->
-                    <div style="alignment: left;">
-                      <div class="info-item" id="secondary-structure">Secondary Structure</div>
-<!--                      TODO change this to an error bars chart.-->
-<!--                      https://codepen.io/plotly/pen/VvEVgq-->
-                      <Plotly :data="secondaryStructureGraphData"
-                              :layout="secondaryStructureLayout()"
-                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                      <!--                    <div class="info-item" id="sequence">-->
+                      <!--                      Consensus sequence-->
+                      <!--                      <el-button @click="CopyPeptideSequence()" icon="el-icon-document-copy"-->
+                      <!--                                 size="mini" type="primary" plain>-->
+                      <!--                      </el-button>-->
+                      <!--                    </div>-->
+                      <!--                    <pre><code id="aa-sequence">{{ sequence }}</code></pre>-->
+                      <!--                    TODO update this-->
+                      <!--                    <div>-->
+                      <!--                      <el-button type="text" @click="SeqLogoDialogVisible = true">-->
+                      <!--                        Sequence logo-->
+                      <!--                      </el-button>-->
+                      <!--                      <el-dialog-->
+                      <!--                          v-model="SeqLogoDialogVisible"-->
+                      <!--                          title="Tips"-->
+                      <!--                          width="30%"-->
+                      <!--                          :before-close="handleDialogClose">-->
+                      <!--                        <span> {{ downloads[4].file }}</span>-->
+                      <!--                      </el-dialog>-->
+                      <!--                    </div>-->
+                      <div style="alignment: left;">
+                        <div class="info-item" id="secondary-structure">Secondary Structure</div>
+                        <!--                      TODO change this to an error bars chart.-->
+                        <!--                      https://codepen.io/plotly/pen/VvEVgq-->
+                        <Plotly :data="secondaryStructureGraphData"
+                                :layout="secondaryStructureLayout()"
+                                :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                      </div>
+
                     </div>
-
-                  </el-col>
-                  <el-col :span="14" :offset="2">
-                    <!--                   TODO Geographical distribution -->
-                    <div id="global distribution">
-                      <Plotly :data="GeoPlotData()"
-                              :layout="GeoPlotLayout()"
-                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                    <div class="col-12 col-md-8 offset-1">
+                      <!--                   TODO Geographical distribution -->
+                      <div id="global distribution">
+                        <Plotly :data="GeoPlotData()"
+                                :layout="GeoPlotLayout()"
+                                :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                      </div>
                     </div>
-                  </el-col>
-                </el-row>
+                  </div>
 
-                <el-divider></el-divider>
-
-                <el-row>
-                  <el-col style="margin-left: 30px" :offset="1">
-                    <h3 id="distribution" class="subsection-title">Distribution</h3>
-                  </el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="10" class="margin-col">
-                    <!--                    TODO Bigger title  and figure captions-->
-                    <h4 id="distribution-across-habitats">Habitats</h4>
-                    <div>
-                      <Plotly :data="EnvPlotData()"
-                              :layout="EnvPlotLayout()"
-                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                  <div class="row">
+                    <div class="col-12">
+                      <h5 id="distribution" class="subsection-title">Distribution</h5>
                     </div>
-                  </el-col>
-                  <el-col :span="3" style="line-height: 100px">
-                    <el-divider direction="vertical"></el-divider>
-                  </el-col>
-
-                  <el-col :span="10">
-                    <!--                    TODO Bigger title and figure captions -->
-                    <h4 id="distribution-across-hosts">Hosts</h4>
-                    <div>
-                      <Plotly :data="HostPlotData()"
-                              :layout="HostPlotLayout()"
-                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                  </div>
+                  <div class="row">
+                    <div class="col-12 col-md-6 q-pa-md">
+                      <!--                    TODO Bigger title  and figure captions-->
+                      <h4 id="distribution-across-habitats">Habitats</h4>
+                      <div>
+                        <Plotly :data="EnvPlotData()"
+                                :layout="EnvPlotLayout()"
+                                :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                      </div>
                     </div>
-                  </el-col>
-                  <!--                <div>-->
-                  <!--                  <Plotly :data="DistributionGraphData()"-->
-                  <!--                          :layout="DistributionGraphLayout()"-->
-                  <!--                          :toImageButtonOptions="{format: 'svg', scale: 1}"/>-->
-                  <!--                </div>-->
-                </el-row>
-                <br/>
-                <el-divider></el-divider>
-                <el-row>
-                  <el-col :offset="1" class="margin-col">
-                    <h3 id="amps" class="subsection-title">Associated AMPs</h3>
-                    <!--                    TODO add download button here -->
-                    <el-table :data="associatedAMPs.currentData" stripe style="width: 100%"
-                              v-loading="loading"
-                              element-loading-text="Loading..."
-                              element-loading-spinner="el-icon-loading">
-                      <el-table-column label="Accession" width="200">
-                        <template #default="props">
-                          <el-button @click="AMPDetail(props.row.accession)" type="text">{{ props.row.accession }}</el-button>
-                        </template>
-                      </el-table-column>
-                      <el-table-column label="Peptide sequence" width="500%">
-                        <template #default="props">
-                          <pre><code><small>{{ props.row.sequence }}</small></code></pre>
-                        </template>
-                      </el-table-column>
-                      <el-table-column label="# smORF genes" width="150%">
-                        <template #default="props">
-                          <!--                <el-tooltip class="item" effect="dark" content="Associated number of small ORF genes." placement="right">-->
-                          <span>{{ props.row.metadata.info.totalItem }}</span>
-                          <!--                </el-tooltip>-->
-                        </template>
-                      </el-table-column>
-                      <el-table-column label="Tag" width="150%">
-                        <template #default="props">
-                          <el-tag :type="props.row.quality_tag.level"> {{ props.row.quality_tag.msg }} </el-tag>
-                          <!--                <el-tag type="warning"> {{ props.row.quality_tag.msg }} </el-tag>-->
-                        </template>
-                      </el-table-column>
-                    </el-table>
-                    <el-pagination
-                        @size-change="setAMPsPageSize"
-                        @current-change="setAMPsPage"
-                        :page-sizes="[5, 10, 20, 50, 100]"
-                        :page-size="5"
-                        layout="total, sizes, prev, pager, next, jumper"
-                        :total="associatedAMPs.info.totalRow">
-                    </el-pagination>
-
-                  </el-col>
-                </el-row>
-              </el-tab-pane>
-              <el-tab-pane label="Features" id="#features">
-                <el-row>
-                  <el-col class="margin-col">
-                    <h3 id="properties" class="info-item">Biochemical property distributions</h3>
-                    <div class="info-item-value">
-                      These features below were calculated by using the
-                      <el-link href="https://biopython.org/docs/1.79/api/Bio.SeqUtils.ProtParam.html" type="primary">
-                        Bio.SeqUtils.ProtParam.ProteinAnalysis
-                      </el-link>
-                      module from
-                      <el-link href="https://doi.org/10.1093/bioinformatics/btp163" type="primary">
-                        BioPython
-                      </el-link> (version 1.79).
+                    <div class="col-12 col-md-6 q-pa-md">
+                      <!--                    TODO Bigger title and figure captions -->
+                      <h4 id="distribution-across-hosts">Hosts</h4>
+                      <div>
+                        <Plotly :data="HostPlotData()"
+                                :layout="HostPlotLayout()"
+                                :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                      </div>
                     </div>
-                    <el-row>
-                      <el-col :span="7">
-                        <Plotly :data="featuresGraphData.MW"
-                                :layout="featuresBoxplotLayout('Molecular weight')" />
-                      </el-col>
-                      <el-col :span="7">
-                        <Plotly :data="featuresGraphData.Aromaticity"
-                                :layout="featuresBoxplotLayout('Aromaticity')" />
-                      </el-col>
-                      <el-col :span="7">
-                        <Plotly :data="featuresGraphData.GRAVY"
-                                :layout="featuresBoxplotLayout('GRAVY (grand average of hydropathy)')" />
-                      </el-col>
-                    </el-row>
-                    <el-row>
-                      <el-col :span="7">
-                        <Plotly :data="featuresGraphData.Instability_index"
-                                :layout="featuresBoxplotLayout('Instability index')" />
-                      </el-col>
-                      <el-col :span="7">
-                        <Plotly :data="featuresGraphData.Isoelectric_point"
-                                :layout="featuresBoxplotLayout('Isoelectric point')" />
-                      </el-col>
-                      <el-col :span="7">
-                        <Plotly :data="featuresGraphData.Charge_at_pH_7"
-                                :layout="featuresBoxplotLayout('Charge at pH 7.0')" />
-                      </el-col>
-                    </el-row>
+                    <!--                <div>-->
+                    <!--                  <Plotly :data="DistributionGraphData()"-->
+                    <!--                          :layout="DistributionGraphLayout()"-->
+                    <!--                          :toImageButtonOptions="{format: 'svg', scale: 1}"/>-->
+                    <!--                </div>-->
+                  </div>
+
+                  <div class="row">
+                    <div class="col-12">
+                      <h5 id="amps" class="subsection-title">Associated AMPs</h5>
+                      <!--                    TODO add download button here -->
+                      <el-table :data="associatedAMPs.currentData" stripe style="width: 100%"
+                                v-loading="loading"
+                                element-loading-text="Loading..."
+                                element-loading-spinner="el-icon-loading">
+                        <el-table-column label="Accession" width="200">
+                          <template #default="props">
+                            <el-button @click="AMPDetail(props.row.accession)" type="text">{{ props.row.accession }}</el-button>
+                          </template>
+                        </el-table-column>
+                        <el-table-column label="Peptide sequence" width="500%">
+                          <template #default="props">
+                            <pre><code><small>{{ props.row.sequence }}</small></code></pre>
+                          </template>
+                        </el-table-column>
+                        <el-table-column label="# smORF genes" width="150%">
+                          <template #default="props">
+                            <!--                <el-tooltip class="item" effect="dark" content="Associated number of small ORF genes." placement="right">-->
+                            <span>{{ props.row.metadata.info.totalItem }}</span>
+                            <!--                </el-tooltip>-->
+                          </template>
+                        </el-table-column>
+                        <el-table-column label="Tag" width="150%">
+                          <template #default="props">
+                            <el-tag :type="props.row.quality_tag.level"> {{ props.row.quality_tag.msg }} </el-tag>
+                            <!--                <el-tag type="warning"> {{ props.row.quality_tag.msg }} </el-tag>-->
+                          </template>
+                        </el-table-column>
+                      </el-table>
+                      <el-pagination
+                          @size-change="setAMPsPageSize"
+                          @current-change="setAMPsPage"
+                          :page-sizes="[5, 10, 20, 50, 100]"
+                          :page-size="5"
+                          layout="total, sizes, prev, pager, next, jumper"
+                          :total="associatedAMPs.info.totalRow">
+                      </el-pagination>
+
+                    </div>
+                  </div>
+                </q-tab-panel>
+                <q-tab-panel name="features" id="#features">
+                  <div class="row">
+                    <div class="col-12 q-pa-md">
+                      <h5 id="properties">Biochemical property distributions</h5>
+                      <div class="info-item-value">
+                        These features below were calculated by using the
+                        <el-link href="https://biopython.org/docs/1.79/api/Bio.SeqUtils.ProtParam.html" type="primary">
+                          Bio.SeqUtils.ProtParam.ProteinAnalysis
+                        </el-link>
+                        module from
+                        <el-link href="https://doi.org/10.1093/bioinformatics/btp163" type="primary">
+                          BioPython
+                        </el-link> (version 1.79).
+                      </div>
+                      <div class="row">
+                        <div class="col-12 col-md-4">
+                          <Plotly :data="featuresGraphData.MW"
+                                  :layout="featuresBoxplotLayout('Molecular weight')" />
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <Plotly :data="featuresGraphData.Aromaticity"
+                                  :layout="featuresBoxplotLayout('Aromaticity')" />
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <Plotly :data="featuresGraphData.GRAVY"
+                                  :layout="featuresBoxplotLayout('GRAVY (grand average of hydropathy)')" />
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-12 col-md-4">
+                          <Plotly :data="featuresGraphData.Instability_index"
+                                  :layout="featuresBoxplotLayout('Instability index')" />
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <Plotly :data="featuresGraphData.Isoelectric_point"
+                                  :layout="featuresBoxplotLayout('Isoelectric point')" />
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <Plotly :data="featuresGraphData.Charge_at_pH_7"
+                                  :layout="featuresBoxplotLayout('Charge at pH 7.0')" />
+                        </div>
+                      </div>
 
 
-<!--                    <el-table :data="Object.values(feature_statistics).slice(1)" v-loading="loading">-->
-<!--                      <el-table-column type="index" :index="indexByStatsName" width="100%"></el-table-column>-->
-<!--                      <el-table-column prop="Aromaticity" label="Aromaticity" width="100%"></el-table-column>-->
-<!--                      <el-table-column prop="Charge_at_pH_7" label="Charge at pH 7" width="150%"></el-table-column>-->
-<!--                      <el-table-column prop="GRAVY" label="GRAVY" width="100%"></el-table-column>-->
-<!--                      <el-table-column prop="Instability_index" label="Instability index" width="150%"></el-table-column>-->
-<!--                      <el-table-column prop="Isoelectric_point" label="Isoelectric point" width="150%"></el-table-column>-->
-<!--                      <el-table-column prop="MW" label="Molecular Weight" width="150%"></el-table-column>-->
-<!--                      <el-table-column label="Molar extinction" width="150%">-->
-<!--                        <template #default="props">-->
-<!--                          {{ props.row.Molar_extinction.cysteines_reduced }}-->
-<!--                          {{ props.row.Molar_extinction.cystines_residues }}-->
-<!--                        </template>-->
-<!--                      </el-table-column>-->
-<!--                    </el-table>-->
-<!--                    Maybe replace this with a boxplot...-->
-                  </el-col>
-                </el-row>
-              </el-tab-pane>
-              <el-tab-pane label="Downloads" id="#downloads">
-                <el-row>
-                  <el-col class="margin-col">
-                    <h3 id="downloads" class="info-item">Downloads</h3>
-                    <el-table :data="downloads" v-loading="loading">
-                      <el-table-column prop="name" label="Name" width="150%"></el-table-column>
-                      <el-table-column prop="file" label="File" width="150%">
-                        <template #default="props">
-                          <el-link @click.prevent="download(props.row.file)" type="primary"> Download </el-link>
-                        </template>
-                      </el-table-column>
-                      <el-table-column label="Description" width="800%">
-                        <template #default="props">
-                          <div class="download-desc">{{ props.row.desc }}</div>
-                        </template>
-                      </el-table-column>
-                    </el-table>
-                  </el-col>
-                </el-row>
-              </el-tab-pane>
-            </el-tabs>
-          </el-main>
-        </el-container>
-      </el-col>
-    </el-row>
-
+                      <!--                    <el-table :data="Object.values(feature_statistics).slice(1)" v-loading="loading">-->
+                      <!--                      <el-table-column type="index" :index="indexByStatsName" width="100%"></el-table-column>-->
+                      <!--                      <el-table-column prop="Aromaticity" label="Aromaticity" width="100%"></el-table-column>-->
+                      <!--                      <el-table-column prop="Charge_at_pH_7" label="Charge at pH 7" width="150%"></el-table-column>-->
+                      <!--                      <el-table-column prop="GRAVY" label="GRAVY" width="100%"></el-table-column>-->
+                      <!--                      <el-table-column prop="Instability_index" label="Instability index" width="150%"></el-table-column>-->
+                      <!--                      <el-table-column prop="Isoelectric_point" label="Isoelectric point" width="150%"></el-table-column>-->
+                      <!--                      <el-table-column prop="MW" label="Molecular Weight" width="150%"></el-table-column>-->
+                      <!--                      <el-table-column label="Molar extinction" width="150%">-->
+                      <!--                        <template #default="props">-->
+                      <!--                          {{ props.row.Molar_extinction.cysteines_reduced }}-->
+                      <!--                          {{ props.row.Molar_extinction.cystines_residues }}-->
+                      <!--                        </template>-->
+                      <!--                      </el-table-column>-->
+                      <!--                    </el-table>-->
+                      <!--                    Maybe replace this with a boxplot...-->
+                    </div>
+                  </div>
+                </q-tab-panel>
+                <q-tab-panel name="downloads" id="#downloads">
+                  <div class="row">
+                    <div class="col-12">
+                      <h3 id="downloads" class="info-item">Downloads</h3>
+                      <el-table :data="downloads" v-loading="loading">
+                        <el-table-column prop="name" label="Name" width="150%"></el-table-column>
+                        <el-table-column prop="file" label="File" width="150%">
+                          <template #default="props">
+                            <el-link @click.prevent="download(props.row.file)" type="primary"> Download </el-link>
+                          </template>
+                        </el-table-column>
+                        <el-table-column label="Description" width="800%">
+                          <template #default="props">
+                            <div class="download-desc">{{ props.row.desc }}</div>
+                          </template>
+                        </el-table-column>
+                      </el-table>
+                    </div>
+                  </div>
+                </q-tab-panel>
+              </q-tab-panels>
+            </div>
+          </div>
+        </div>
+        <div class="col-xs-0 col-xl-2 bg-white"></div>
+      </div>
   </div>
 </template>
 
@@ -295,6 +295,7 @@ export default {
           Secondary_structure: {helix: 0, turn: 0, sheet: 0},
         }
     return {
+      tabName: 'overview',
       loading: false,
       SeqLogoDialogVisible: false,
       accession: this.$route.query.accession,

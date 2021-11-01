@@ -1,11 +1,51 @@
 <template>
   <div class="TextSearch">
     <div class="row justify-center">
-      <div class="col-xs-0 col-lg-2 bg-white"></div>
-      <div class="col-12 col-lg-8 justify-center q-pr-md q-ma-auto">
-        content...
+      <div class="col-xs-0 col-xl-2 bg-white"></div>
+      <div class="col-12 col-xl-8 justify-center q-pr-md q-ma-auto">
+        <el-table :data="amps" stripe style="width: 100%"
+                  v-loading="isloading"
+                  element-loading-text="Loading..."
+                  element-loading-spinner="el-icon-loading">
+          <el-table-column label="Accession" width="200">
+            <template #default="props">
+              <el-button @click="AMPDetail(props.row.accession)" type="text">{{ props.row.accession }}</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column label="Family" width="200">
+            <template #default="props">
+              <el-button @click="familyDetail(props.row.family)" type="text">{{ props.row.family }}</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column label="Peptide sequence" width="500%">
+            <template #default="props">
+              <pre><code><small>{{ props.row.sequence }}</small></code></pre>
+            </template>
+          </el-table-column>
+          <el-table-column label="# smORF genes" width="150%">
+            <template #default="props">
+              <!--                <el-tooltip class="item" effect="dark" content="Associated number of small ORF genes." placement="right">-->
+              <span>{{ props.row.metadata.info.totalItem }}</span>
+              <!--                </el-tooltip>-->
+            </template>
+          </el-table-column>
+          <el-table-column label="Tag" width="150%">
+            <template #default="props">
+              <el-tag :type="props.row.quality_tag.level"> {{ props.row.quality_tag.msg }} </el-tag>
+              <!--                <el-tag type="warning"> {{ props.row.quality_tag.msg }} </el-tag>-->
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination
+            @size-change="setPageSize"
+            @current-change="setPage"
+            :page-sizes="[20, 50, 100, 200]"
+            :page-size="20"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="info.totalRow">
+        </el-pagination>
       </div>
-      <div class="col-xs-0 col-lg-2 bg-white"></div>
+      <div class="col-xs-0 col-xl-2 bg-white"></div>
     </div>
 <!--    <el-row>-->
 <!--      <el-col :span="24">-->
@@ -18,48 +58,6 @@
 <!--        &lt;!&ndash;    TODO https://stackoverflow.com/questions/56223664/search-multiple-fields-in-a-table-in-vue-js-with-different-v-model&ndash;&gt;-->
 <!--        &lt;!&ndash;    在后端添加分页信息，读取分页信息并建立pagination。filters如何实现？&ndash;&gt;-->
 <!--        &lt;!&ndash;    https://www.cxyzjd.com/article/baidu_33552969/88977014&ndash;&gt;-->
-<!--        <el-table :data="amps" stripe style="width: 100%"-->
-<!--                  v-loading="isloading"-->
-<!--                  element-loading-text="Loading..."-->
-<!--                  element-loading-spinner="el-icon-loading">-->
-<!--          <el-table-column label="Accession" width="200">-->
-<!--            <template #default="props">-->
-<!--              <el-button @click="AMPDetail(props.row.accession)" type="text">{{ props.row.accession }}</el-button>-->
-<!--            </template>-->
-<!--          </el-table-column>-->
-<!--          <el-table-column label="Family" width="200">-->
-<!--            <template #default="props">-->
-<!--              <el-button @click="familyDetail(props.row.family)" type="text">{{ props.row.family }}</el-button>-->
-<!--            </template>-->
-<!--          </el-table-column>-->
-<!--          <el-table-column label="Peptide sequence" width="500%">-->
-<!--            <template #default="props">-->
-<!--              <pre><code><small>{{ props.row.sequence }}</small></code></pre>-->
-<!--            </template>-->
-<!--          </el-table-column>-->
-<!--          <el-table-column label="# smORF genes" width="150%">-->
-<!--            <template #default="props">-->
-<!--              &lt;!&ndash;                <el-tooltip class="item" effect="dark" content="Associated number of small ORF genes." placement="right">&ndash;&gt;-->
-<!--              <span>{{ props.row.metadata.info.totalItem }}</span>-->
-<!--              &lt;!&ndash;                </el-tooltip>&ndash;&gt;-->
-<!--            </template>-->
-<!--          </el-table-column>-->
-<!--          <el-table-column label="Tag" width="150%">-->
-<!--            <template #default="props">-->
-<!--              <el-tag :type="props.row.quality_tag.level"> {{ props.row.quality_tag.msg }} </el-tag>-->
-<!--              &lt;!&ndash;                <el-tag type="warning"> {{ props.row.quality_tag.msg }} </el-tag>&ndash;&gt;-->
-<!--            </template>-->
-<!--          </el-table-column>-->
-<!--        </el-table>-->
-<!--        <el-pagination-->
-<!--            @size-change="setPageSize"-->
-<!--            @current-change="setPage"-->
-<!--            :page-sizes="[20, 50, 100, 200]"-->
-<!--            :page-size="20"-->
-<!--            layout="total, sizes, prev, pager, next, jumper"-->
-<!--            :total="info.totalRow"-->
-<!--        >-->
-<!--        </el-pagination>-->
 <!--      </el-col>-->
 <!--    </el-row>-->
   </div>

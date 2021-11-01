@@ -1,93 +1,74 @@
 <template>
- <div class="AMP_card">
-    <el-row>
-      <el-col :span="24">
-        <el-container>
-          <el-main>
-            <div class="title">
-              Antimicrobial peptide: {{ accession }}
-<!--              <el-button class="button" @click="downloadCurrPage()" type="primary" icon="el-icon-download" plain></el-button>-->
-            </div>
-<!--          TODO test: move this description down to the overview tab-->
-            <div class="description">
-              The AMP belongs to
-              <el-link :href="getFamilyPageURL()" type="primary">
-                <span class="description">{{ family }}</span>
-              </el-link>
-              family and has {{length}} amino acid residues.
-            </div>
-
-            <el-tabs type="border-card">
-              <el-tab-pane label="Overview">
-                <el-row style="text-align: left">
-                  <el-col :span="6" class="margin-col">
-                    <div class="info-item" id="sequence">
-                      Peptide sequence
-                      <el-button @click="CopyPeptideSequence()" icon="el-icon-document-copy"
-                                 size="mini" type="primary" plain>
-<!--                        Copy-->
-                      </el-button>
-                    </div>
+  <div class="AMP_card">
+    <div class="row justify-center">
+      <div class="col-xs-0 col-xl-2 bg-white"></div>
+      <div class="col-12 col-xl-8 justify-center q-pr-md q-ma-auto">
+        <div class="row">
+          <div class="title">
+            Antimicrobial peptide: {{ accession }}
+            <!--              <el-button class="button" @click="downloadCurrPage()" type="primary" icon="el-icon-download" plain></el-button>-->
+          </div>
+<!--                    TODO test: move this description down to the overview tab-->
+          <div class="description">
+            The AMP belongs to
+            <el-link :href="getFamilyPageURL()" type="primary">
+              <span class="description">{{ family }}</span>
+            </el-link>
+            family and has {{ length }} amino acid residues.
+          </div>
+        </div>
+        <div class="row bg-white">
+          <div class="col-12">
+            <q-tabs v-model="tabName" dense align="justify" class="bg-primary text-white shadow-2" :breakpoint="0">
+              <q-tab name="overview" label="Overview" />
+              <q-tab name="features" label="Features" />
+            </q-tabs>
+            <q-tab-panels v-model="tabName" animated class="row text-left">
+              <q-tab-panel name="overview">
+                <div class="row text-left">
+                  <div class="col-12 col-md-3 q-pt-md q-px-md justify-center">
+                    <span id="sequence" class="info-item q-mt-md">
+                      Peptide sequence <q-btn @click="CopyPeptideSequence()" icon="content_copy" size="sm"></q-btn>
+                    </span>
                     <pre><code id="aa-sequence">{{ sequence }}</code></pre>
-                    <div style="alignment: left;">
-                      <div class="info-item" id="secondary-structure">Secondary Structure</div>
-                      <Plotly :data="SecStructureBarData()"
-                              :layout="secondaryStructureLayout()"
-                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>
-                    </div>
-
-                  </el-col>
-                  <el-col :span="14" :offset="2">
-<!--                   TODO Geographical distribution -->
-                    <div id="global distribution">
-                      <Plotly :data="GeoPlotData()"
-                              :layout="GeoPlotLayout()"
-                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>
-                    </div>
-                  </el-col>
-                </el-row>
-
-                <el-divider></el-divider>
-
-                <el-row>
-                  <el-col style="margin-left: 30px" :offset="1">
-                    <h3 id="distribution" class="subsection-title">Distribution</h3>
-                  </el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="10" style="magrin-left: 30px">
+                    <div class="info-item q-pt-md" id="secondary-structure">Secondary Structure</div>
+                    <Plotly :data="SecStructureBarData()" :layout="secondaryStructureLayout()"
+                            :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                  </div>
+                  <div class="col-12 col-md-8 offset-md-1 q-pt-md q-px-md justify-center" id="global distribution">
+                    <Plotly :data="GeoPlotData()" :layout="GeoPlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12 text-left">
+                    <h5 id="distribution" class="text-weight-bold">Distribution</h5>
+                  </div>
+                  <div class="col-12 col-md-6">
 <!--                    TODO Bigger title  and figure captions-->
-                    <h4 id="distribution-across-habitats">Habitats</h4>
+                    <h6 id="distribution-across-habitats" class="text-center">Habitats</h6>
                     <div>
-                      <Plotly :data="EnvPlotData()"
-                              :layout="EnvPlotLayout()"
+                      <Plotly :data="EnvPlotData()" :layout="EnvPlotLayout()"
                               :toImageButtonOptions="{format: 'svg', scale: 1}"/>
                     </div>
-                  </el-col>
-                  <el-col :span="3" style="line-height: 100px">
-                    <el-divider direction="vertical"></el-divider>
-                  </el-col>
+                  </div>
 
-                  <el-col :span="10">
+                  <div class="col-12 col-md-6">
                     <!--                    TODO Bigger title and figure captions -->
-                    <h4 id="distribution-across-hosts">Hosts</h4>
+                    <h6 id="distribution-across-hosts" class="text-center">Hosts</h6>
                     <div>
-                      <Plotly :data="HostPlotData()"
-                              :layout="HostPlotLayout()"
+                      <Plotly :data="HostPlotData()" :layout="HostPlotLayout()"
                               :toImageButtonOptions="{format: 'svg', scale: 1}"/>
                     </div>
-                  </el-col>
+                  </div>
                   <!--                <div>-->
                   <!--                  <Plotly :data="DistributionGraphData()"-->
                   <!--                          :layout="DistributionGraphLayout()"-->
                   <!--                          :toImageButtonOptions="{format: 'svg', scale: 1}"/>-->
                   <!--                </div>-->
-                </el-row>
-                <br/>
-                <el-divider></el-divider>
-                <el-row>
-                  <el-col style="margin-left: 30px" :offset="1">
-                    <h3 id="relationships" class="subsection-title">Relationships</h3>
+                </div>
+                <div class="row">
+                  <div class="col-12 q-px-md">
+                    <h5 id="relationships" class="text-weight-bold">Relationships</h5>
 <!--                    TODO add download button here -->
                     <el-table :data="currentMetadata" stripe :default-sort="{prop: 'GMSC', order: 'ascending'}" width="100%">
                       <el-table-column prop="GMSC" label="Gene" sortable width="260%"/>
@@ -110,173 +91,191 @@
                           :total="metadata.info.totalRow"
                       >
                       </el-pagination>
-<!--                      <el-pagination-->
-<!--                          @current-change="setMetadataPage"-->
-<!--                          :page-size="metadata.info.pageSize"-->
-<!--                          layout="total, prev, pager, next, jumper"-->
-<!--                          :total="metadata.info.totalRow"-->
-<!--                      >-->
-<!--                      </el-pagination>-->
-  <!--                    FIXME integrate pagination buttons with the table-->
                     </div>
-
-                  </el-col>
-                </el-row>
-              </el-tab-pane>
-              <el-tab-pane label="Features">
-                <el-col class="margin-col">
-                  <h3 class="info-item" id="properties">Biochemical properties</h3>
-                  <div class="info-item-value">
-                    The feature value of {{ accession }} was pointed out in the distribution among its entire AMP family.
                   </div>
-                  <div class="info-item-value">
-                    The features below were calculated by using the
-                    <el-link href="https://biopython.org/docs/1.79/api/Bio.SeqUtils.ProtParam.html" type="primary">
-                      Bio.SeqUtils.ProtParam.ProteinAnalysis
-                    </el-link>
-                    module from
-                    <el-link href="https://doi.org/10.1093/bioinformatics/btp163" type="primary">
-                      BioPython
-                    </el-link> (version 1.79).
+                </div>
+              </q-tab-panel>
+              <q-tab-panel name="features">
+                <div class="row">
+                  <div class="col-12 q-pa-md">
+                    <h5 class="text-weight-bold" id="properties">Biochemical properties</h5>
+                    <div class="info-item-value">
+                      The feature value of {{ accession }} was pointed out in the distribution among its entire AMP family.
+                    </div>
+                    <div class="info-item-value">
+                      The features below were calculated by using the
+                      <el-link href="https://biopython.org/docs/1.79/api/Bio.SeqUtils.ProtParam.html" type="primary">
+                        Bio.SeqUtils.ProtParam.ProteinAnalysis
+                      </el-link>
+                      module from
+                      <el-link href="https://doi.org/10.1093/bioinformatics/btp163" type="primary">
+                        BioPython
+                      </el-link> (version 1.79).
+                    </div>
+                    <div class="row">
+                      <div class="col-4">
+                        <div style="text-align: center" id="helical-wheel">
+                          <br/><br/>
+                          <el-link :href="helicalwheel"
+                                   target="_blank"
+                                   type="primary">
+                            <span class="medium">Helical wheel</span>
+                          </el-link>
+                          <br/>
+                          Amino acids helical wheel with the H-moment indicated, calculated by using <el-link href="https://modlamp.org/modlamp.html?highlight=helical%20wheel#modlamp.plot.helical_wheel">helical_wheel</el-link> from <el-link href="https://modlamp.org/">modlAMP</el-link>
+                        </div>
+                        <div style="align-content: center; text-align: center;">
+                          <el-image :src="helicalwheel"></el-image>
+                        </div>
+                      </div>
+                      <div class="col-4">
+                        <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.MW)"
+                                :layout="familyFeatureGraphLayout(features.MW, 'Molecular weight')"/>
+                      </div>
+                      <div class="col-4">
+                        <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Aromaticity)"
+                                :layout="familyFeatureGraphLayout(features.Aromaticity, 'Aromaticity')" />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div  class="col-4">
+                        <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.GRAVY)"
+                                :layout="familyFeatureGraphLayout(features.GRAVY, 'GRAVY')" />
+                      </div>
+                      <div class="col-4">
+                        <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Instability_index)"
+                                :layout="familyFeatureGraphLayout(features.Instability_index, 'Instability index')" />
+                      </div>
+                      <div class="col-4">
+                        <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Isoelectric_point)"
+                                :layout="familyFeatureGraphLayout(features.Isoelectric_point, 'Isoelectric point')" />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-4">
+                        <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Charge_at_pH_7)"
+                                :layout="familyFeatureGraphLayout(features.Charge_at_pH_7, 'Charge at pH 7.0')" />
+                      </div>
+                      <div class="col-4">
+                        <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Molar_extinction.cystines_residues)"
+                                :layout="familyFeatureGraphLayout(features.Molar_extinction.cystines_residues, 'Molar extinction (cystines residues)')" />
+                      </div>
+                      <div class="col-4">
+                        <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Molar_extinction.cysteines_reduced)"
+                                :layout="familyFeatureGraphLayout(features.Molar_extinction.cysteines_reduced, 'Molar extinction (ccysteines reduced)')" />
+                      </div>
+                    </div>
+  <!--                  TODO update this later, remove this for a while-->
+  <!--                  <el-divider></el-divider>-->
+  <!--                  <el-row>-->
+  <!--                    <br>-->
+  <!--                      <div styles="alignment: center; text-align: center">-->
+  <!--                          <Plotly :data="featureGraphData()"-->
+  <!--                                  :layout="featureGraphLayout()"-->
+  <!--                                  :toImageButtonOptions="{format: 'svg', scale: 1}"/>-->
+  <!--                      </div>-->
+  <!--                        <div>-->
+  <!--                          <span class="caption-bold">EZenergy.</span> Profile of {{ accession }} residues free energy of transfer from water to membrane lipid.-->
+  <!--                        </div>-->
+  <!--                        <div>-->
+  <!--                          <span class="caption-bold">Flexibility.</span> Profile of flexibility of {{ accession }}. The normalized flexibility parameters (B-values) from <el-link href="https://onlinelibrary.wiley.com/doi/10.1002/prot.340190207" type="primary">Vihinen (1994)</el-link> was the scale adopted in the profile calculation.-->
+  <!--                        </div>-->
+  <!--                        <div>-->
+  <!--                          <span class="caption-bold">Hydrophobicity Parker.</span> Profile of hydrophobicity of residues of {{ accession }} using the relative scale of Parker.-->
+  <!--                        </div>-->
+  <!--                        <div>-->
+  <!--                          <span class="caption-bold">Surface accessibility.</span> Profile of solvent accessibility of residues of {{ accession }}.-->
+  <!--                        </div>-->
+  <!--                    <br/>-->
+  <!--                  </el-row>-->
+  <!--                  <el-divider></el-divider>-->
+  <!--                  <el-row>-->
+  <!--                    <br>-->
+  <!--                    <div styles="alignment: center; text-align: center">-->
+  <!--                      <v-chart :option="echartOption"></v-chart>-->
+  <!--                    </div>-->
+  <!--                    <div>-->
+  <!--                      <span class="caption-bold">EZenergy.</span> Profile of {{ accession }} residues free energy of transfer from water to membrane lipid.-->
+  <!--                    </div>-->
+  <!--                    <div>-->
+  <!--                      <span class="caption-bold">Flexibility.</span> Profile of flexibility of {{ accession }}. The normalized flexibility parameters (B-values) from <el-link href="https://onlinelibrary.wiley.com/doi/10.1002/prot.340190207" type="primary">Vihinen (1994)</el-link> was the scale adopted in the profile calculation.-->
+  <!--                    </div>-->
+  <!--                    <div>-->
+  <!--                      <span class="caption-bold">Hydrophobicity Parker.</span> Profile of hydrophobicity of residues of {{ accession }} using the relative scale of Parker.-->
+  <!--                    </div>-->
+  <!--                    <div>-->
+  <!--                      <span class="caption-bold">Surface accessibility.</span> Profile of solvent accessibility of residues of {{ accession }}.-->
+  <!--                    </div>-->
+  <!--                    <br/>-->
+  <!--                  </el-row>-->
                   </div>
-                  <el-row>
-                    <el-col :span="7">
-                      <div style="text-align: center" id="helical-wheel">
-                        <br/><br/>
-                        <el-link :href="helicalwheel"
-                                 target="_blank"
-                                 type="primary">
-                          <span class="medium">Helical wheel</span>
-                        </el-link>
-                        <br/>
-                        Amino acids helical wheel with the H-moment indicated, calculated by using <el-link href="https://modlamp.org/modlamp.html?highlight=helical%20wheel#modlamp.plot.helical_wheel">helical_wheel</el-link> from <el-link href="https://modlamp.org/">modlAMP</el-link>
-                      </div>
-                      <div style="align-content: center; text-align: center;">
-                        <el-image :src="helicalwheel"></el-image>
-                      </div>
-                    </el-col>
-                    <el-col :span="7" :offset="1">
-                      <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.MW)"
-                              :layout="familyFeatureGraphLayout(features.MW, 'Molecular weight')"/>
-                    </el-col>
-                    <el-col :span="7">
-                      <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Aromaticity)"
-                              :layout="familyFeatureGraphLayout(features.Aromaticity, 'Aromaticity')" />
-                    </el-col>
-                  </el-row>
-                  <el-row>
-                    <el-col :span="7" :offset="1">
-                      <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.GRAVY)"
-                              :layout="familyFeatureGraphLayout(features.GRAVY, 'GRAVY')" />
-                    </el-col>
-                    <el-col :span="7">
-                      <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Instability_index)"
-                              :layout="familyFeatureGraphLayout(features.Instability_index, 'Instability index')" />
-                    </el-col>
-                    <el-col :span="7">
-                      <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Isoelectric_point)"
-                              :layout="familyFeatureGraphLayout(features.Isoelectric_point, 'Isoelectric point')" />
-                    </el-col>
-                  </el-row>
-                  <el-row>
-                    <el-col :span="7" :offset="1">
-                      <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Charge_at_pH_7)"
-                              :layout="familyFeatureGraphLayout(features.Charge_at_pH_7, 'Charge at pH 7.0')" />
-                    </el-col>
-                    <el-col :span="7">
-                      <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Molar_extinction.cystines_residues)"
-                              :layout="familyFeatureGraphLayout(features.Molar_extinction.cystines_residues, 'Molar extinction (cystines residues)')" />
-                    </el-col>
-                    <el-col :span="7">
-                      <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Molar_extinction.cysteines_reduced)"
-                              :layout="familyFeatureGraphLayout(features.Molar_extinction.cysteines_reduced, 'Molar extinction (ccysteines reduced)')" />
-                    </el-col>
-                  </el-row>
-<!--                  TODO update this later, remove this for a while-->
-<!--                  <el-divider></el-divider>-->
-<!--                  <el-row>-->
-<!--                    <br>-->
-<!--                      <div styles="alignment: center; text-align: center">-->
-<!--                          <Plotly :data="featureGraphData()"-->
-<!--                                  :layout="featureGraphLayout()"-->
-<!--                                  :toImageButtonOptions="{format: 'svg', scale: 1}"/>-->
-<!--                      </div>-->
-<!--                        <div>-->
-<!--                          <span class="caption-bold">EZenergy.</span> Profile of {{ accession }} residues free energy of transfer from water to membrane lipid.-->
-<!--                        </div>-->
-<!--                        <div>-->
-<!--                          <span class="caption-bold">Flexibility.</span> Profile of flexibility of {{ accession }}. The normalized flexibility parameters (B-values) from <el-link href="https://onlinelibrary.wiley.com/doi/10.1002/prot.340190207" type="primary">Vihinen (1994)</el-link> was the scale adopted in the profile calculation.-->
-<!--                        </div>-->
-<!--                        <div>-->
-<!--                          <span class="caption-bold">Hydrophobicity Parker.</span> Profile of hydrophobicity of residues of {{ accession }} using the relative scale of Parker.-->
-<!--                        </div>-->
-<!--                        <div>-->
-<!--                          <span class="caption-bold">Surface accessibility.</span> Profile of solvent accessibility of residues of {{ accession }}.-->
-<!--                        </div>-->
-<!--                    <br/>-->
-<!--                  </el-row>-->
-<!--                  <el-divider></el-divider>-->
-<!--                  <el-row>-->
-<!--                    <br>-->
-<!--                    <div styles="alignment: center; text-align: center">-->
-<!--                      <v-chart :option="echartOption"></v-chart>-->
-<!--                    </div>-->
-<!--                    <div>-->
-<!--                      <span class="caption-bold">EZenergy.</span> Profile of {{ accession }} residues free energy of transfer from water to membrane lipid.-->
-<!--                    </div>-->
-<!--                    <div>-->
-<!--                      <span class="caption-bold">Flexibility.</span> Profile of flexibility of {{ accession }}. The normalized flexibility parameters (B-values) from <el-link href="https://onlinelibrary.wiley.com/doi/10.1002/prot.340190207" type="primary">Vihinen (1994)</el-link> was the scale adopted in the profile calculation.-->
-<!--                    </div>-->
-<!--                    <div>-->
-<!--                      <span class="caption-bold">Hydrophobicity Parker.</span> Profile of hydrophobicity of residues of {{ accession }} using the relative scale of Parker.-->
-<!--                    </div>-->
-<!--                    <div>-->
-<!--                      <span class="caption-bold">Surface accessibility.</span> Profile of solvent accessibility of residues of {{ accession }}.-->
-<!--                    </div>-->
-<!--                    <br/>-->
-<!--                  </el-row>-->
-                </el-col>
-              </el-tab-pane>
-            </el-tabs>
-          </el-main>
-        </el-container>
-      </el-col>
-    </el-row>
-
+                </div>
+              </q-tab-panel>
+            </q-tab-panels>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-0 col-xl-2 bg-white"></div>
+    </div>
   </div>
+
+
+
+<!--                    <el-divider></el-divider>-->
+
+<!--                    <br/>-->
+<!--                    <el-divider></el-divider>-->
+<!--    &lt;!&ndash;                      <el-pagination&ndash;&gt;-->
+<!--    &lt;!&ndash;                          @current-change="setMetadataPage"&ndash;&gt;-->
+<!--    &lt;!&ndash;                          :page-size="metadata.info.pageSize"&ndash;&gt;-->
+<!--    &lt;!&ndash;                          layout="total, prev, pager, next, jumper"&ndash;&gt;-->
+<!--    &lt;!&ndash;                          :total="metadata.info.totalRow"&ndash;&gt;-->
+<!--    &lt;!&ndash;                      >&ndash;&gt;-->
+<!--    &lt;!&ndash;                      </el-pagination>&ndash;&gt;-->
+<!--      &lt;!&ndash;                    FIXME integrate pagination buttons with the table&ndash;&gt;-->
+<!--                        </div>-->
+
+<!--                      </el-col>-->
+<!--                    </el-row>-->
+<!--                  </el-tab-pane>-->
+<!--                  <el-tab-pane label="Features">-->
 </template>
 
 <style>
-  .nav-section {
-    font-size: medium;
-    font-weight: bold
-  }
-  .nav-subsection{
-    line-height: 1.5;
-    font-size: medium;
-    font-weight: normal;
-  }
-  .el-carousel__item h3 {
-    color: #475669;
-    font-size: 14px;
-    opacity: 0.75;
-    line-height: 200px;
-    margin: 0;
-  }
-    .el-tabs__item {
-        font-size: 17px;
-    }
-    .el-aside {
-      /*background-color: #D3DCE6;*/
-      color: #333;
-      text-align: center;
-      line-height: 200px;
-    }
+.nav-section {
+  font-size: medium;
+  font-weight: bold
+}
 
-    .el-main {
-      color: #333;
-      text-align: center;
-    }
+.nav-subsection {
+  line-height: 1.5;
+  font-size: medium;
+  font-weight: normal;
+}
+
+.el-carousel__item h3 {
+  color: #475669;
+  font-size: 14px;
+  opacity: 0.75;
+  line-height: 200px;
+  margin: 0;
+}
+
+.el-tabs__item {
+  font-size: 17px;
+}
+
+.el-aside {
+  /*background-color: #D3DCE6;*/
+  color: #333;
+  text-align: center;
+  line-height: 200px;
+}
+
+.el-main {
+  color: #333;
+  text-align: center;
+}
 </style>
 
 <script>
@@ -306,6 +305,7 @@ export default {
       //     }
       //   ]
       // },
+      tabName: 'overview',
       accession: this.$route.query.accession,
       sequence: '',
       length: 0,
@@ -337,7 +337,7 @@ export default {
         Isoelectric_point: [],
         Charge_at_pH_7: [],
         Secondary_structure: {helix: [], turn: [], sheet: []},
-        },
+      },
       metadata: {
         info: {
           pageSize: 5,
@@ -367,7 +367,7 @@ export default {
       },
       helicalwheel: ''
     }
-    },
+  },
   created() {
     this.getAMP()
   },
@@ -375,52 +375,54 @@ export default {
     this.setMetadataPageSize(5)
   },
   computed: {
-    currentMetadata () {
+    currentMetadata() {
       return this.metadata.currentData
     }
   },
   methods: {
-    getAMP(){
+    getAMP() {
       let self = this
       let amp_accession = self.$route.query.accession
       this.axios.get('/amps/' + amp_accession, {})
-        .then(function (response) {
-          console.log(response.data)
-          self.sequence = response.data.sequence
-          self.length = response.data.sequence.length;
-          self.family = response.data.family
-          self.helicalwheel = 'http://18.140.248.253:443/v1/amps/' + self.accession +  '/helicalwheel'
-          self.features = response.data.features
-          self.metadata.currentData = response.data.metadata.data
-          self.metadata.info.currentPage = 1
-          self.metadata.info.totalPage = response.data.metadata.info.totalPage
-          self.metadata.info.totalRow = response.data.metadata.info.totalItem
-          self.getFamilyFeatures()
-        })
-        .catch(function (error) {
-          console.log(error);
-        })
+          .then(function (response) {
+            console.log(response.data)
+            self.sequence = response.data.sequence
+            console.log(response.data.sequence)
+            console.log(response.data.sequence.length)
+            self.length = response.data.sequence.length
+            self.family = response.data.family
+            self.helicalwheel = 'http://18.140.248.253:443/v1/amps/' + self.accession + '/helicalwheel'
+            self.features = response.data.features
+            self.metadata.currentData = response.data.metadata.data
+            self.metadata.info.currentPage = 1
+            self.metadata.info.totalPage = response.data.metadata.info.totalPage
+            self.metadata.info.totalRow = response.data.metadata.info.totalItem
+            self.getFamilyFeatures()
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
       this.axios.get('/amps/' + amp_accession + '/distributions', {})
-        .then(function (response) {
-          console.log(response.data)
-          self.distribution = response.data
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+          .then(function (response) {
+            console.log(response.data)
+            self.distribution = response.data
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
     },
-    getFamilyFeatures(){
+    getFamilyFeatures() {
       let self = this
       this.axios.get('/families/' + self.family + '/features', {})
-        .then(function (response) {
-          console.log(response.data)
-          self.updateFamilyFeatures(response.data)
-        })
-        .catch(function (error){
-          console.log(error)
-        })
+          .then(function (response) {
+            console.log(response.data)
+            self.updateFamilyFeatures(response.data)
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
     },
-    SecStructureBarData(){
+    SecStructureBarData() {
       let strucData = this.features.Secondary_structure
       // strucData.disordered = 1 - strucData.turn - strucData.helix - strucData.sheet
       return [{
@@ -432,7 +434,7 @@ export default {
         textinfo: "label+percent", insidetextorientation: "radial"
       }]
     },
-    secondaryStructureLayout(){
+    secondaryStructureLayout() {
       return {
         title: {text: ''},
         yaxis: {title: 'Fraction of amino acids'},
@@ -466,27 +468,30 @@ export default {
       this.metadata.info.pageSize = size
       this.setMetadataPage(1)
     },
-    GeoPlotData(){
+    GeoPlotData() {
       let data = this.distribution.geo
       return [{
-            type: 'scattergeo',
-            //locationmode: 'USA-states',
-            lat: data.lat,
-            lon: data.lon,
-            marker: {
-              size: data.size,
-              sizeref: 10,
-              // FIXME
-              // color: this.MapColors(data.colors, this.ColorPalette('quanlitative')),
-              line: {
-                color: 'black',
-                size: 2
-              }
-            },
+        type: 'scattergeo',
+        //locationmode: 'USA-states',
+        lat: data.lat,
+        lon: data.lon,
+        marker: {
+          size: data.size,
+          sizeref: 10,
+          // FIXME
+          // color: this.MapColors(data.colors, this.ColorPalette('quanlitative')),
+          line: {
+            color: 'black',
+            size: 2
+          }
+        },
       }]
     },
-    GeoPlotLayout(){
+    GeoPlotLayout() {
       return {
+        title: {
+          text: 'Geographical distribution'
+        },
         showlegend: false,
         geo: {
           scope: 'global',
@@ -499,58 +504,58 @@ export default {
           countrycolor: 'rgb(255,255,255)'
         },
         margin: {
-          l: 0,
-          r: 0,
-          t: 0,
-          b: 0
+          l: 40,
+          r: 40,
+          t: 40,
+          b: 40
         }
       }
     },
-    EnvPlotData(){
+    EnvPlotData() {
       let data = this.distribution
       let env_data = {
         type: "sunburst",
         labels: data.habitat.labels, //["Eve", "Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
         parents: data.habitat.parents, //["", "Eve", "Eve", "Seth", "Seth", "Eve", "Eve", "Awan", "Eve" ],
-        values:  data.habitat.values, //[65, 14, 12, 10, 2, 6, 6, 4, 4],
+        values: data.habitat.values, //[65, 14, 12, 10, 2, 6, 6, 4, 4],
         leaf: {opacity: 0.4},
         // marker: {line: {"width": 2}},
         branchvalues: 'total'
       }
       return [env_data]
     },
-    EnvPlotLayout(){
+    EnvPlotLayout() {
       return {
-        margin: {l: 40, r: 40, b: 40, t: 40}, autosize: true,
+        margin: {l: 0, r: 0, b: 0, t: 0}, autosize: true,
         sunburstcolorway: this.ColorPalette('quanlitative')
       };
     },
-    HostPlotData(){
+    HostPlotData() {
       let data = this.distribution
       let host_data = {
         type: "sunburst",
         labels: data.host.labels, //["Eve", "Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
         parents: data.host.parents, //["", "Eve", "Eve", "Seth", "Seth", "Eve", "Eve", "Awan", "Eve" ],
-        values:  data.host.values, //[65, 14, 12, 10, 2, 6, 6, 4, 4],
+        values: data.host.values, //[65, 14, 12, 10, 2, 6, 6, 4, 4],
         leaf: {opacity: 0.4},
         // marker: {line: {"width": 2}},
         branchvalues: 'total'
       }
       return [host_data]
     },
-    HostPlotLayout(){
+    HostPlotLayout() {
       return {
-        margin: {l: 40, r: 40, b: 40, t: 40}, autosize: true,
+        margin: {l: 0, r: 0, b: 0, t: 0}, autosize: true,
         sunburstcolorway: this.ColorPalette('quanlitative')
-     };
+      };
     },
-    DistributionGraphData(){
+    DistributionGraphData() {
       let data = this.distribution
       let habitat_data = {
         type: "sunburst",
         labels: data.habitat.labels, //["Eve", "Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
         parents: data.habitat.parents, //["", "Eve", "Eve", "Seth", "Seth", "Eve", "Eve", "Awan", "Eve" ],
-        values:  data.habitat.values, //[65, 14, 12, 10, 2, 6, 6, 4, 4],
+        values: data.habitat.values, //[65, 14, 12, 10, 2, 6, 6, 4, 4],
         leaf: {opacity: 0.4},
         // marker: {line: {"width": 2}},
         branchvalues: 'total'
@@ -568,7 +573,7 @@ export default {
       }
       return [habitat_data, host_data]
     },
-    DistributionGraphLayout(){
+    DistributionGraphLayout() {
       return {
         height: 400, margin: {l: 40, r: 40, b: 40, t: 40}, autosize: true,
         sunburstcolorway: this.ColorPalette('quanlitative'),
@@ -582,11 +587,14 @@ export default {
           }, {
             method: 'update',
             args: [{'visible': this.makeTraceVisible(1, 2)}],
-            label: 'Hosts'},
-          ]}
-        ]}
+            label: 'Hosts'
+          },
+          ]
+        }
+        ]
+      }
     },
-    initFamilyFeatures(){
+    initFamilyFeatures() {
       this.famFeaturesGraphData = {
         MW: [],
         Length: [],
@@ -599,26 +607,26 @@ export default {
         Secondary_structure: {helix: [], turn: [], sheet: []},
       }
     },
-    updateFamilyFeatures(data){
+    updateFamilyFeatures(data) {
       this.initFamilyFeatures()
       console.log(data)
-      let self = this 
-      Object.values(data).forEach(function(amp_features){
-        self.famFeaturesGraphData.Instability_index.push(amp_features.Instability_index)
-        self.famFeaturesGraphData.GRAVY.push(amp_features.GRAVY)
-        self.famFeaturesGraphData.MW.push(amp_features.MW)
-        self.famFeaturesGraphData.Aromaticity.push(amp_features.Aromaticity)
-        self.famFeaturesGraphData.Charge_at_pH_7.push(amp_features.Charge_at_pH_7)
-        self.famFeaturesGraphData.Isoelectric_point.push(amp_features.Isoelectric_point)
-        self.famFeaturesGraphData.Molar_extinction.cysteines_reduced.push(amp_features.Molar_extinction.cysteines_reduced)
-        self.famFeaturesGraphData.Molar_extinction.cystines_residues.push(amp_features.Molar_extinction.cystines_residues)
-        // self.famFeaturesGraphData.Secondary_structure.helix.push(amp_features.Secondary_structure.helix)
-        // self.famFeaturesGraphData.Secondary_structure.turn.push(amp_features.SecStructureBarData.turn)
-        // self.famFeaturesGraphData.Secondary_structure.sheet.push(amp_features.Secondary_structure.sheet)
+      let self = this
+      Object.values(data).forEach(function (amp_features) {
+            self.famFeaturesGraphData.Instability_index.push(amp_features.Instability_index)
+            self.famFeaturesGraphData.GRAVY.push(amp_features.GRAVY)
+            self.famFeaturesGraphData.MW.push(amp_features.MW)
+            self.famFeaturesGraphData.Aromaticity.push(amp_features.Aromaticity)
+            self.famFeaturesGraphData.Charge_at_pH_7.push(amp_features.Charge_at_pH_7)
+            self.famFeaturesGraphData.Isoelectric_point.push(amp_features.Isoelectric_point)
+            self.famFeaturesGraphData.Molar_extinction.cysteines_reduced.push(amp_features.Molar_extinction.cysteines_reduced)
+            self.famFeaturesGraphData.Molar_extinction.cystines_residues.push(amp_features.Molar_extinction.cystines_residues)
+            // self.famFeaturesGraphData.Secondary_structure.helix.push(amp_features.Secondary_structure.helix)
+            // self.famFeaturesGraphData.Secondary_structure.turn.push(amp_features.SecStructureBarData.turn)
+            // self.famFeaturesGraphData.Secondary_structure.sheet.push(amp_features.Secondary_structure.sheet)
           }
       )
     },
-    makeFamilyFeatureTraces(data){
+    makeFamilyFeatureTraces(data) {
       return [
         {
           type: 'violin',
@@ -640,9 +648,9 @@ export default {
           name: ''
           // x0: ''
         }
-        ]
+      ]
     },
-    familyFeatureGraphLayout(value, name){
+    familyFeatureGraphLayout(value, name) {
       return {
         title: name,
         autosize: true,
@@ -654,7 +662,7 @@ export default {
           yanchor: 'bottom',
           text: this.accession,
           showarrow: true,
-          font:{
+          font: {
             size: 16,
             color: 'red'
           },
@@ -676,19 +684,25 @@ export default {
         // ]
       }
     },
-    featureGraphData(){
+    featureGraphData() {
       let self = this
       let data = self.features.graph_points
       let line = {color: 'blue'}
       return [
 
-        {x: data.transfer_energy.x, y: data.transfer_energy.y, line: line, marker: {color: data.transfer_energy.c}, visible: true,},
+        {
+          x: data.transfer_energy.x,
+          y: data.transfer_energy.y,
+          line: line,
+          marker: {color: data.transfer_energy.c},
+          visible: true,
+        },
         {x: data.flexibility.x, y: data.flexibility.y, line: line, visible: false},
         {x: data.hydrophobicity_parker.x, y: data.hydrophobicity_parker.y, line: line, visible: false},
         {x: data.surface_accessibility.x, y: data.surface_accessibility.y, line: line, visible: false}
       ]
     },
-    featureGraphLayout(){
+    featureGraphLayout() {
       return {
         height: 600, width: 1000, margin: {l: 100, r: 100, b: 80, t: 40},
         // xaxis: {
@@ -727,7 +741,7 @@ export default {
           }],
       }
     },
-    comparisonGraphData(){
+    comparisonGraphData() {
       function makeTrace(i) {
         return {
           y: Array.apply(null, Array(100)).map(() => Math.random()),
@@ -738,9 +752,10 @@ export default {
           //name: ['EZenergy', 'Flexibility', 'Hydrophobicity Parker', 'SA AMPs'].slice(i),
         };
       }
+
       return [0, 1, 2, 3, 4, 5, 6, 7].map(makeTrace)
     },
-    comparisonGraphLayout(){
+    comparisonGraphLayout() {
       return {
         direction: 'left', type: 'buttons', pad: {r: 10, t: 10},
         updatemenus: [
@@ -765,33 +780,30 @@ export default {
         ]
       }
     },
-    MapColors(categories, colors){
+    MapColors(categories, colors) {
       const levels = [...new Set(categories)]
       console.log(levels)
       const mapping = []
-      for (let i=0; i<=categories.length; i++){
+      for (let i = 0; i <= categories.length; i++) {
         mapping[levels[i]] = colors[i]
       }
       return categories.map(function (cate) {
         return mapping[cate]
       })
     },
-    ColorPalette(kind){
-      if (kind === 'sequential'){
+    ColorPalette(kind) {
+      if (kind === 'sequential') {
         return ['#ffffe5', '#fff7bc', '#fee391', '#fec44f', '#fe9929', '#ec7014', '#cc4c02', '#8c2d04']
-      }
-      else if (kind === 'diverging'){
+      } else if (kind === 'diverging') {
         return ['#8c510a', '#bf812d', '#dfc27d', '#f6e8c3', '#c7eae5', '#80cdc1', '#35978f', '#01665e']
-      }
-      else if (kind === 'quanlitative'){
+      } else if (kind === 'quanlitative') {
         return ['#1b9e77', '#d95f02', '#7570b3', '#e7298a', '#66a61e', '#e6ab02', '#a6761d', '#666666']
-      }
-      else{
+      } else {
         console.log('please set the `kind` option for color palette.')
         return null
       }
     },
-    exportSVG(){
+    exportSVG() {
       return {
         toImageButtonOptions: {
           format: 'svg', // one of png, svg, jpeg, webp
@@ -802,19 +814,23 @@ export default {
         }
       }
     },
-    getFamilyPageURL(){
+    getFamilyPageURL() {
       return "http://18.140.248.253/family?accession=" + this.family
     },
-    CopyPeptideSequence(){
+    CopyPeptideSequence() {
       clipboard.writeText(this.sequence).then(
-          () => { console.log("success!"); },
-          () => { console.log("error!"); }
+          () => {
+            console.log("success!");
+          },
+          () => {
+            console.log("error!");
+          }
       )
       this.$message('Amino acid sequence copied!')
     },
-    makeTraceVisible(index, totalTrace){
+    makeTraceVisible(index, totalTrace) {
       var visibility = []
-      for (var i=0; i<totalTrace; i++){
+      for (var i = 0; i < totalTrace; i++) {
         visibility[i] = false
       }
       visibility[index] = true
@@ -822,9 +838,11 @@ export default {
       return visibility
     },
     UnpackCol(rows, key) {
-      return rows.map(function(row) { return row[key]; });
+      return rows.map(function (row) {
+        return row[key];
+      });
     },
-    downloadCurrPage(){
+    downloadCurrPage() {
       print()
     }
   }
