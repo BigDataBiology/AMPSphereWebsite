@@ -1,28 +1,28 @@
 <template>
   <div class="BrowseData">
     <div class="row justify-center">
-      <div class="col-xs-0 col-lg-2 bg-white"></div>
-      <div class="col-12 col-lg-8 justify-center q-pr-md q-ma-auto">
+      <div class="col-xs-0 col-xl-2 bg-white"></div>
+      <div class="col-12 col-xl-8 justify-center q-pr-md q-ma-auto">
         <div class="row justify-center q-py-md">
-          <div class="col-12 col-lg-2 text-bold text-center">Select filters:</div>
-          <div class="col-12 col-lg-2 justify-center">
+          <div class="col-12 col-md-2 text-bold text-center">Select filters:</div>
+          <div class="col-12 col-md-2 justify-center">
             <q-select filled v-model="options.family" label="Family" :options="availableOptions.family"
                       behavior="menu" align="center"/>
           </div>
-          <div class="col-12 col-lg-2 justify-center">
+          <div class="col-12 col-md-2 justify-center">
             <q-select filled v-model="options.habitat" label="Habitat" :options="availableOptions.habitat"
                       behavior="menu" align="center"/>
           </div>
-          <div class="col-12 col-lg-2 justify-center">
+          <div class="col-12 col-md-2 justify-center">
             <q-select filled v-model="options.host" label="Host" :options="availableOptions.host"
                       behavior="menu" align="center"/>
           </div>
-          <div class="col-12 col-lg-2 justify-center">
+          <div class="col-12 col-md-2 justify-center">
             <!--    TODO MEDIUM PRIORITY: change this filter into peptide length  -->
             <q-select filled v-model="options.sample" label="Sample" :options="availableOptions.sample"
                       behavior="menu" align="center"/>
           </div>
-          <div class="col-12 col-lg-2 justify-center">
+          <div class="col-12 col-md-2 justify-center">
             <q-select filled v-model="options.origin" label="Origin" :options="availableOptions.origin"
                       behavior="menu" align="center"/>
           </div>
@@ -72,7 +72,7 @@
           </div>
         </div>
       </div>
-      <div class="col-xs-0 col-lg-2 bg-white"></div>
+      <div class="col-xs-0 col-xl-2 bg-white"></div>
     </div>
     <!--      <el-col :span="24">-->
     <!--        <el-breadcrumb separator-class="el-icon-arrow-right">-->

@@ -1,8 +1,8 @@
 <template>
   <div id="Contact">
     <div class="row justify-center">
-      <div class="col-xs-0 col-lg-2 bg-white"></div>
-      <div class="col-12 col-lg-8 justify-center q-pr-md q-ma-auto">
+      <div class="col-xs-0 col-xl-2 bg-white"></div>
+      <div class="col-12 col-xl-8 justify-center q-pr-md q-ma-auto">
         <h4>Contact</h4>
         <p>AMPsphere also is discussed in a forum where users can suggest improvements, issues, ongoing projects, etc: <el-link type='primary' href="https://groups.google.com/g/ampsphere-users">Go to our community now!</el-link></p>
         <p>This is a project hosted by the <el-link type='primary' href="big-data-biology.org/">Big Data Biology Research Group</el-link>, visit us at this link!</p>
@@ -23,7 +23,7 @@
           </div>
         </div>
       </div>
-      <div class="col-xs-0 col-lg-2 bg-white"></div>
+      <div class="col-xs-0 col-xl-2 bg-white"></div>
     </div>
 <!--    <el-row>-->
 <!--      <el-col :span="22" :offset="1">-->

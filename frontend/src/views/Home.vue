@@ -1,8 +1,8 @@
 <template>
   <div class="Home">
     <div class="row justify-center">
-      <div class="col-xs-0 col-lg-2 bg-white"></div>
-      <div class="col-12 col-lg-5 justify-center q-pr-md q-ma-auto">
+      <div class="col-0 col-xl-2 bg-white"></div>
+      <div class="col-12 col-md-7 col-xl-5 justify-center q-pr-md q-ma-auto">
         <div class="row">
           <div class="col-12 text-center" style="font-size: 150%">Browse by data type</div>
           <div class="col-md-4 col-xs-12">
@@ -64,7 +64,7 @@
           <!--              </el-carousel>-->
         </div>
       </div>
-      <div class="col-12 col-lg-3 justify-center q-pl-md q-ma-auto">
+      <div class="col-12 col-md-5 col-xl-3 justify-center q-pl-md q-ma-auto">
         <div class="row">
           <div class="col-12" style="font-size: 150%; text-align: center">Search by sequence</div>
           <div class="col-12">
@@ -102,7 +102,7 @@
 
         </div>
       </div>
-      <div class="col-xs-0 col-lg-2 bg-white"></div>
+      <div class="col-0 col-xl-2 bg-white"></div>
     </div>
   </div>
 </template>

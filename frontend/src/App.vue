@@ -79,8 +79,8 @@
   <q-layout view="hHh lpR fFf" class="shadow-2 rounded-borders">
     <q-header reveal bordered class="bg-white text-black" reveal-offset="100px" height-hint="160" style="height: 160px">
       <div class="row q-pl-auto q-pr-auto" style="height: 150px">
-        <div class="col-xs-0 col-sm-1 col-md-2 bg-white"></div>
-        <div class="col-xs-12 col-sm-10 col-md-8">
+        <div class="col-0 col-xl-2 bg-white"></div>
+        <div class="col-12 col-xl-8">
           <div class="row justify-center q-my-none q-pb-none" style="height: 100px">
             <div class="col-xs-4 col-sm-2 col-md-1">
               <q-img :src="require('./assets/logo.png')" sizes="(max-width: 100px) 100px, 100px" style="height: 100px" alt="Cannot load" fit="scale-down"></q-img>
@@ -108,7 +108,7 @@
             </div>
           </div>
         </div>
-        <div class="col-xs-0 col-sm-1 col-md-2 bg-white"></div>
+        <div class="col-0 col-xl-2 bg-white"></div>
       </div>
     </q-header>
 
@@ -116,11 +116,11 @@
       <!--     TODO  Define space on different screen size inside each view component.-->
       <!--     template-->
       <!--      <div class="row justify-center">-->
-      <!--        <div class="col-xs-0 col-lg-2 bg-white"></div>-->
-      <!--        <div class="col-12 col-lg-8 justify-center q-pr-md q-ma-auto">-->
+      <!--        <div class="col-xs-0 col-xl-2 bg-white"></div>-->
+      <!--        <div class="col-12 col-xl-8 justify-center q-pr-md q-ma-auto">-->
       <!--          content...-->
       <!--        </div>-->
-      <!--        <div class="col-xs-0 col-lg-2 bg-white"></div>-->
+      <!--        <div class="col-xs-0 col-xl-2 bg-white"></div>-->
       <!--      </div>-->
       <router-view class="q-ma-auto q-pt-md" />
     </q-page-container>
@@ -137,9 +137,9 @@
           <el-divider direction="vertical"></el-divider>
           <el-link href="https://fastapi.tiangolo.com/" type="success">FastAPI</el-link>
         </div>
-        <div class="col-xs-0 col-sm-1 col-md-2 bg-white"></div>
-        <div class="col-xs-0 col-sm-1 col-md-2 bg-white"></div>
-        <div class="col-xs-12 col-sm-10 col-md-8 justify-end text-black">
+        <div class="col-0 col-xl-2 bg-white"></div>
+        <div class="col-0 col-xl-2 bg-white"></div>
+        <div class="col-12 col-xl-8 justify-end text-black">
           &copy;2021-{{year}}
           <el-link href="https://www.fudan.edu.cn/" type="warning">Fudan University</el-link>
           All Rights Reserved.
