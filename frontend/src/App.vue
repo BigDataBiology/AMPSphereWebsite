@@ -97,7 +97,7 @@
           </div>
           <div class="row justify-center q-my-none q-pt-none" style="height: 50px">
             <div class="col-12">
-              <q-tabs align="center" class="bg-white text-black" v-model="activeMenuItem" inline-label>
+              <q-tabs align="center" class="bg-primary text-white" v-model="activeMenuItem" inline-label>
                 <q-route-tab to="/home" label="Home" />
                 <q-route-tab to="/browse_data" label="Browse" />
                 <q-route-tab to="/api" label="API" />

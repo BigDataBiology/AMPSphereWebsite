@@ -19,7 +19,7 @@
         </div>
         <div class="row bg-white">
           <div class="col-12">
-            <q-tabs v-model="tabName" dense align="justify" class="bg-primary text-white shadow-2" :breakpoint="0">
+            <q-tabs v-model="tabName" dense align="justify" class="bg-secondary text-white shadow-2" :breakpoint="0">
               <q-tab name="overview" label="Overview" />
               <q-tab name="features" label="Features" />
             </q-tabs>
@@ -113,7 +113,7 @@
                       </el-link> (version 1.79).
                     </div>
                     <div class="row">
-                      <div class="col-4">
+                      <div class="col-12 col-md-4">
                         <div style="text-align: center" id="helical-wheel">
                           <br/><br/>
                           <el-link :href="helicalwheel"
@@ -128,39 +128,39 @@
                           <el-image :src="helicalwheel"></el-image>
                         </div>
                       </div>
-                      <div class="col-4">
+                      <div class="col-12 col-md-4">
                         <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.MW)"
                                 :layout="familyFeatureGraphLayout(features.MW, 'Molecular weight')"/>
                       </div>
-                      <div class="col-4">
+                      <div class="col-12 col-md-4">
                         <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Aromaticity)"
                                 :layout="familyFeatureGraphLayout(features.Aromaticity, 'Aromaticity')" />
                       </div>
                     </div>
                     <div class="row">
-                      <div  class="col-4">
+                      <div  class="col-12 col-md-4">
                         <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.GRAVY)"
                                 :layout="familyFeatureGraphLayout(features.GRAVY, 'GRAVY')" />
                       </div>
-                      <div class="col-4">
+                      <div class="col-12 col-md-4">
                         <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Instability_index)"
                                 :layout="familyFeatureGraphLayout(features.Instability_index, 'Instability index')" />
                       </div>
-                      <div class="col-4">
+                      <div class="col-12 col-md-4">
                         <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Isoelectric_point)"
                                 :layout="familyFeatureGraphLayout(features.Isoelectric_point, 'Isoelectric point')" />
                       </div>
                     </div>
                     <div class="row">
-                      <div class="col-4">
+                      <div class="col-12 col-md-4">
                         <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Charge_at_pH_7)"
                                 :layout="familyFeatureGraphLayout(features.Charge_at_pH_7, 'Charge at pH 7.0')" />
                       </div>
-                      <div class="col-4">
+                      <div class="col-12 col-md-4">
                         <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Molar_extinction.cystines_residues)"
                                 :layout="familyFeatureGraphLayout(features.Molar_extinction.cystines_residues, 'Molar extinction (cystines residues)')" />
                       </div>
-                      <div class="col-4">
+                      <div class="col-12 col-md-4">
                         <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Molar_extinction.cysteines_reduced)"
                                 :layout="familyFeatureGraphLayout(features.Molar_extinction.cysteines_reduced, 'Molar extinction (ccysteines reduced)')" />
                       </div>

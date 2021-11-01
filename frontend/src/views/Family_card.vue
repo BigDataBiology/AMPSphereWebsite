@@ -11,7 +11,7 @@
           <!--          TODO test: move this description down to the overview tab-->
           <div class="row">
             <div class="col-12">
-              <q-tabs v-model="tabName" dense align="justify" class="bg-primary text-white shadow-2" :breakpoint="0">
+              <q-tabs v-model="tabName" dense align="justify" class="bg-secondary text-white shadow-2" :breakpoint="0">
                 <q-tab name="overview" label="Overview" />
                 <q-tab name="features" label="Features" />
                 <q-tab name="downloads" label="Downloads" />
