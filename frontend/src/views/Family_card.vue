@@ -4,12 +4,12 @@
         <div class="col-xs-0 col-xl-2 bg-white"></div>
         <div class="col-12 col-xl-8 justify-center q-pr-md q-ma-auto">
           <div class="row">
-            <div class="title bg-primary">Antimicrobial peptide family: {{ accession }}
+            <div class="title">Antimicrobial peptide family: {{ accession }}
               <!--              <el-button class="button" @click="downloadCurrPage()" type="primary" icon="el-icon-download" plain></el-button>-->
             </div>
           </div>
           <!--          TODO test: move this description down to the overview tab-->
-          <div class="row bg-secondary">
+          <div class="row">
             <div class="col-12">
               <q-tabs v-model="tabName" dense align="justify" class="bg-primary text-white shadow-2" :breakpoint="0">
                 <q-tab name="overview" label="Overview" />
