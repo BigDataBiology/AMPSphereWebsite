@@ -4,14 +4,14 @@
         <div class="col-xs-0 col-xl-2 bg-white"></div>
         <div class="col-12 col-xl-8 justify-center q-pr-md q-ma-auto">
           <div class="row">
-            <div class="title">Antimicrobial peptide family: {{ accession }}
+            <div class="text-h4">Antimicrobial peptide family: {{ accession }}
               <!--              <el-button class="button" @click="downloadCurrPage()" type="primary" icon="el-icon-download" plain></el-button>-->
             </div>
           </div>
           <!--          TODO test: move this description down to the overview tab-->
           <div class="row">
             <div class="col-12">
-              <q-tabs v-model="tabName" dense align="justify" class="bg-secondary text-white shadow-2" :breakpoint="0">
+              <q-tabs v-model="tabName" dense align="left" class="text-teal text-white">
                 <q-tab name="overview" label="Overview" />
                 <q-tab name="features" label="Features" />
                 <q-tab name="downloads" label="Downloads" />
@@ -20,12 +20,12 @@
                 <q-tab-panel name="overview">
                   <div class="row" style="text-align: left">
                     <div class="col-12 col-md-3 q-pa-md">
-                    <span class="info-item">
+                    <span class="subsubsection-title">
                       Number of AMPs:
                       <!--                      </span>-->
                       <!--                    <span>-->
                       <el-link href="#amps" type="primary">
-                        <span class="info-item-value">{{ num_amps }}</span>
+                        <span class="subsubsection-title">{{ num_amps }}</span>
                       </el-link>
                     </span>
                       <!--                    <div class="info-item" id="sequence">-->
@@ -49,48 +49,30 @@
                       <!--                      </el-dialog>-->
                       <!--                    </div>-->
                       <div style="alignment: left;">
-                        <div class="info-item" id="secondary-structure">Secondary Structure</div>
-                        <!--                      TODO change this to an error bars chart.-->
-                        <!--                      https://codepen.io/plotly/pen/VvEVgq-->
-                        <Plotly :data="secondaryStructureGraphData"
-                                :layout="secondaryStructureLayout()"
-                                :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                        <div class="subsubsection-title">Secondary Structure</div>
+                        <Plotly :data="secondaryStructureGraphData" :layout="secondaryStructureLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
                       </div>
 
                     </div>
                     <div class="col-12 col-md-8 offset-1">
-                      <!--                   TODO Geographical distribution -->
-                      <div id="global distribution">
-                        <Plotly :data="GeoPlotData()"
-                                :layout="GeoPlotLayout()"
-                                :toImageButtonOptions="{format: 'svg', scale: 1}"/>
-                      </div>
+                      <div class="subsubsection-title text-center">Geographical Distribution</div>
+                      <Plotly :data="GeoPlotData()" :layout="GeoPlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
                     </div>
                   </div>
 
                   <div class="row">
-                    <div class="col-12">
-                      <h5 id="distribution" class="subsection-title">Distribution</h5>
-                    </div>
+                    <div class="col-12 subsection-title">Distribution</div>
                   </div>
                   <div class="row">
                     <div class="col-12 col-md-6 q-pa-md">
                       <!--                    TODO Bigger title  and figure captions-->
-                      <h4 id="distribution-across-habitats">Habitats</h4>
-                      <div>
-                        <Plotly :data="EnvPlotData()"
-                                :layout="EnvPlotLayout()"
-                                :toImageButtonOptions="{format: 'svg', scale: 1}"/>
-                      </div>
+                      <div class="subsubsection-title text-center">Habitats</div>
+                      <Plotly :data="EnvPlotData()" :layout="EnvPlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
                     </div>
                     <div class="col-12 col-md-6 q-pa-md">
                       <!--                    TODO Bigger title and figure captions -->
-                      <h4 id="distribution-across-hosts">Hosts</h4>
-                      <div>
-                        <Plotly :data="HostPlotData()"
-                                :layout="HostPlotLayout()"
-                                :toImageButtonOptions="{format: 'svg', scale: 1}"/>
-                      </div>
+                      <div class="subsubsection-title text-center">Hosts</div>
+                      <Plotly :data="HostPlotData()" :layout="HostPlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
                     </div>
                     <!--                <div>-->
                     <!--                  <Plotly :data="DistributionGraphData()"-->
@@ -146,8 +128,8 @@
                 <q-tab-panel name="features" id="#features">
                   <div class="row">
                     <div class="col-12 q-pa-md">
-                      <h5 id="properties">Biochemical property distributions</h5>
-                      <div class="info-item-value">
+                      <div class="subsection-title">Biochemical property distributions</div>
+                      <div class="main-text">
                         These features below were calculated by using the
                         <el-link href="https://biopython.org/docs/1.79/api/Bio.SeqUtils.ProtParam.html" type="primary">
                           Bio.SeqUtils.ProtParam.ProteinAnalysis
@@ -159,30 +141,24 @@
                       </div>
                       <div class="row">
                         <div class="col-12 col-md-4">
-                          <Plotly :data="featuresGraphData.MW"
-                                  :layout="featuresBoxplotLayout('Molecular weight')" />
+                          <Plotly :data="featuresGraphData.MW" :layout="featuresBoxplotLayout('Molecular weight')" />
                         </div>
                         <div class="col-12 col-md-4">
-                          <Plotly :data="featuresGraphData.Aromaticity"
-                                  :layout="featuresBoxplotLayout('Aromaticity')" />
+                          <Plotly :data="featuresGraphData.Aromaticity" :layout="featuresBoxplotLayout('Aromaticity')" />
                         </div>
                         <div class="col-12 col-md-4">
-                          <Plotly :data="featuresGraphData.GRAVY"
-                                  :layout="featuresBoxplotLayout('GRAVY (grand average of hydropathy)')" />
+                          <Plotly :data="featuresGraphData.GRAVY" :layout="featuresBoxplotLayout('GRAVY (grand average of hydropathy)')" />
                         </div>
                       </div>
                       <div class="row">
                         <div class="col-12 col-md-4">
-                          <Plotly :data="featuresGraphData.Instability_index"
-                                  :layout="featuresBoxplotLayout('Instability index')" />
+                          <Plotly :data="featuresGraphData.Instability_index" :layout="featuresBoxplotLayout('Instability index')" />
                         </div>
                         <div class="col-12 col-md-4">
-                          <Plotly :data="featuresGraphData.Isoelectric_point"
-                                  :layout="featuresBoxplotLayout('Isoelectric point')" />
+                          <Plotly :data="featuresGraphData.Isoelectric_point" :layout="featuresBoxplotLayout('Isoelectric point')" />
                         </div>
                         <div class="col-12 col-md-4">
-                          <Plotly :data="featuresGraphData.Charge_at_pH_7"
-                                  :layout="featuresBoxplotLayout('Charge at pH 7.0')" />
+                          <Plotly :data="featuresGraphData.Charge_at_pH_7" :layout="featuresBoxplotLayout('Charge at pH 7.0')" />
                         </div>
                       </div>
 

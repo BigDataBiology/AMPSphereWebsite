@@ -81,7 +81,7 @@
       <div class="row q-pl-auto q-pr-auto" style="height: 150px">
         <div class="col-0 col-xl-2 bg-white"></div>
         <div class="col-12 col-xl-8">
-          <div class="row justify-center q-my-none q-pb-none" style="height: 100px">
+          <div class="row justify-center q-my-none q-pb-none q-px-md" style="height: 100px">
             <div class="col-xs-4 col-sm-2 col-md-1">
               <q-img :src="require('./assets/logo.png')" sizes="(max-width: 100px) 100px, 100px" style="height: 100px" alt="Cannot load" fit="scale-down"></q-img>
             </div>
@@ -95,7 +95,7 @@
               </q-input>
             </div>
           </div>
-          <div class="row justify-center q-my-none q-pt-none" style="height: 50px">
+          <div class="row justify-center q-my-none q-pt-none q-px-md" style="height: 50px">
             <div class="col-12">
               <q-tabs align="center" class="bg-primary text-white" v-model="activeMenuItem" inline-label>
                 <q-route-tab to="/home" label="Home" />

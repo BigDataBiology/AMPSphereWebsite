@@ -12,11 +12,45 @@
     text-align: left;
 }
 .subsection-title {
-    font-size: x-large;
-    font-weight: normal;
-    font-family: 'Helvetica', 'Arial', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 2rem;
+    letter-spacing: normal;
     text-align: left;
+    margin-top: 16px;
 }
+.subsubsection-title {
+    font-size: 1.25rem;
+    font-weight: 500;
+    line-height: 2rem;
+    letter-spacing: 0.0125em;
+    text-align: left;
+    margin-top: 16px;
+}
+/*.text-subtitle1 {*/
+/*    font-size: 1rem;*/
+/*    font-weight: 400;*/
+/*    line-height: 1.75rem;*/
+/*    letter-spacing: 0.00937em;*/
+/*}*/
+/*.text-subtitle2 {*/
+/*    font-size: 0.875rem;*/
+/*    font-weight: 500;*/
+/*    line-height: 1.375rem;*/
+/*    letter-spacing: 0.00714em;*/
+/*}*/
+.main-text {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5rem;
+    letter-spacing: 0.03125em;
+}
+/*.text-body2 {*/
+/*    font-size: 0.875rem;*/
+/*    font-weight: 400;*/
+/*    line-height: 1.25rem;*/
+/*    letter-spacing: 0.01786em;*/
+/*}*/
 .info-item {
     font-weight: normal;
     font-size: 150%;

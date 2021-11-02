@@ -4,22 +4,21 @@
       <div class="col-xs-0 col-xl-2 bg-white"></div>
       <div class="col-12 col-xl-8 justify-center q-pr-md q-ma-auto">
         <div class="row">
-          <div class="title">
-            Antimicrobial peptide: {{ accession }}
-            <!--              <el-button class="button" @click="downloadCurrPage()" type="primary" icon="el-icon-download" plain></el-button>-->
-          </div>
-<!--                    TODO test: move this description down to the overview tab-->
-          <div class="description">
-            The AMP belongs to
-            <el-link :href="getFamilyPageURL()" type="primary">
-              <span class="description">{{ family }}</span>
-            </el-link>
-            family and has {{ length }} amino acid residues.
+          <div class="col-12 q-px-md">
+            <div class="text-h4">Antimicrobial peptide: {{ accession }}</div>
+            <!--                    TODO test: move this description down to the overview tab-->
+            <div class="text-body1">
+              The AMP belongs to
+              <el-link :href="getFamilyPageURL()" type="primary">
+                <span class="text-body1">{{ family }}</span>
+              </el-link>
+              family and has {{ length }} amino acid residues.
+            </div>
           </div>
         </div>
         <div class="row bg-white">
-          <div class="col-12">
-            <q-tabs v-model="tabName" dense align="justify" class="bg-secondary text-white shadow-2" :breakpoint="0">
+          <div class="col-12 q-pa-md">
+            <q-tabs v-model="tabName" dense align="left" class="text-teal text-white">
               <q-tab name="overview" label="Overview" />
               <q-tab name="features" label="Features" />
             </q-tabs>
@@ -27,48 +26,37 @@
               <q-tab-panel name="overview">
                 <div class="row text-left">
                   <div class="col-12 col-md-3 q-pt-md q-px-md justify-center">
-                    <span id="sequence" class="info-item q-mt-md">
+                    <div class="subsubsection-title">
                       Peptide sequence <q-btn @click="CopyPeptideSequence()" icon="content_copy" size="sm"></q-btn>
-                    </span>
+                    </div>
                     <pre><code id="aa-sequence">{{ sequence }}</code></pre>
-                    <div class="info-item q-pt-md" id="secondary-structure">Secondary Structure</div>
+                    <div class="subsubsection-title">Secondary Structure</div>
                     <Plotly :data="SecStructureBarData()" :layout="secondaryStructureLayout()"
                             :toImageButtonOptions="{format: 'svg', scale: 1}"/>
                   </div>
                   <div class="col-12 col-md-8 offset-md-1 q-pt-md q-px-md justify-center" id="global distribution">
+                    <div class="subsubsection-title text-center">Geographical Distribution</div>
                     <Plotly :data="GeoPlotData()" :layout="GeoPlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
                   </div>
                 </div>
                 <div class="row">
-                  <div class="col-12 text-left">
-                    <h5 id="distribution" class="text-weight-bold">Distribution</h5>
+                  <div class="col-12 q-px-md q-pt-md">
+                    <div class="subsection-title">Distribution</div>
                   </div>
                   <div class="col-12 col-md-6">
 <!--                    TODO Bigger title  and figure captions-->
-                    <h6 id="distribution-across-habitats" class="text-center">Habitats</h6>
-                    <div>
-                      <Plotly :data="EnvPlotData()" :layout="EnvPlotLayout()"
-                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>
-                    </div>
+                    <div class="subsubsection-title text-center">Habitats</div>
+                    <Plotly :data="EnvPlotData()" :layout="EnvPlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
                   </div>
-
                   <div class="col-12 col-md-6">
                     <!--                    TODO Bigger title and figure captions -->
-                    <h6 id="distribution-across-hosts" class="text-center">Hosts</h6>
-                    <div>
-                      <Plotly :data="HostPlotData()" :layout="HostPlotLayout()"
-                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>
-                    </div>
+                    <div class="subsubsection-title text-center">Hosts</div>
+                    <Plotly :data="HostPlotData()" :layout="HostPlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
                   </div>
-                  <!--                <div>-->
-                  <!--                  <Plotly :data="DistributionGraphData()"-->
-                  <!--                          :layout="DistributionGraphLayout()"-->
-                  <!--                          :toImageButtonOptions="{format: 'svg', scale: 1}"/>-->
-                  <!--                </div>-->
                 </div>
                 <div class="row">
-                  <div class="col-12 q-px-md">
-                    <h5 id="relationships" class="text-weight-bold">Relationships</h5>
+                  <div class="col-12 q-px-md q-pt-md">
+                    <div class="subsection-title">Relationships</div>
 <!--                    TODO add download button here -->
                     <el-table :data="currentMetadata" stripe :default-sort="{prop: 'GMSC', order: 'ascending'}" width="100%">
                       <el-table-column prop="GMSC" label="Gene" sortable width="260%"/>
@@ -98,7 +86,7 @@
               <q-tab-panel name="features">
                 <div class="row">
                   <div class="col-12 q-pa-md">
-                    <h5 class="text-weight-bold" id="properties">Biochemical properties</h5>
+                    <div class="subsection-title">Biochemical properties</div>
                     <div class="info-item-value">
                       The feature value of {{ accession }} was pointed out in the distribution among its entire AMP family.
                     </div>
@@ -489,9 +477,9 @@ export default {
     },
     GeoPlotLayout() {
       return {
-        title: {
-          text: 'Geographical distribution'
-        },
+        // title: {
+        //   text: 'Geographical distribution'
+        // },
         showlegend: false,
         geo: {
           scope: 'global',
