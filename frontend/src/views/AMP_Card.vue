@@ -104,9 +104,7 @@
                       <div class="col-12 col-md-4">
                         <div style="text-align: center" id="helical-wheel">
                           <br/><br/>
-                          <el-link :href="helicalwheel"
-                                   target="_blank"
-                                   type="primary">
+                          <el-link :href="helicalwheel" type="primary">
                             <span class="medium">Helical wheel</span>
                           </el-link>
                           <br/>

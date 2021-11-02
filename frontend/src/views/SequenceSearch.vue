@@ -29,7 +29,11 @@
                   <el-button type="text" @click="AMPDetail(props.row.target_identifier)">{{ props.row.target_identifier }}</el-button>
                 </template>
               </el-table-column>
-              <el-table-column label="Identity" sortable prop="sequence_identity"></el-table-column>
+              <el-table-column label="Identity (%)" sortable>
+                <template #default="props">
+                  {{ props.row.sequence_identity * 100 }}
+                </template>
+              </el-table-column>
               <el-table-column label="Aligned length" sortable prop="alignment_length"></el-table-column>
               <el-table-column label="# mismatches" sortable prop="number_mismatches"></el-table-column>
               <el-table-column label="# gap" sortable prop="number_gap_openings"></el-table-column>

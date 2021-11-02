@@ -169,10 +169,10 @@ export default {
   methods: {
     handleFamilyDetail(accession) {
       console.log('goto', '/family?accession=' + accession)
-      window.open('/family?accession=' + accession, '_blank')
+      window.open('/family?accession=' + accession)
     },
     handleBrowse(by) {
-      window.open('/browse_data?by=' + by, '_blank')
+      window.open('/browse_data?by=' + by)
     },
     retrieveStatistics() {
       var self = this
@@ -201,16 +201,12 @@ export default {
     },
     sequenceSearch() {
       if ((this.sequences.match(/\n/g) || '').length + 1 > 20) {
-        this.$message('Please input no more than 10 sequences.')
+        this.$message('Please input up to 10 sequences.')
       } else {
         if (this.sequences === '') {
-          window.open(
-              encodeURI('/sequence_search?method=' + this.searchMethod + '&queries=' + this.exampleSequences),
-              '_blank')
+          window.open(encodeURI('/sequence_search?method=' + this.searchMethod + '&queries=' + this.exampleSequences))
         } else {
-          window.open(
-              encodeURI('/sequence_search?method=' + this.searchMethod + '&queries=' + this.sequences),
-              '_blank')
+          window.open(encodeURI('/sequence_search?method=' + this.searchMethod + '&queries=' + this.sequences))
         }
       }
     }
