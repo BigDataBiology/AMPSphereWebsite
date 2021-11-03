@@ -4,15 +4,12 @@
       <div class="col-0 col-xl-2 bg-white"></div>
       <div class="col-12 col-md-7 col-xl-5 justify-center q-pr-md q-ma-auto">
         <div class="row">
-          <div class="col-12 text-center" style="font-size: 150%">Browse by data type</div>
+          <div class="col-12 subsection-title text-center q-mb-md">Browse by data type</div>
           <div class="col-md-4 col-xs-12">
             <el-table :data="distributionData.amps_families" style="width: 120%" :show-header="false">
               <el-table-column prop="number" label="Number">
                 <template #default="props">
-                  <el-link href="/browse_data" type="primary" style="font-size: medium"> {{
-                      props.row.number
-                    }}
-                  </el-link>
+                  <a href="/browse_data" style="font-size: medium"> {{ props.row.number }}</a>
                 </template>
               </el-table-column>
               <el-table-column prop="type" label="Type"></el-table-column>
@@ -23,10 +20,7 @@
             <el-table :data="distributionData.genomes_metagenomes" style="width: 120%" :show-header="false">
               <el-table-column prop="number" label="Number">
                 <template #default="props">
-                  <el-link href="/browse_data" type="primary" style="font-size: medium"> {{
-                      props.row.number
-                    }}
-                  </el-link>
+                  <a href="/browse_data" style="font-size: medium"> {{ props.row.number }}</a>
                 </template>
               </el-table-column>
               <el-table-column prop="type" label="Type"></el-table-column>
@@ -36,10 +30,7 @@
             <el-table :data="distributionData.habitats_hosts" style="width: 120%" :show-header="false">
               <el-table-column prop="number" label="Number">
                 <template #default="props">
-                  <el-link href="/browse_data" type="primary" style="font-size: medium"> {{
-                      props.row.number
-                    }}
-                  </el-link>
+                  <a href="/browse_data" style="font-size: medium"> {{ props.row.number }}</a>
                 </template>
               </el-table-column>
               <el-table-column prop="type" label="Type"></el-table-column>
@@ -66,38 +57,39 @@
       </div>
       <div class="col-12 col-md-5 col-xl-3 justify-center q-pl-md q-ma-auto">
         <div class="row">
-          <div class="col-12" style="font-size: 150%; text-align: center">Search by sequence</div>
+          <div class="col-12 subsection-title text-center q-mb-md">Search by sequence</div>
           <div class="col-12">
-            <div style="text-align: left">
-              Paste (&leq; 10) peptide sequences here (fasta format). <br/><br/>
-              Or try
-              <el-link type="primary" href="http://18.140.248.253/downloads"> our search databases</el-link>
-              .<br/><br/>
-              <el-input
-                  type="textarea"
-                  :rows="20"
-                  :autosize="{ minRows: 15, maxRows: 20}"
-                  :placeholder="exampleSequences"
-                  v-model="sequences">
-              </el-input>
+            <div class="main-text">
+              Paste (&leq; 10) peptide sequences here (fasta format). <br/>
+              <span class="text-bold">Note</span>: For large queries and offline use, please download<a href="http://18.140.248.253/downloads"> our prebuilt indices</a>.
             </div>
-            <br/>
           </div>
           <div class="col-12">
-            <el-tooltip content="Search for AMP" placement="bottom">
-              <el-radio v-model="searchMethod" label="MMseqs">
-                MMseqs
-              </el-radio>
-            </el-tooltip>
-            <el-tooltip content="Search for family" placement="bottom">
-              <el-radio v-model="searchMethod" label="HMMER">
-                HMMSearch
-              </el-radio>
-            </el-tooltip>
-            <el-button type="primary" @click="sequenceSearch">
-              <BootstrapIcon icon="search" variant="light" size="1x"/>
-              Search
-            </el-button>
+            <q-input class="q-my-md" v-model="sequences" filled clearable type="textarea" color="primary"
+                     label="Please enter up to 10 sequences" rows="20"/>
+<!--            TODO update here.-->
+<!--            <q-uploader-->
+<!--                style="max-width: 300px"-->
+<!--                url="http://localhost:4444/upload"-->
+<!--                label="Upload a fasta file."-->
+<!--                max-files="1"-->
+<!--                @rejected="onRejected"-->
+<!--            />-->
+
+            <!--            <q-input-->
+<!--                type="textarea" :rows="20" :autosize="{ minRows: 15, maxRows: 20}" :placeholder="exampleSequences" v-model="sequences">-->
+<!--            </q-input>-->
+            <div class="text-bold">
+              Search for:
+              <q-btn-toggle
+                  v-model="searchMethod" no-caps rounded unelevated toggle-color="primary" color="white"
+                  text-color="primary" size="sm"
+                  :options="[{label: 'AMPs', value: 'MMseqs', slot: 'MMseqs'}, {label: 'Families', value: 'HMMER', slot: 'HMMER'}]" />
+<!--              <el-radio v-model="searchMethod" label="MMseqs">AMPs</el-radio>-->
+<!--              <el-radio v-model="searchMethod" label="HMMER">Families</el-radio>-->
+              <q-btn @click="sequenceSearch" label="Submit" class="bg-primary text-white" />
+            </div>
+
           </div>
 
         </div>
@@ -153,13 +145,17 @@ export default {
         {type: 'host', image: require('../assets/hostDistribution.svg')},
         {type: 'habitat', image: require('../assets/habitatDistribution.svg')},
       ],
-      exampleSequences:
+      // exampleSequences:
+      //     ">AMP10.000_002 | SPHERE-III.010_054\n" +
+      //     "KRVKSFFKGYMRAIEINAALMYGYRPK\n" +
+      //     ">AMP10.000_003 | SPHERE-III.001_008\n" +
+      //     "GRVIGKQGRIAKAIRVVMRAAAVRVDEKVLVEID\n",
+      searchMethod: 'MMseqs',
+      sequences:
           ">AMP10.000_002 | SPHERE-III.010_054\n" +
           "KRVKSFFKGYMRAIEINAALMYGYRPK\n" +
           ">AMP10.000_003 | SPHERE-III.001_008\n" +
           "GRVIGKQGRIAKAIRVVMRAAAVRVDEKVLVEID\n",
-      searchMethod: 'MMseqs',
-      sequences: '',
       // fastaFile: [],
     }
   },
@@ -179,7 +175,7 @@ export default {
       this.axios.get('/statistics', {})
           .then(function (response) {
             console.log(response.data)
-            self.statistics = response.data;
+            self.statistics = response.data
             self.distributionData = {
               amps_families: [
                 {number: self.statistics.num_amps.toLocaleString('en-US'), type: 'AMPs'},
@@ -203,11 +199,7 @@ export default {
       if ((this.sequences.match(/\n/g) || '').length + 1 > 20) {
         this.$message('Please input up to 10 sequences.')
       } else {
-        if (this.sequences === '') {
-          window.open(encodeURI('/sequence_search?method=' + this.searchMethod + '&queries=' + this.exampleSequences))
-        } else {
-          window.open(encodeURI('/sequence_search?method=' + this.searchMethod + '&queries=' + this.sequences))
-        }
+        window.open(encodeURI('/sequence_search?method=' + this.searchMethod + '&queries=' + this.sequences), '_self')
       }
     }
   }
