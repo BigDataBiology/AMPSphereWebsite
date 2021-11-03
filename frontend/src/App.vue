@@ -86,9 +86,9 @@
               <q-img :src="require('./assets/logo.png')" sizes="(max-width: 100px) 100px, 100px" style="height: 100px" alt="Cannot load" fit="scale-down"></q-img>
             </div>
             <div class="col-xs-8 col-sm-8 col-md-6 offset-sm-1 offset-md-5">
-              <q-input  clearable clear-icon="close" filled color="black" label="Search" v-model="searchTerm"
-                        type="search" hint="AMP10.000_001, SPHERE-III.001_396, Aquatic, Homo sapiens"
-                        style="max-width: 600px">
+              <q-input  clearable clear-icon="close" filled color="primary" label="Search" v-model="searchTerm"
+                        type="search" hint="Entity accession, Habitat (Aquatic) or Host (Homo sapiens)"
+                        style="max-width: 600px" @keydown.enter.prevent="textSearch()">
                 <template v-slot:append>
                   <q-btn @click="textSearch()" label="Search" icon-right="search"></q-btn>
                 </template>
@@ -126,22 +126,22 @@
     </q-page-container>
 
     <q-footer reveal bordered class="bg-white text-white" >
-      <div class="row text-center">
+      <div class="row text-left">
         <div class="col-xs-0 col-sm-1 col-md-2 bg-white"></div>
         <div class="col-xs-12 col-sm-10 col-md-8 justify-end text-black">
           <q-separator light />
           Powered by
-          <el-link href="https://vuejs.org/index.html" type="success">Vue.js</el-link>
+          <a href="https://vuejs.org/index.html" type="success">Vue.js</a>
           <el-divider direction="vertical"></el-divider>
-          <el-link href="https://element-plus.org/#/en-US" type="primary">Element</el-link>
+          <a href="https://quasar.dev/" type="primary">Quasar</a>
           <el-divider direction="vertical"></el-divider>
-          <el-link href="https://fastapi.tiangolo.com/" type="success">FastAPI</el-link>
+          <a href="https://fastapi.tiangolo.com/" type="success">FastAPI</a>
         </div>
         <div class="col-0 col-xl-2 bg-white"></div>
         <div class="col-0 col-xl-2 bg-white"></div>
         <div class="col-12 col-xl-8 justify-end text-black">
           &copy;2021-{{year}}
-          <el-link href="https://www.fudan.edu.cn/" type="warning">Fudan University</el-link>
+          <a href="https://www.fudan.edu.cn/" type="warning">Fudan University</a>
           All Rights Reserved.
         </div>
         <div class="col-xs-0 col-sm-1 col-md-2 bg-white"></div>
@@ -237,11 +237,11 @@ export default {
   methods: {
     textSearch(){
       if (this.searchTerm.startsWith('AMP')) {
-        window.open('/AMP?accession=' + this.searchTerm, '_blank')
+        window.open('/AMP?accession=' + this.searchTerm, '_self')
       } else if (this.searchTerm.startsWith('SPHERE')) {
-        window.open('/family?accession=' + this.searchTerm, '_blank')
+        window.open('/family?accession=' + this.searchTerm, '_self')
       } else {
-        window.open(encodeURI('/text_search?query=' + this.searchTerm), '_blank')}
+        window.open(encodeURI('/text_search?query=' + this.searchTerm), '_self')}
       }
   }
 }
