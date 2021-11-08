@@ -23,7 +23,7 @@
                       behavior="menu" align="center"/>
           </div>
           <div class="col-12 col-md-2 justify-center">
-            <q-select filled v-model="options.origin" label="Origin" :options="availableOptions.origin"
+            <q-select filled v-model="options.origin" label="AMP source" :options="availableOptions.origin"
                       behavior="menu" align="center"/>
           </div>
         </div>

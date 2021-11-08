@@ -67,7 +67,7 @@
                       </el-table-column>
                       <el-table-column prop="sample" label="Sample/Genome" sortable width="150%"/>
                       <el-table-column prop="host_scientific_name" label="Host" sortable width="150%"/>
-                      <el-table-column prop="origin_scientific_name" label="Origin" sortable width="150%"/>
+                      <el-table-column prop="origin_scientific_name" label="AMP source" sortable width="150%"/>
                     </el-table>
                     <div class="block">
                       <el-pagination
