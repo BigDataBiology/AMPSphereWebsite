@@ -4,7 +4,7 @@
       <div class="col-0 col-xl-2 bg-white"></div>
       <div class="col-12 col-md-7 col-xl-5 justify-center q-pr-md q-ma-auto">
         <div class="row">
-          <div class="col-12 subsection-title text-center q-mb-md">Browse by data type</div>
+          <div class="col-12 subsection-title text-center q-mb-md">Overall statistics and distribution</div>
           <div class="col-md-4 col-xs-12">
             <el-table :data="distributionData.amps_families" style="width: 120%" :show-header="false">
               <el-table-column prop="number" label="Number">
@@ -91,7 +91,6 @@
             </div>
 
           </div>
-
         </div>
       </div>
       <div class="col-0 col-xl-2 bg-white"></div>
@@ -108,7 +107,9 @@
 </style>
 
 <script>
-import {ref} from "vue";
+import {ref} from "vue"
+// import {useQuasar} from 'quasar'
+
 
 export default {
   name: 'Home',
@@ -159,6 +160,19 @@ export default {
       // fastaFile: [],
     }
   },
+  setup(){
+    // const $q = useQuasar()
+    // $q.notify('aaaa')
+    // $q.notify({
+    //   message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic quisquam non ad sit assumenda consequuntur esse inventore officia. Corrupti reiciendis impedit vel, fugit odit quisquam quae porro exercitationem eveniet quasi.',
+    //   color: 'primary',
+    //   multiLine: true,
+    //   avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
+    //   actions: [
+    //     { label: 'Reply', color: 'yellow', handler: () => { /* ... */ } }
+    //   ]
+    // })
+  },
   mounted() {
     this.retrieveStatistics()
   },
@@ -201,7 +215,7 @@ export default {
       } else {
         window.open(encodeURI('/sequence_search?method=' + this.searchMethod + '&queries=' + this.sequences), '_self')
       }
-    }
+    },
   }
 }
 </script>
