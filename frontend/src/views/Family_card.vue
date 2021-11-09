@@ -236,6 +236,8 @@
 import Plotly from "../components/Plotly"
 import * as clipboard from "clipboard-polyfill/text";
 import { std, mean } from 'mathjs'
+import {Notify} from "quasar";
+
 
 export default {
   name: 'Family_card',
@@ -749,10 +751,25 @@ export default {
     },
     CopyPeptideSequence(){
       clipboard.writeText(this.sequence).then(
-          () => { console.log("success!"); },
+          () => {
+            console.log("success!");
+            this.showNotif('Peptide sequences copied.')
+          },
           () => { console.log("error!"); }
       )
-      this.$message('Amino acid sequence copied!')
+    },
+    showNotif(message){
+      Notify.create({
+        message: message,
+        // html: true,
+        color: 'primary',
+        position: 'bottom',
+        timeout: 3000,
+        icon: 'announcement',
+        actions: [
+          { label: 'Got it', color: 'yellow', handler: () => { /* ... */ } }
+        ]
+      })
     },
     makeTraceVisible(index, totalTrace){
       var visibility = []

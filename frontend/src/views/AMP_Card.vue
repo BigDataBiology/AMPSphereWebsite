@@ -267,6 +267,7 @@
 <script>
 import Plotly from "../components/Plotly"
 import * as clipboard from "clipboard-polyfill/text";
+import {Notify} from "quasar";
 
 
 export default {
@@ -354,6 +355,9 @@ export default {
       helicalwheel: ''
     }
   },
+  // setup (){
+  //   const $q = useQuasar()
+  // },
   created() {
     this.getAMP()
   },
@@ -807,12 +811,25 @@ export default {
       clipboard.writeText(this.sequence).then(
           () => {
             console.log("success!");
+            this.showNotif('Peptide sequences copied.')
           },
           () => {
             console.log("error!");
           }
       )
-      this.$message('Amino acid sequence copied!')
+    },
+    showNotif(message){
+      Notify.create({
+        message: message,
+        // html: true,
+        color: 'primary',
+        position: 'bottom',
+        timeout: 3000,
+        icon: 'announcement',
+        // actions: [
+        //   { label: 'Got it', color: 'yellow', handler: () => { /* ... */ } }
+        // ]
+      })
     },
     makeTraceVisible(index, totalTrace) {
       var visibility = []
