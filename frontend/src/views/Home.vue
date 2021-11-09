@@ -108,7 +108,7 @@
 
 <script>
 import {ref} from "vue"
-// import {useQuasar} from 'quasar'
+import {useQuasar} from 'quasar'
 
 
 export default {
@@ -161,17 +161,18 @@ export default {
     }
   },
   setup(){
-    // const $q = useQuasar()
-    // $q.notify('aaaa')
-    // $q.notify({
-    //   message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic quisquam non ad sit assumenda consequuntur esse inventore officia. Corrupti reiciendis impedit vel, fugit odit quisquam quae porro exercitationem eveniet quasi.',
-    //   color: 'primary',
-    //   multiLine: true,
-    //   avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
-    //   actions: [
-    //     { label: 'Reply', color: 'yellow', handler: () => { /* ... */ } }
-    //   ]
-    // })
+    const $q = useQuasar()
+    $q.notify({
+      message: '<strong>Note</strong>: the website is still a work-in-progress. Improvements are ongoing.',
+      html: true,
+      color: 'primary',
+      position: 'bottom',
+      timeout: 10000,
+      icon: 'announcement',
+      actions: [
+        { label: 'Got it', color: 'yellow', handler: () => { /* ... */ } }
+      ]
+    })
   },
   mounted() {
     this.retrieveStatistics()

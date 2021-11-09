@@ -12,7 +12,7 @@ import imageZoom from 'vue-image-zoomer'
 import { Download, More } from '@element-plus/icons'
 import JsonViewer from "vue3-json-viewer"
 import BootstrapIcon from '@dvuckovic/vue3-bootstrap-icons';
-import { Quasar } from 'quasar'
+import { Quasar, Notify } from 'quasar'
 import quasarUserOptions from './quasar-user-options'
 
 
@@ -32,6 +32,7 @@ const app = createApp(
 
 
 app.use(router)
+app.use(Quasar, {plugins: {Notify}, config: {notify: { /* look at QuasarConfOptions from the API card */ }}})
 app.use(Quasar, quasarUserOptions)
 app.use(ElementPLus, {locale})
 app.use(VueAxios, axios)
