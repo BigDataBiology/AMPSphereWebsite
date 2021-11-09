@@ -20,34 +20,18 @@
                 <q-tab-panel name="overview">
                   <div class="row" style="text-align: left">
                     <div class="col-12 col-md-3 q-pa-md">
-                    <span class="subsubsection-title">
-                      Number of AMPs:
-                      <!--                      </span>-->
-                      <!--                    <span>-->
-                      <el-link href="#amps" type="primary">
-                        <span class="subsubsection-title">{{ num_amps }}</span>
-                      </el-link>
-                    </span>
-                      <!--                    <div class="info-item" id="sequence">-->
-                      <!--                      Consensus sequence-->
-                      <!--                      <el-button @click="CopyPeptideSequence()" icon="el-icon-document-copy"-->
-                      <!--                                 size="mini" type="primary" plain>-->
-                      <!--                      </el-button>-->
-                      <!--                    </div>-->
-                      <!--                    <pre><code id="aa-sequence">{{ sequence }}</code></pre>-->
-                      <!--                    TODO update this-->
-                      <!--                    <div>-->
-                      <!--                      <el-button type="text" @click="SeqLogoDialogVisible = true">-->
-                      <!--                        Sequence logo-->
-                      <!--                      </el-button>-->
-                      <!--                      <el-dialog-->
-                      <!--                          v-model="SeqLogoDialogVisible"-->
-                      <!--                          title="Tips"-->
-                      <!--                          width="30%"-->
-                      <!--                          :before-close="handleDialogClose">-->
-                      <!--                        <span> {{ downloads[4].file }}</span>-->
-                      <!--                      </el-dialog>-->
-                      <!--                    </div>-->
+                      <span class="subsubsection-title">
+                        Number of AMPs:
+                        <!--                      </span>-->
+                        <!--                    <span>-->
+                        <el-link href="#amps" type="primary">
+                          <span class="subsubsection-title">{{ num_amps }}</span>
+                        </el-link>
+                      </span>
+                      <div class="subsubsection-title">
+                        Consensus sequence <q-btn @click="CopyPeptideSequence()" icon="content_copy" size="sm"></q-btn>
+                      </div>
+                      <pre><code id="aa-sequence">{{ consensusSequence }}</code></pre>
                       <div style="alignment: left;">
                         <div class="subsubsection-title">Secondary Structure</div>
                         <Plotly :data="secondaryStructureGraphData" :layout="secondaryStructureLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
@@ -353,6 +337,7 @@ export default {
             console.log(response.data)
             // self.consensusSequence = response.data.sequence
             self.num_amps = response.data.num_amps
+            self.consensusSequence = response.data.consensus_sequence
             self.features = response.data.feature_statistics
             self.distribution = response.data.distributions
             self.downloads = self.toDownloadsTable(response.data.downloads)

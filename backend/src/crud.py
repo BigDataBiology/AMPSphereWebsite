@@ -125,7 +125,7 @@ def get_families(db: Session, page: int, page_size: int, **kwargs):
 def get_family(accession: str, db: Session):
     family = dict(
         accession=accession,
-        consensus_sequence='',  # FIXME calculate consensus sequence.
+        consensus_sequence=utils.cal_consensus_seq(accession),  # FIXME calculate consensus sequence.
         num_amps=db.query(func.count(models.AMP.accession).filter(models.AMP.family == accession)).scalar(),
         feature_statistics=get_fam_features(accession, db),
         distributions=get_distributions(accession, db),

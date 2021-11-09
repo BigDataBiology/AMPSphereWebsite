@@ -8,7 +8,8 @@ from datetime import datetime
 from pprint import pprint
 import uuid
 import pandas as pd
-from Bio import SearchIO
+from Bio import SearchIO, AlignIO
+from Bio.Align import AlignInfo
 import livingTree as lt
 
 
@@ -247,6 +248,13 @@ def hmmscan_search(seq: str):
         records = df.to_dict(orient='records')
         # pprint(records)
         return records
+
+
+def cal_consensus_seq(accession):
+    file = pathlib.Path(cfg.get('pre_computed_data')).joinpath('families/aln/{}.aln'.format(accession))
+    alignment = AlignIO.read(file, 'fasta')
+    summary_align = AlignInfo.SummaryInfo(alignment)
+    return str(summary_align.dumb_consensus())
 
 
 def obj_to_dict(obj):
