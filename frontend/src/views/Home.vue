@@ -4,7 +4,7 @@
       <div class="col-0 col-xl-2 bg-white"></div>
       <div class="col-12 col-md-7 col-xl-5 justify-center q-pr-md q-ma-auto">
         <div class="row">
-          <div class="col-12 subsection-title text-center q-mb-md">Overall statistics and distribution</div>
+          <div class="col-12 text-center subsection-title-center q-mb-md">Overall statistics and distribution</div>
           <div class="col-md-4 col-xs-12">
             <el-table :data="distributionData.amps_families" style="width: 120%" :show-header="false">
               <el-table-column prop="number" label="Number">
@@ -57,7 +57,7 @@
       </div>
       <div class="col-12 col-md-5 col-xl-3 justify-center q-pl-md q-ma-auto">
         <div class="row">
-          <div class="col-12 subsection-title text-center q-mb-md">Search by sequence</div>
+          <div class="col-12 text-center subsection-title-center  q-mb-md">Search by sequence</div>
           <div class="col-12">
             <div class="main-text">
               Paste (&leq; 10) peptide sequences here (fasta format). <br/>

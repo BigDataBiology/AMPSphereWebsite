@@ -115,40 +115,48 @@
                         </div>
                       </div>
                       <div class="col-12 col-md-4">
+                        <div class="subsection-title-center">Molecular weight<q-tooltip max-width="30rem">{{ featuresHelpMessages.MW }}</q-tooltip></div>
                         <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.MW)"
-                                :layout="familyFeatureGraphLayout(features.MW, 'Molecular weight')"/>
+                                :layout="familyFeatureGraphLayout(features.MW)"/>
                       </div>
                       <div class="col-12 col-md-4">
+                        <div class="subsection-title-center">Aromaticity<q-tooltip max-width="30rem">{{ featuresHelpMessages.Aromaticity }}</q-tooltip></div>
                         <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Aromaticity)"
-                                :layout="familyFeatureGraphLayout(features.Aromaticity, 'Aromaticity')" />
+                                :layout="familyFeatureGraphLayout(features.Aromaticity)" />
                       </div>
                     </div>
                     <div class="row">
                       <div  class="col-12 col-md-4">
+                        <div class="subsection-title-center">GRAVY<q-tooltip max-width="30rem">{{ featuresHelpMessages.GRAVY }}</q-tooltip></div>
                         <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.GRAVY)"
-                                :layout="familyFeatureGraphLayout(features.GRAVY, 'GRAVY')" />
+                                :layout="familyFeatureGraphLayout(features.GRAVY, '')" />
                       </div>
                       <div class="col-12 col-md-4">
+                        <div class="subsection-title-center">Instability index<q-tooltip max-width="30rem">{{ featuresHelpMessages.Instability_index }}</q-tooltip></div>
                         <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Instability_index)"
-                                :layout="familyFeatureGraphLayout(features.Instability_index, 'Instability index')" />
+                                :layout="familyFeatureGraphLayout(features.Instability_index)" />
                       </div>
                       <div class="col-12 col-md-4">
+                        <div class="subsection-title-center">Isoelectric point<q-tooltip max-width="30rem">{{ featuresHelpMessages.pI }}</q-tooltip></div>
                         <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Isoelectric_point)"
-                                :layout="familyFeatureGraphLayout(features.Isoelectric_point, 'Isoelectric point')" />
+                                :layout="familyFeatureGraphLayout(features.Isoelectric_point)" />
                       </div>
                     </div>
                     <div class="row">
                       <div class="col-12 col-md-4">
+                        <div class="subsection-title-center">Charge at pH 7.0<q-tooltip max-width="30rem">{{ featuresHelpMessages.Charge_at_pH_7 }}</q-tooltip></div>
                         <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Charge_at_pH_7)"
-                                :layout="familyFeatureGraphLayout(features.Charge_at_pH_7, 'Charge at pH 7.0')" />
+                                :layout="familyFeatureGraphLayout(features.Charge_at_pH_7)" />
                       </div>
                       <div class="col-12 col-md-4">
+                        <div class="subsection-title-center">Molar extinction (cystines residues)<q-tooltip>Molar extinction (cystines residues)</q-tooltip></div>
                         <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Molar_extinction.cystines_residues)"
-                                :layout="familyFeatureGraphLayout(features.Molar_extinction.cystines_residues, 'Molar extinction (cystines residues)')" />
+                                :layout="familyFeatureGraphLayout(features.Molar_extinction.cystines_residues)" />
                       </div>
                       <div class="col-12 col-md-4">
+                        <div class="subsection-title-center">Molar extinction (ccysteines reduced)<q-tooltip>Molar extinction (ccysteines reduced)</q-tooltip></div>
                         <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Molar_extinction.cysteines_reduced)"
-                                :layout="familyFeatureGraphLayout(features.Molar_extinction.cysteines_reduced, 'Molar extinction (ccysteines reduced)')" />
+                                :layout="familyFeatureGraphLayout(features.Molar_extinction.cysteines_reduced)" />
                       </div>
                     </div>
   <!--                  TODO update this later, remove this for a while-->
@@ -266,8 +274,8 @@
 
 <script>
 import Plotly from "../components/Plotly"
-import * as clipboard from "clipboard-polyfill/text";
-import {Notify} from "quasar";
+import * as clipboard from "clipboard-polyfill/text"
+import { Notify } from "quasar"
 
 
 export default {
@@ -324,6 +332,14 @@ export default {
         Isoelectric_point: [],
         Charge_at_pH_7: [],
         Secondary_structure: {helix: [], turn: [], sheet: []},
+      },
+      featuresHelpMessages: {
+        MW: 'Molecular weight of a protein in Daltons.',
+        Aromaticity: 'Aromaticity according to Lobry (1994), simply the relative frequency of Phe+Trp+Tyr.',
+        Instability_index: 'Instability index according to Guruprasad et al (1990) is a test of a protein for stability. Values above 40 correspont to unstable proteins (short half lives).',
+        GRAVY: 'Grand average of hydropathicity index (GRAVY) represents the hydrophobicity value of a peptide, and consists of the sum of the hydropathy values of all the amino acids divided by the sequence length. If GRAVY is positive, it indicates a hydrophobic protein as well as its opposite, when GRAVY is negative.',
+        Charge_at_pH_7: 'Charge corresponds to the net electrical charge of a protein at pH 7.0',
+        pI: 'Isoelectric point (pI) is the pH at which a particular molecule carries no net electrical charge.'
       },
       metadata: {
         info: {
@@ -640,11 +656,11 @@ export default {
         }
       ]
     },
-    familyFeatureGraphLayout(value, name) {
+    familyFeatureGraphLayout(value) {
       return {
-        title: name,
+        // title: name,
         autosize: true,
-        margin: {l: 50, r: 20, b: 20, t: 80},
+        margin: {l: 50, r: 20, b: 20, t: 20},
         annotations: [{
           x: 0,
           xanchor: 'left',

@@ -125,24 +125,30 @@
                       </div>
                       <div class="row">
                         <div class="col-12 col-md-4">
-                          <Plotly :data="featuresGraphData.MW" :layout="featuresBoxplotLayout('Molecular weight')" />
+                          <div class="subsection-title-center">Molecular weight<q-tooltip max-width="30rem">{{ featuresHelpMessages.MW }}</q-tooltip></div>
+                          <Plotly :data="featuresGraphData.MW" :layout="featuresBoxplotLayout()" />
                         </div>
                         <div class="col-12 col-md-4">
-                          <Plotly :data="featuresGraphData.Aromaticity" :layout="featuresBoxplotLayout('Aromaticity')" />
+                          <div class="subsection-title-center">Aromaticity<q-tooltip max-width="30rem">{{ featuresHelpMessages.Aromaticity }}</q-tooltip></div>
+                          <Plotly :data="featuresGraphData.Aromaticity" :layout="featuresBoxplotLayout()" />
                         </div>
                         <div class="col-12 col-md-4">
-                          <Plotly :data="featuresGraphData.GRAVY" :layout="featuresBoxplotLayout('GRAVY (grand average of hydropathy)')" />
+                          <div class="subsection-title-center">GRAVY<q-tooltip max-width="30rem">{{ featuresHelpMessages.GRAVY }}</q-tooltip></div>
+                          <Plotly :data="featuresGraphData.GRAVY" :layout="featuresBoxplotLayout()" />
                         </div>
                       </div>
                       <div class="row">
                         <div class="col-12 col-md-4">
-                          <Plotly :data="featuresGraphData.Instability_index" :layout="featuresBoxplotLayout('Instability index')" />
+                          <div class="subsection-title-center">Instability index<q-tooltip max-width="30rem">{{ featuresHelpMessages.Instability_index }}</q-tooltip></div>
+                          <Plotly :data="featuresGraphData.Instability_index" :layout="featuresBoxplotLayout()" />
                         </div>
                         <div class="col-12 col-md-4">
-                          <Plotly :data="featuresGraphData.Isoelectric_point" :layout="featuresBoxplotLayout('Isoelectric point')" />
+                          <div class="subsection-title-center">Isoelectric point<q-tooltip max-width="30rem">{{ featuresHelpMessages.pI }}</q-tooltip></div>
+                          <Plotly :data="featuresGraphData.Isoelectric_point" :layout="featuresBoxplotLayout()" />
                         </div>
                         <div class="col-12 col-md-4">
-                          <Plotly :data="featuresGraphData.Charge_at_pH_7" :layout="featuresBoxplotLayout('Charge at pH 7.0')" />
+                          <div class="subsection-title-center">Charge at pH 7.0<q-tooltip max-width="30rem">{{ featuresHelpMessages.Charge_at_pH_7 }}</q-tooltip></div>
+                          <Plotly :data="featuresGraphData.Charge_at_pH_7" :layout="featuresBoxplotLayout()" />
                         </div>
                       </div>
 
@@ -266,6 +272,14 @@ export default {
       features: {'': features_base},
       secondaryStructureGraphData: [],
       featuresGraphData: {},
+      featuresHelpMessages: {
+        MW: 'Molecular weight of a protein in Daltons.',
+        Aromaticity: 'Aromaticity according to Lobry (1994), simply the relative frequency of Phe+Trp+Tyr.',
+        Instability_index: 'Instability index according to Guruprasad et al (1990) is a test of a protein for stability. Values above 40 correspont to unstable proteins (short half lives).',
+        GRAVY: 'Grand average of hydropathicity index (GRAVY) represents the hydrophobicity value of a peptide, and consists of the sum of the hydropathy values of all the amino acids divided by the sequence length. If GRAVY is positive, it indicates a hydrophobic protein as well as its opposite, when GRAVY is negative.',
+        Charge_at_pH_7: 'Charge corresponds to the net electrical charge of a protein at pH 7.0',
+        pI: 'Isoelectric point (pI) is the pH at which a particular molecule carries no net electrical charge.'
+      },
       associatedAMPs: {
         info: {
           pageSize: 5,
@@ -663,11 +677,11 @@ export default {
         Charge_at_pH_7: [this.makefeaturesBoxplotTrace(Charge_at_pH_7, colors[8])],
       }
     },
-    featuresBoxplotLayout(name){
+    featuresBoxplotLayout(){
       return {
-        title: name,
+        // title: name,
         autosize: true,
-        margin: {l: 50, r: 20, b: 20, t: 80},
+        margin: {l: 50, r: 20, b: 20, t: 20},
         // height: 300,
         // width: 300,
       }
