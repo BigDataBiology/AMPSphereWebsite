@@ -37,6 +37,7 @@ def amps(db: Session = Depends(get_db),
          host: str = None,
          sample: str = None,
          origin: str = None,
+         pep_length_interval: str = None,
          page_size: int = 20,
          page: int = 0):
     """
@@ -48,10 +49,8 @@ def amps(db: Session = Depends(get_db),
     - :param db:
     - :return:
     """
-    return crud.get_amps(
-        db, page=page, page_size=page_size,
-        family=family, habitat=habitat, host=host, origin=origin, sample=sample
-    )
+    return crud.get_amps(db, page=page, page_size=page_size,
+                         family=family, habitat=habitat, host=host, origin=origin, sample=sample, pep_length_interval=pep_length_interval)
 
 
 @amp_router.get(path="/{accession}",

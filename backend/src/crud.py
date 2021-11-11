@@ -5,11 +5,13 @@ from pprint import pprint
 
 import pandas as pd
 from sqlalchemy.orm import Session, Query
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 from src import models
 from src import utils
 from sqlalchemy import distinct, func
+from sqlalchemy.sql.expression import func as sql_func
 from fastapi import HTTPException
+
 
 
 def get_amps(db: Session, page: int = 0, page_size: int = 20, **kwargs):
@@ -28,6 +30,13 @@ def get_amps(db: Session, page: int = 0, page_size: int = 20, **kwargs):
         elif key == 'family':
             if value:
                 query = query.filter(getattr(models.AMP, key) == value)
+        elif key == 'pep_length_interval':
+            if value:
+                min_max = value.split(',')
+                query = query.filter(
+                    and_(int(min_max[0]) <= sql_func.length(models.AMP.sequence),
+                         sql_func.length(models.AMP.sequence) <= int(min_max[1]))
+                )
         else:
             pass
     accessions = query.offset(page * page_size).limit(page_size).all()
