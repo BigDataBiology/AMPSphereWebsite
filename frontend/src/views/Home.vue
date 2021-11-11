@@ -166,7 +166,7 @@ export default {
       message: '<strong>Note</strong>: the website is still a work-in-progress. Improvements are ongoing.',
       html: true,
       color: 'primary',
-      position: 'bottom',
+      position: 'top',
       timeout: 10000,
       icon: 'announcement',
       actions: [
