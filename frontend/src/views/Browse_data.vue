@@ -4,27 +4,31 @@
       <div class="col-xs-0 col-xl-2 bg-white"></div>
       <div class="col-12 col-xl-8 justify-center q-pr-md q-ma-auto">
         <div class="row justify-center q-py-md">
-          <div class="col-12 col-md-2 text-bold text-center">Select filters:</div>
-          <div class="col-12 col-md-2 justify-center">
+          <div class="col-12 col-md-10 text-bold text-center">Filter by metadata</div>
+          <div class="col-12 col-md-2 text-bold text-center">Filter by sequence length</div>
+          <div class="col-12 col-md-2 justify-center q-pa-md">
             <q-select filled v-model="options.family" label="Family" :options="availableOptions.family"
-                      behavior="menu" align="center"/>
+                      behavior="menu" align="center" clearable/>
           </div>
-          <div class="col-12 col-md-2 justify-center">
+          <div class="col-12 col-md-3 justify-center q-pa-md">
             <q-select filled v-model="options.habitat" label="Habitat" :options="availableOptions.habitat"
-                      behavior="menu" align="center"/>
+                      behavior="menu" align="center" clearable/>
           </div>
-          <div class="col-12 col-md-2 justify-center">
-            <q-select filled v-model="options.host" label="Host" :options="availableOptions.host"
-                      behavior="menu" align="center"/>
-          </div>
-          <div class="col-12 col-md-2 justify-center">
+<!--          <div class="col-12 col-md-2 justify-center q-px-md">-->
+<!--            <q-select filled v-model="options.host" label="Host" :options="availableOptions.host"-->
+<!--                      behavior="menu" align="center" clearable/>-->
+<!--          </div>-->
+          <div class="col-12 col-md-3 justify-center q-pa-md">
             <!--    TODO MEDIUM PRIORITY: change this filter into peptide length  -->
-            <q-select filled v-model="options.sample" label="Sample" :options="availableOptions.sample"
-                      behavior="menu" align="center"/>
+            <q-select filled v-model="options.sample" label="Sample/Microbial source" :options="availableOptions.sample"
+                      behavior="menu" align="center" clearable/>
           </div>
-          <div class="col-12 col-md-2 justify-center">
+          <div class="col-12 col-md-2 justify-center q-pa-md">
             <q-select filled v-model="options.origin" label="AMP source" :options="availableOptions.origin"
-                      behavior="menu" align="center"/>
+                      behavior="menu" align="center" clearable/>
+          </div>
+          <div class="col-12 col-md-2 justify-center q-pa-md">
+            <q-range v-model="options.pep_length" @change="onPepLengthChange" :min="0" :max="100" label color="secondary"/>
           </div>
         </div>
         <div class="row justify-center q-py-md">
@@ -190,6 +194,10 @@ export default {
         host: null,
         sample: null,
         origin: null,
+        pep_length: {
+          min: 0,
+          max: 100
+        },
       },
       availableOptions: {
         family: [],
@@ -244,6 +252,7 @@ export default {
           host: this.options.host,
           sample: this.options.sample,
           origin: this.options.origin,
+          pep_length_interval: this.options.pep_length.min.toString() + ',' + this.options.pep_length.max.toString(),
           page: this.info.currentPage,
           page_size: this.info.pageSize
         }
@@ -275,24 +284,29 @@ export default {
             console.log(error);
           })
     },
-    onFamilyChange(option) {
-      this.options.family = option;
-      this.setAMPsPage(1)
-    },
-    onHabitatChange(option) {
-      this.options.habitat = option;
-      this.setAMPsPage(1)
-    },
-    onHostChange(option) {
-      this.options.host = option;
-      this.setAMPsPage(1)
-    },
-    onSampleChange(option) {
-      this.options.sample = option;
-      this.setAMPsPage(1)
-    },
-    onOriginChange(option) {
-      this.options.origin = option;
+    // onFamilyChange(option) {
+    //   this.options.family = option;
+    //   this.setAMPsPage(1)
+    // },
+    // onHabitatChange(option) {
+    //   this.options.habitat = option;
+    //   this.setAMPsPage(1)
+    // },
+    // onHostChange(option) {
+    //   this.options.host = option;
+    //   this.setAMPsPage(1)
+    // },
+    // onSampleChange(option) {
+    //   this.options.sample = option;
+    //   this.setAMPsPage(1)
+    // },
+    // onOriginChange(option) {
+    //   this.options.origin = option;
+    //   this.setAMPsPage(1)
+    // },
+    onPepLengthChange(pep_length) {
+      // this.options.pep_length = {min: 0, max: 100}
+      console.log('peplength changed.')
       this.setAMPsPage(1)
     },
     clearFilters() {
@@ -302,6 +316,10 @@ export default {
         host: null,
         sample: null,
         origin: null,
+        pep_length: {
+          min: 0,
+          max: 100
+        }
       }
     },
     initQualityTag(amps) {
