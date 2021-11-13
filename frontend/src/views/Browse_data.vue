@@ -6,11 +6,11 @@
         <div class="row justify-center q-py-md">
           <div class="col-12 col-md-10 text-bold text-center">Filter by metadata</div>
           <div class="col-12 col-md-2 text-bold text-center">Filter by sequence length</div>
-          <div class="col-12 col-md-2 justify-center q-pa-md">
+          <div class="col-12 col-md-2 justify-center q-pa-xs">
             <q-select filled v-model="options.family" label="Family" :options="availableOptions.family"
                       behavior="menu" align="center" clearable/>
           </div>
-          <div class="col-12 col-md-3 justify-center q-pa-md">
+          <div class="col-12 col-md-3 justify-center q-pa-xs">
             <q-select filled v-model="options.habitat" label="Habitat" :options="availableOptions.habitat"
                       behavior="menu" align="center" clearable/>
           </div>
@@ -18,12 +18,12 @@
 <!--            <q-select filled v-model="options.host" label="Host" :options="availableOptions.host"-->
 <!--                      behavior="menu" align="center" clearable/>-->
 <!--          </div>-->
-          <div class="col-12 col-md-3 justify-center q-pa-md">
+          <div class="col-12 col-md-3 justify-center q-pa-xs">
             <!--    TODO MEDIUM PRIORITY: change this filter into peptide length  -->
             <q-select filled v-model="options.sample" label="Sample/Microbial source" :options="availableOptions.sample"
                       behavior="menu" align="center" clearable/>
           </div>
-          <div class="col-12 col-md-2 justify-center q-pa-md">
+          <div class="col-12 col-md-2 justify-center q-pa-xs">
             <q-select filled v-model="options.origin" label="AMP source" :options="availableOptions.origin"
                       behavior="menu" align="center" clearable/>
           </div>
