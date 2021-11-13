@@ -219,6 +219,9 @@ class mmSeqsSearchResult(BaseModel):
     domain_end_position_target: int
     E_value: float
     bit_score: int
+    seq_query: str
+    seq_target: str
+    alignment_strings: List[str]
 
     class Config:
         orm_mode = True

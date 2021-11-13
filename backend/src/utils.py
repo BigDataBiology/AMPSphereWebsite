@@ -10,6 +10,7 @@ import uuid
 import pandas as pd
 from Bio import SearchIO, AlignIO
 from Bio.Align import AlignInfo
+from Bio.pairwise2 import format_alignment
 import livingTree as lt
 
 
@@ -160,6 +161,8 @@ def mmseqs_search(seq: str):
     input_seq_file = tmp_dir.joinpath(query_id + '.input')
     output_file = tmp_dir.joinpath(query_id + '.output')
     stdout_file = tmp_dir.joinpath(query_id + '.stdout')
+    output_format = 'query,target,fident,alnlen,mismatch,gapopen,qstart,qend,tstart,tend,evalue,bits,qseq,tseq'
+    # TODO calculate alignment string based on qaln,taln,gapopen,qstart,qend,tstart,alnlen
     # TODO add hint when the length of input sequence is not between 8 and 98
     # HINT: The search result may not reflect the reality as your sequence is too long/short.
     if not tmp_dir.exists():
@@ -168,13 +171,14 @@ def mmseqs_search(seq: str):
         f.write(seq)
     # sensitivity = 1
     command_base = 'mmseqs createdb {query_seq} {query_seq}.mmseqsdb && ' \
-                   'mmseqs search {query_seq}.mmseqsdb  {database} {out}.mmseqsdb {tmp_dir} && ' \
-                   'mmseqs convertalis {query_seq}.mmseqsdb {database} {out}.mmseqsdb {out}'
+                   'mmseqs search {query_seq}.mmseqsdb  {database} {out}.mmseqsdb {tmp_dir} -a && ' \
+                   'mmseqs convertalis {query_seq}.mmseqsdb {database} {out}.mmseqsdb {out} --format-output {output_format}'
     command = command_base.format_map({
         'query_seq': input_seq_file,
         'database': cfg['mmseqs_db'],
         'out': output_file,
         'tmp_dir': str(tmp_dir),
+        'output_format': output_format,
         # 's': sensitivity
     })
     try:
@@ -189,14 +193,18 @@ def mmseqs_search(seq: str):
         columns = ['query_identifier', 'target_identifier', 'sequence_identity', 'alignment_length',
                    'number_mismatches', 'number_gap_openings', 'domain_start_position_query',
                    'domain_end_position_query', 'domain_start_position_target',
-                   'domain_end_position_target', 'E_value', 'bit_score']
+                   'domain_end_position_target', 'E_value', 'bit_score', 'seq_query', 'seq_target']
         try:
             df = pd.read_table(output_file, sep='\t', header=None)
         except pd.errors.EmptyDataError:
             df = pd.DataFrame(columns=columns)
         df.columns = columns
+        format_alignment0 = lambda x: format_alignment(
+            x['aln_query'], x['aln_target'], x['bit_score'], x['domain_start_position_target'] - 1, x['domain_end_position_target']
+        ).split('\n')[0:3]
+        df['alignment_strings'] = df[['aln_query', 'aln_target', 'bit_score','domain_start_position_target', 'domain_end_position_target']].apply(format_alignment0, axis=1)
         records = df.to_dict(orient='records')
-        # pprint(records)
+        pprint(records)
         return records
 
 
