@@ -86,34 +86,46 @@
               <q-tab-panel name="features">
                 <div class="row">
                   <div class="col-12 q-pa-md">
-                    <div class="subsection-title">Biochemical properties</div>
-                    <div class="info-item-value">
-                      The feature value of {{ accession }} was pointed out in the distribution among its entire AMP family.
-                    </div>
-                    <div class="info-item-value">
-                      The features below were calculated by using the
-                      <el-link href="https://biopython.org/docs/1.79/api/Bio.SeqUtils.ProtParam.html" type="primary">
-                        Bio.SeqUtils.ProtParam.ProteinAnalysis
-                      </el-link>
-                      module from
-                      <el-link href="https://doi.org/10.1093/bioinformatics/btp163" type="primary">
-                        BioPython
-                      </el-link> (version 1.79).
-                    </div>
                     <div class="row">
-                      <div class="col-12 col-md-4">
+                      <div class="col-12 col-md-4 justify-center">
+                        <div class="subsection-title q-py-md">Biochemical properties</div>
+                        <ul>
+                          <li>
+                            <div class="info-item-value">
+                              The feature value of {{ accession }} was pointed out in the distribution among its entire AMP family.
+                            </div>
+                          </li>
+                          <li>
+                            <div class="info-item-value">
+                              The features below were calculated by using the
+                              <el-link href="https://biopython.org/docs/1.79/api/Bio.SeqUtils.ProtParam.html" type="primary">
+                                Bio.SeqUtils.ProtParam.ProteinAnalysis
+                              </el-link>
+                              module from
+                              <el-link href="https://doi.org/10.1093/bioinformatics/btp163" type="primary">
+                                BioPython
+                              </el-link> (version 1.79).
+                            </div>
+                          </li>
+                          <li>
+                            <div class="info-item-value">
+                              Amino acids helical wheel with the H-moment indicated, calculated by using <el-link href="https://modlamp.org/modlamp.html?highlight=helical%20wheel#modlamp.plot.helical_wheel">helical_wheel</el-link> from <el-link href="https://modlamp.org/">modlAMP</el-link>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="col-12 col-md-4 offset-md-2 justify-center">
                         <div style="text-align: center" id="helical-wheel">
-                          <br/><br/>
                           <el-link :href="helicalwheel" type="primary">
                             <span class="medium">Helical wheel</span>
                           </el-link>
-                          <br/>
-                          Amino acids helical wheel with the H-moment indicated, calculated by using <el-link href="https://modlamp.org/modlamp.html?highlight=helical%20wheel#modlamp.plot.helical_wheel">helical_wheel</el-link> from <el-link href="https://modlamp.org/">modlAMP</el-link>
                         </div>
                         <div style="align-content: center; text-align: center;">
                           <el-image :src="helicalwheel"></el-image>
                         </div>
                       </div>
+                    </div>
+                    <div class="row">
                       <div class="col-12 col-md-4">
                         <div class="subsection-title-center">Molecular weight<q-tooltip max-width="30rem">{{ featuresHelpMessages.MW }}</q-tooltip></div>
                         <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.MW)"
@@ -124,13 +136,13 @@
                         <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Aromaticity)"
                                 :layout="familyFeatureGraphLayout(features.Aromaticity)" />
                       </div>
-                    </div>
-                    <div class="row">
                       <div  class="col-12 col-md-4">
                         <div class="subsection-title-center">GRAVY<q-tooltip max-width="30rem">{{ featuresHelpMessages.GRAVY }}</q-tooltip></div>
                         <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.GRAVY)"
                                 :layout="familyFeatureGraphLayout(features.GRAVY, '')" />
                       </div>
+                    </div>
+                    <div class="row">
                       <div class="col-12 col-md-4">
                         <div class="subsection-title-center">Instability index<q-tooltip max-width="30rem">{{ featuresHelpMessages.Instability_index }}</q-tooltip></div>
                         <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Instability_index)"
@@ -141,22 +153,10 @@
                         <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Isoelectric_point)"
                                 :layout="familyFeatureGraphLayout(features.Isoelectric_point)" />
                       </div>
-                    </div>
-                    <div class="row">
                       <div class="col-12 col-md-4">
                         <div class="subsection-title-center">Charge at pH 7.0<q-tooltip max-width="30rem">{{ featuresHelpMessages.Charge_at_pH_7 }}</q-tooltip></div>
                         <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Charge_at_pH_7)"
                                 :layout="familyFeatureGraphLayout(features.Charge_at_pH_7)" />
-                      </div>
-                      <div class="col-12 col-md-4">
-                        <div class="subsection-title-center">Molar extinction (cystines residues)<q-tooltip>Molar extinction (cystines residues)</q-tooltip></div>
-                        <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Molar_extinction.cystines_residues)"
-                                :layout="familyFeatureGraphLayout(features.Molar_extinction.cystines_residues)" />
-                      </div>
-                      <div class="col-12 col-md-4">
-                        <div class="subsection-title-center">Molar extinction (ccysteines reduced)<q-tooltip>Molar extinction (ccysteines reduced)</q-tooltip></div>
-                        <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Molar_extinction.cysteines_reduced)"
-                                :layout="familyFeatureGraphLayout(features.Molar_extinction.cysteines_reduced)" />
                       </div>
                     </div>
   <!--                  TODO update this later, remove this for a while-->
