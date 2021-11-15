@@ -200,9 +200,9 @@ def mmseqs_search(seq: str):
             df = pd.DataFrame(columns=columns)
         df.columns = columns
         format_alignment0 = lambda x: format_alignment(
-            x['aln_query'], x['aln_target'], x['bit_score'], x['domain_start_position_target'] - 1, x['domain_end_position_target']
+            x['seq_query'], x['seq_target'], x['bit_score'], x['domain_start_position_target'] - 1, x['domain_end_position_target']
         ).split('\n')[0:3]
-        df['alignment_strings'] = df[['aln_query', 'aln_target', 'bit_score','domain_start_position_target', 'domain_end_position_target']].apply(format_alignment0, axis=1)
+        df['alignment_strings'] = df[['seq_query', 'seq_target', 'bit_score','domain_start_position_target', 'domain_end_position_target']].apply(format_alignment0, axis=1)
         records = df.to_dict(orient='records')
         pprint(records)
         return records
