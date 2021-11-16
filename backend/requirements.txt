@@ -7,3 +7,4 @@ datatable~=1.0.0
 biopython~=1.79
 uvicorn~=0.15
 living-tree~=0.0.5
+requests~=2.26.0
