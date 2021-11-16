@@ -47,8 +47,7 @@ class BubbleMapData(BaseModel):
 class Distributions(BaseModel):
     geo: BubbleMapData
     habitat: SunburstPlotData
-    host: SunburstPlotData
-    origin: Optional[SunburstPlotData]
+    microbial_source: Optional[SunburstPlotData]
 
 
 # Object for AMP_card page ------------------------------------------------
@@ -73,32 +72,22 @@ class Metadata(BaseModel):
     GMSC: str
     gene_sequence: str
     sample: str
-    microontology: str
-    environmental_features: str
-    host_tax_id: Optional[int]
-    host_scientific_name: Optional[str]
+    general_envo_name: str
+    environment_material: str
     latitude: Optional[float]
     longitude: Optional[float]
-    origin_tax_id: Optional[int]
-    origin_scientific_name: Optional[str]
+    specI: Optional[str]
+    microbial_source: Optional[str]
 
     class Config:
         orm_mode = True
 
-    @validator('origin_tax_id', pre=True)
+    @validator('specI', pre=True)
     def origin_tax_id_blank_string(value, field):
         return None if value == "" else value
 
-    @validator('origin_scientific_name', pre=True)
+    @validator('microbial_source', pre=True)
     def origin_name_blank_string(value, field):
-        return None if value == "" else value
-
-    @validator('host_tax_id', pre=True)
-    def host_tax_id_blank_string(value, field):
-        return None if value == "" else value
-
-    @validator('host_scientific_name', pre=True)
-    def host_sci_name_blank_string(value, field):
         return None if value == "" else value
 
     @validator('latitude', pre=True)
@@ -132,7 +121,15 @@ class AMP(BaseModel):
     accession: str
     sequence: str
     family: str
-    features: AMPFeatures
+    length: int
+    molecular_weight: float
+    isoelectric_point: float
+    charge: float
+    aromaticity: float
+    instability_index: float
+    gravy: float
+    secondary_structure: Dict[str, float]
+    feature_graph_points: Optional[FeatureGraphPoints]
     metadata: PagedMetadata
 
     class Config:
