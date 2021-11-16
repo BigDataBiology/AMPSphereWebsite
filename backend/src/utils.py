@@ -2,6 +2,7 @@ import configparser
 import pathlib
 import subprocess
 
+import numpy as np
 from Bio.SeqUtils.ProtParam import ProtParamData
 from Bio.SeqUtils.ProtParam import ProteinAnalysis
 from datetime import datetime
@@ -95,6 +96,11 @@ def get_amp_features(seq, include_graph_points=True):
            'Isoelectric_point': round_3(analyzed_seq.isoelectric_point()),
            'graph_points': get_graph_points(seq) if include_graph_points else None}
     return out
+
+
+def get_secondary_structure(seq):
+    analyzed_seq = ProteinAnalysis(str(seq))
+    return dict(zip(['helix', 'turn', 'sheet'], analyzed_seq.secondary_structure_fraction()))
 
 
 def get_graph_points(seq):
@@ -341,20 +347,18 @@ def compute_distribution_from_query_data(query_data):
         metadata = pd.DataFrame([obj.__dict__ for obj in query_data]).drop(columns='_sa_instance_state')
         # print(metadata)
         color_map = {}  # TODO supply here
-        metadata['latitude'] = metadata['latitude'].replace('', None).astype(float).round(1)
-        metadata['longitude'] = metadata['longitude'].replace('', None).astype(float).round(1)
-        metadata['habitat_type'] = pd.Categorical(metadata['microontology'].apply(lambda x: x.split(':')[0]))
+        metadata['latitude'] = metadata['latitude'].replace('', np.nan).astype(float).round(1)
+        metadata['longitude'] = metadata['longitude'].replace('', np.nan).astype(float).round(1)
+        metadata['habitat_type'] = pd.Categorical(metadata['general_envo_name'].apply(lambda x: x.split(':')[0]))
         # print(metadata[['habitat_type', 'microontology']])
         # metadata['color'] = metadata['habitat_type'].map(color_map)
         data = dict(
             geo=metadata[['AMPSphere_code', 'latitude', 'longitude', 'habitat_type']].
                 groupby(['latitude', 'longitude', 'habitat_type'], as_index=False, observed=True).size(),
-            host=metadata[['AMPSphere_code', 'host_tax_id', 'host_scientific_name']].
-                groupby('host_tax_id', as_index=False).size(),
-            habitat=metadata[['AMPSphere_code', 'microontology', 'habitat_type']].
-                groupby(['microontology', 'habitat_type'], as_index=False, observed=True).size(),
-            origin=metadata[['AMPSphere_code', 'origin_tax_id', 'origin_scientific_name']].
-                groupby('origin_tax_id', as_index=False).size()
+            habitat=metadata[['AMPSphere_code', 'general_envo_name', 'habitat_type']].
+                groupby(['general_envo_name', 'habitat_type'], as_index=False, observed=True).size(),
+            origin=metadata[['AMPSphere_code', 'specI', 'microbial_source']].
+                groupby('microbial_source', as_index=False).size()
         )
         # print('after groupby')
         # print(data['habitat'])
@@ -365,15 +369,10 @@ def compute_distribution_from_query_data(query_data):
         data['geo'] = data['geo'].to_dict(orient='list')
         # print(data['geo'])
         # FIXME hierarchical structure generation.
-        data['habitat'] = data['habitat'][data['habitat'].microontology != '']
+        data['habitat'] = data['habitat'][data['habitat'].general_envo_name != '']
         # pprint(data['habitat'])
-        data['habitat'] = get_sunburst_data(data['habitat'][['microontology', 'size']], sep=':')
-        # Fix id inconsistency.
-        data['host'] = data['host'][data['host'].host_tax_id != '']
-        data['host']['host_tax_id'] = data['host']['host_tax_id'].apply(lambda x: x if x != 2116673.0 else 85678.0)
-        data['host']['host_lineage'] = lt.LineageTracker(ids=data['host']['host_tax_id'].astype(int)).paths_sp
-        data['host'] = get_sunburst_data(data['host'][['host_lineage', 'size']], sep=None)
-        data['origin'] = None
+        data['habitat'] = get_sunburst_data(data['habitat'][['general_envo_name', 'size']], sep=':')
+        data['microbial_source'] = None
         return data
     else:
         empty_sunburst = dict(
