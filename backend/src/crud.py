@@ -18,25 +18,22 @@ def get_amps(db: Session, page: int = 0, page_size: int = 20, **kwargs):
     query = db.query(distinct(models.AMP.accession)).outerjoin(models.Metadata)
 
     # Mapping from filter keys to table columns
-    metadata_cols = {
-        'habitat': 'microontology',
-        'host': 'host_scientific_name',
-        'origin': 'origin_scientific_name',
-        'sample': 'sample'}
+    metadata_cols = {'habitat': 'general_envo_name', 'microbial_source': 'microbial_source', 'sample_genome': 'sample'}
+    AMP_cols = {
+        'pep_length_interval': 'length', 'mw_interval': 'molecular_weight',
+        'pI_interval': 'isoelectric_point', 'charge_interval': 'charge'}
     for key, value in kwargs.items():
-        if key in {'habitat', 'host', 'origin', 'sample'}:
+        if key in {'habitat', 'microbial_source', 'sample_genome'}:
             if value:
                 query = query.filter(getattr(models.Metadata, metadata_cols[key]) == value)
         elif key == 'family':
             if value:
                 query = query.filter(getattr(models.AMP, key) == value)
-        elif key == 'pep_length_interval':
+        elif key in ['pep_length_interval', 'mw_interval', 'pI_interval', 'charge_interval']:
             if value:
-                min_max = value.split(',')
-                query = query.filter(
-                    and_(int(min_max[0]) <= sql_func.length(models.AMP.sequence),
-                         sql_func.length(models.AMP.sequence) <= int(min_max[1]))
-                )
+                min_max: [str] = value.split(',')
+                col_values = getattr(models.AMP, AMP_cols[key])
+                query = query.filter(and_(float(min_max[0]) <= col_values, col_values <= float(min_max[1])))
         else:
             pass
     accessions = query.offset(page * page_size).limit(page_size).all()
@@ -54,14 +51,13 @@ def get_amp(accession: str, db: Session):
     amp_obj = db.query(models.AMP).filter(models.AMP.accession == accession).first()
     if not amp_obj:
         raise HTTPException(status_code=400, detail='invalid accession received.')
-    gene_seqs = db.query(models.GMSC.gene_sequence).filter(models.GMSC.AMP == accession).all()
-    features = utils.get_amp_features(amp_obj.sequence)
+    # gene_seqs = db.query(models.GMSC.gene_sequence).filter(models.GMSC.AMP == accession).all()
+    # features = utils.get_amp_features(amp_obj.sequence)
     feature_graph_points = utils.get_graph_points(amp_obj.sequence)
-    features["graph_points"] = feature_graph_points
-
     metadata = get_amp_metadata(accession, db, page=0, page_size=5)
-    setattr(amp_obj, "gene_sequences", gene_seqs)
-    setattr(amp_obj, "features", features)
+    setattr(amp_obj, "feature_graph_points", feature_graph_points)
+    # setattr(amp_obj, "gene_sequences", gene_seqs)
+    setattr(amp_obj, "secondary_structure", utils.get_secondary_structure(amp_obj.sequence))
     setattr(amp_obj, "metadata", metadata)
     return amp_obj
 
@@ -76,14 +72,12 @@ def get_amp_metadata(accession: str, db: Session, page: int, page_size: int):
         models.Metadata.GMSC,
         models.GMSC.gene_sequence,
         models.Metadata.sample,
-        models.Metadata.microontology,
-        models.Metadata.environmental_features,
-        models.Metadata.host_tax_id,
-        models.Metadata.host_scientific_name,
+        models.Metadata.general_envo_name,
+        models.Metadata.environment_material,
         models.Metadata.latitude,
         models.Metadata.longitude,
-        models.Metadata.origin_tax_id,
-        models.Metadata.origin_scientific_name,
+        models.Metadata.microbial_source,
+        models.Metadata.specI,
     ).outerjoin(
         models.GMSC, models.Metadata.GMSC == models.GMSC.accession
     ).filter(
@@ -113,9 +107,8 @@ def get_families(db: Session, page: int, page_size: int, **kwargs):
 
     # Mapping from filter keys to table columns
     metadata_cols = {
-        'habitat': 'microontology',
-        'host': 'host_scientific_name',
-        'origin': 'origin_scientific_name',
+        'habitat': 'general_envo_name',
+        'microbial_source': 'microbial_source',
         'sample': 'sample'}
     for key, value in kwargs.items():
         if value:
@@ -134,7 +127,7 @@ def get_families(db: Session, page: int, page_size: int, **kwargs):
 def get_family(accession: str, db: Session):
     family = dict(
         accession=accession,
-        consensus_sequence=utils.cal_consensus_seq(accession),  # FIXME calculate consensus sequence.
+        consensus_sequence='',# utils.cal_consensus_seq(accession),
         num_amps=db.query(func.count(models.AMP.accession).filter(models.AMP.family == accession)).scalar(),
         feature_statistics=get_fam_features(accession, db),
         distributions=get_distributions(accession, db),
@@ -218,9 +211,8 @@ def search_by_text(db: Session, text: str, page: int, page_size: int):
         models.AMP.family.like(text),
         models.Metadata.GMSC.like(text),
         models.Metadata.sample.like(text),
-        models.Metadata.microontology.like(text),
-        models.Metadata.origin_scientific_name.like(text),
-        models.Metadata.host_scientific_name.like(text),
+        models.Metadata.general_envo_name.like(text),
+        models.Metadata.microbial_source.like(text),
     ))
 
     accessions = query.offset(page * page_size).limit(page_size).all()
@@ -241,13 +233,12 @@ def get_statistics(db: Session):
     return dict(
         num_amps=stats.accession,
         num_families=stats.family,
-        num_hosts=stats.host_scientific_name,
-        num_habitats=stats.microontology,
+        num_habitats=stats.general_envo_name,
         # FIXME
         num_genomes=db.query(func.count(distinct(models.Metadata.sample))). \
-                        filter(models.Metadata.microontology == '').scalar() - 1,
+                        filter(models.Metadata.general_envo_name == '').scalar() - 1,
         num_metagenomes=db.query(func.count(distinct(models.Metadata.sample))). \
-                        filter(models.Metadata.microontology != '').scalar(),
+                        filter(models.Metadata.general_envo_name != '').scalar(),
     )
 
 
@@ -273,14 +264,12 @@ def get_filters(db: Session):
     # FIXME not using the first 100 rows.
     # TODO use query API to get filter suggestion, not all available filters (impossible).
     family, = zip(*db.query(models.AMP.family).limit(100).distinct())
-    habitat, = zip(*db.query(models.Metadata.microontology).limit(100).distinct())
-    host, = zip(*db.query(models.Metadata.host_scientific_name).limit(100).distinct())
+    habitat, = zip(*db.query(models.Metadata.general_envo_name).limit(100).distinct())
     sample, = zip(*db.query(models.Metadata.sample).limit(100).distinct())
-    origin, = zip(*db.query(models.Metadata.origin_scientific_name).limit(100).distinct())
+    microbial_source, = zip(*db.query(models.Metadata.microbial_source).limit(100).distinct())
     return dict(
         family=family,
         habitat=habitat,
-        host=host,
         sample=sample,
-        origin=origin,
+        microbial_source=microbial_source,
     )
