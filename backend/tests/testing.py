@@ -1,6 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
-from ..src.main import app
+from src.main import app
 import pandas as pd
 
 client = TestClient(app)
