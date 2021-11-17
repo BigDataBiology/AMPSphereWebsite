@@ -17,20 +17,28 @@
                   Filter by metadata
                 </div>
                 <div class="col-12 col-md-2 justify-center q-pa-xs">
-                  <q-select filled v-model="options.family" label="Family" @update:model-value="onFamilyChange" :options="availableOptions.family"
-                            behavior="menu" align="center" clearable/>
+                  <q-select filled v-model="options.family" label="Family" @update:model-value="onFamilyChange"
+                            :options="availableOptions.family" @filter="filterFamily"
+                            input-debounce="0" use-input fill-input hide-selected
+                            behavior="menu" align="center" clearable />
                 </div>
                 <div class="col-12 col-md-2 justify-center q-pa-xs">
-                  <q-select filled v-model="options.habitat" label="Habitat" @update:model-value="onHabitatChange" :options="availableOptions.habitat"
-                            behavior="menu" align="center" clearable/>
+                  <q-select filled v-model="options.habitat" label="Habitat" @update:model-value="onHabitatChange"
+                            :options="availableOptions.habitat" @filter="filterHabitat"
+                            input-debounce="0" use-input fill-input hide-selected
+                            behavior="menu" align="center" clearable />
                 </div>
                 <div class="col-12 col-md-3 justify-center q-pa-xs">
-                  <q-select filled v-model="options.sample" label="Sample/Microbial source" @update:model-value="onSampleChange" :options="availableOptions.sample"
-                            behavior="menu" align="center" clearable/>
+                  <q-select filled v-model="options.sample" label="Sample/Progenomes2 genome" @update:model-value="onSampleChange"
+                            :options="availableOptions.sample" @filter="filterSample"
+                            input-debounce="0" use-input fill-input hide-selected
+                            behavior="menu" align="center" clearable />
                 </div>
                 <div class="col-12 col-md-3 justify-center q-pa-xs">
-                  <q-select filled v-model="options.microbial_source" label="AMP source" @update:model-value="onMicrobialSourceChange" :options="availableOptions.microbial_source"
-                            behavior="menu" align="center" clearable/>
+                  <q-select filled v-model="options.microbial_source" label="Microbial source" @update:model-value="onMicrobialSourceChange"
+                            :options="availableOptions.microbial_source" @filter="filterMicrobialSource"
+                            input-debounce="0" use-input fill-input hide-selected
+                            behavior="menu" align="center" clearable />
                 </div>
               </div>
               <div class="row">
@@ -126,6 +134,28 @@ export default {
   name: "BrowseData",
 
   data() {
+    const options_full = {
+      family: [],
+      habitat: [],
+      sample: [],
+      microbial_source: [],
+      pep_length: {
+        min: 8,
+        max: 98
+      },
+      molecular_weight: {
+        min: 813.0397,
+        max: 12285.954999999973
+      },
+      isoelectric_point: {
+        min: 4.0500284194946286,
+        max: 11.999967765808105
+      },
+      charge_at_pH_7: {
+        min: -56.17037696904594,
+        max: 43.781710336808885
+      }
+    }
     return {
       amps: [],
       axiosRefCount: 0,
@@ -158,28 +188,8 @@ export default {
           max: 43.781710336808885
         }
       },
-      availableOptions: {
-        family: [],
-        habitat: [],
-        sample: [],
-        microbial_source: [],
-        pep_length: {
-          min: 8,
-          max: 98
-        },
-        molecular_weight: {
-          min: 813.0397,
-          max: 12285.954999999973
-        },
-        isoelectric_point: {
-          min: 4.0500284194946286,
-          max: 11.999967765808105
-        },
-        charge_at_pH_7: {
-          min: -56.17037696904594,
-          max: 43.781710336808885
-        }
-      }
+      avalOptionsFull: options_full,
+      availableOptions: options_full,
     }
   },
   created() {
@@ -227,6 +237,7 @@ export default {
           sample: this.options.sample,
           microbial_source: this.options.microbial_source,
           pep_length_interval: this.options.pep_length.min.toString() + ',' + this.options.pep_length.max.toString(),
+          // TODO add more filters here
           page: this.info.currentPage,
           page_size: this.info.pageSize
         }
@@ -252,11 +263,36 @@ export default {
       this.axios.get('/available_filters')
           .then(function (response) {
             console.log(response.data)
+            self.avalOptionsFull = Object.assign({}, response.data)
             self.availableOptions = response.data
           })
           .catch(function (error) {
             console.log(error);
           })
+    },
+    filterFamily(val, update, abort){
+      update(() => {
+        val = val.toLowerCase()
+        this.availableOptions.family = this.avalOptionsFull.family.filter(v => v.toLowerCase().indexOf(val) > -1)
+      })
+    },
+    filterSample(val, update, abort){
+      update(() => {
+        val = val.toLowerCase()
+        this.availableOptions.sample = this.avalOptionsFull.sample.filter(v => v.toLowerCase().indexOf(val) > -1)
+      })
+    },
+    filterHabitat(val, update, abort){
+      update(() => {
+        val = val.toLowerCase()
+        this.availableOptions.habitat = this.avalOptionsFull.habitat.filter(v => v.toLowerCase().indexOf(val) > -1)
+      })
+    },
+    filterMicrobialSource(val, update, abort){
+      update(() => {
+        val = val.toLowerCase()
+        this.availableOptions.microbial_source = this.avalOptionsFull.microbial_source.filter(v => v.toLowerCase().indexOf(val) > -1)
+      })
     },
     onFamilyChange(option) {
       this.options.family = option;

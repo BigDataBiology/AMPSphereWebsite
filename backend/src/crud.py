@@ -261,10 +261,10 @@ def get_query_page_info(q: Query, page_size: int, page: int):
 def get_filters(db: Session):
     # FIXME not using the first 100 rows.
     # TODO use query API to get filter suggestion, not all available filters (impossible).
-    family, = zip(*db.query(models.AMP.family).limit(100).distinct())
-    habitat, = zip(*db.query(models.Metadata.general_envo_name).limit(100).distinct())
-    sample, = zip(*db.query(models.Metadata.sample).limit(100).distinct())
-    microbial_source, = zip(*db.query(models.Metadata.microbial_source).limit(100).distinct())
+    family, = zip(*db.query(models.AMP.family).distinct())
+    habitat, = zip(*db.query(models.Metadata.general_envo_name).distinct())
+    sample, = zip(*db.query(models.Metadata.sample).distinct())
+    microbial_source, = zip(*db.query(models.Metadata.microbial_source).distinct())
     peplen_min, peplen_max, mw_min, mw_max, \
     pI_min, pI_max, charge_min, charge_max = db.query(
         func.min(models.AMP.length),
