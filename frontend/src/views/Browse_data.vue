@@ -2,7 +2,7 @@
   <div class="BrowseData">
     <div class="row justify-center">
       <div class="col-xs-0 col-xl-2 bg-white"></div>
-      <div class="col-12 col-xl-8 justify-center q-pr-md q-ma-auto">
+      <div class="col-12 col-xl-8 justify-center q-pa-auto">
         <q-expansion-item
             class="shadow-1 overflow-hidden"
             style="border-radius: 30px"
@@ -13,7 +13,9 @@
           <q-card>
             <q-card-section>
               <div class="row justify-center q-py-md">
-                <div class="col-12 col-md-2 text-bold justify-center">Filter by metadata</div>
+                <div class="col-12 col-md-2 text-bold justify-center">
+                  Filter by metadata
+                </div>
                 <div class="col-12 col-md-2 justify-center q-pa-xs">
                   <q-select filled v-model="options.family" label="Family" @update:model-value="onFamilyChange" :options="availableOptions.family"
                             behavior="menu" align="center" clearable/>
