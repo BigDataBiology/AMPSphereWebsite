@@ -6,7 +6,7 @@
         <div class="row">
           <div class="col-12 text-center subsection-title-center q-mb-md">Overall statistics and distribution</div>
           <div class="col-md-4 col-xs-12">
-            <el-table :data="distributionData.amps_families" style="width: 120%" :show-header="false">
+            <el-table :data="distributionData.genes_amps" style="width: 120%" :show-header="false">
               <el-table-column prop="number" label="Number">
                 <template #default="props">
                   <a href="/browse_data" style="font-size: medium"> {{ props.row.number }}</a>
@@ -17,7 +17,7 @@
           </div>
           <div class="col-md-4 col-xs-12">
             <!--              <h4>Derived from</h4>-->
-            <el-table :data="distributionData.genomes_metagenomes" style="width: 120%" :show-header="false">
+            <el-table :data="distributionData.families_habitats" style="width: 120%" :show-header="false">
               <el-table-column prop="number" label="Number">
                 <template #default="props">
                   <a href="/browse_data" style="font-size: medium"> {{ props.row.number }}</a>
@@ -27,7 +27,7 @@
             </el-table>
           </div>
           <div class="col-md-4 col-xs-12">
-            <el-table :data="distributionData.habitats_hosts" style="width: 120%" :show-header="false">
+            <el-table :data="distributionData.genomes_metagenomes" style="width: 120%" :show-header="false">
               <el-table-column prop="number" label="Number">
                 <template #default="props">
                   <a href="/browse_data" style="font-size: medium"> {{ props.row.number }}</a>
@@ -117,25 +117,25 @@ export default {
     return {
       slideIndex: ref(1),
       statistics: {
+        num_genes: 5513556,
         num_amps: 863498,
         num_families: 8535,
-        num_genomes: 49757,
-        num_habitats: 57,
-        num_hosts: 195,
+        num_habitats: 73,
+        num_genomes: 47803,
         num_metagenomes: 61393
       },
       distributionData: {
-        amps_families: [
+        genes_amps: [
+          {number: (5513556).toLocaleString('en-US'), type: 'genes'},
           {number: (863498).toLocaleString('en-US'), type: 'AMPs'},
-          {number: (8535).toLocaleString('en-US'), type: 'families'},
         ],
         genomes_metagenomes: [
-          {number: (49757).toLocaleString('en-US'), type: 'genomes'},
+          {number: (47803).toLocaleString('en-US'), type: 'genomes'},
           {number: (61393).toLocaleString('en-US'), type: 'metagenomes'}
         ],
-        habitats_hosts: [
-          {number: (57).toLocaleString('en-US'), type: 'habitats'},
-          {number: (195).toLocaleString('en-US'), type: 'hosts'},
+        families_habitats: [
+          {number: (8535).toLocaleString('en-US'), type: 'families'},
+          {number: (73).toLocaleString('en-US'), type: 'habitats'},
         ]
       },
       geoDistribution: require('../assets/geoDistribution.svg'),
@@ -191,20 +191,34 @@ export default {
           .then(function (response) {
             console.log(response.data)
             self.statistics = response.data
-            self.distributionData = {
-              amps_families: [
+            self.distributionData =  {
+              genes_amps: [
+                {number: self.statistics.num_genes.toLocaleString('en-US'), type: 'genes'},
                 {number: self.statistics.num_amps.toLocaleString('en-US'), type: 'AMPs'},
-                {number: self.statistics.num_families.toLocaleString('en-US'), type: 'families'},
               ],
               genomes_metagenomes: [
                 {number: self.statistics.num_genomes.toLocaleString('en-US'), type: 'genomes'},
                 {number: self.statistics.num_metagenomes.toLocaleString('en-US'), type: 'metagenomes'}
               ],
-              habitats_hosts: [
+              families_habitats: [
+                {number: self.statistics.num_families.toLocaleString('en-US'), type: 'families'},
                 {number: self.statistics.num_habitats.toLocaleString('en-US'), type: 'habitats'},
-                {number: self.statistics.num_hosts.toLocaleString('en-US'), type: 'hosts'},
               ]
             }
+            // self.distributionData = {
+            //   amps_families: [
+            //     {number: self.statistics.num_amps.toLocaleString('en-US'), type: 'AMPs'},
+            //     {number: self.statistics.num_families.toLocaleString('en-US'), type: 'families'},
+            //   ],
+            //   genomes_metagenomes: [
+            //     {number: self.statistics.num_genomes.toLocaleString('en-US'), type: 'genomes'},
+            //     {number: self.statistics.num_metagenomes.toLocaleString('en-US'), type: 'metagenomes'}
+            //   ],
+            //   habitats_hosts: [
+            //     {number: self.statistics.num_habitats.toLocaleString('en-US'), type: 'habitats'},
+            //     {number: self.statistics.num_hosts.toLocaleString('en-US'), type: 'hosts'},
+            //   ]
+            // }
           })
           .catch(function (error) {
             console.log(error);
