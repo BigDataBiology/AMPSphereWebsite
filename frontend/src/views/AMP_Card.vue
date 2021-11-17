@@ -5,22 +5,22 @@
       <div class="col-12 col-xl-8 justify-center q-pr-md q-ma-auto">
         <div class="row">
           <div class="col-12 q-px-md">
-            <div class="text-h4">Antimicrobial peptide: {{ accession }}</div>
+            <div class="text-h4">Antimicrobial peptide: {{ amp.accession }}</div>
             <!--                    TODO test: move this description down to the overview tab-->
             <div class="text-body1">
               The AMP belongs to
               <el-link :href="getFamilyPageURL()" type="primary">
-                <span class="text-body1">{{ family }}</span>
+                <span class="text-body1">{{ amp.family }}</span>
               </el-link>
-              family and has {{ length }} amino acid residues.
+              family and has {{ amp.length }} amino acid residues.
             </div>
           </div>
         </div>
         <div class="row bg-white">
           <div class="col-12 q-pa-md">
             <q-tabs v-model="tabName" dense align="left" class="text-teal text-white">
-              <q-tab name="overview" label="Overview" />
-              <q-tab name="features" label="Features" />
+              <q-tab name="overview" label="Overview" tabindex="overview" index="overview"/>
+              <q-tab name="features" label="Features" tabindex="features" index="features"/>
             </q-tabs>
             <q-tab-panels v-model="tabName" animated class="row text-left">
               <q-tab-panel name="overview">
@@ -29,7 +29,7 @@
                     <div class="subsubsection-title">
                       Peptide sequence <q-btn @click="CopyPeptideSequence()" icon="content_copy" size="sm"></q-btn>
                     </div>
-                    <pre><code id="aa-sequence">{{ sequence }}</code></pre>
+                    <pre><code id="aa-sequence">{{ amp.sequence }}</code></pre>
                     <div class="subsubsection-title">Secondary Structure</div>
                     <Plotly :data="SecStructureBarData()" :layout="secondaryStructureLayout()"
                             :toImageButtonOptions="{format: 'svg', scale: 1}"/>
@@ -48,17 +48,17 @@
                     <div class="subsubsection-title text-center">Habitats</div>
                     <Plotly :data="EnvPlotData()" :layout="EnvPlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
                   </div>
-                  <div class="col-12 col-md-6">
-                    <!--                    TODO Bigger title and figure captions -->
-                    <div class="subsubsection-title text-center">Hosts</div>
-                    <Plotly :data="HostPlotData()" :layout="HostPlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
-                  </div>
+<!--                  <div class="col-12 col-md-6">-->
+<!--                    &lt;!&ndash;                    TODO Bigger title and figure captions &ndash;&gt;-->
+<!--                    <div class="subsubsection-title text-center">Hosts</div>-->
+<!--                    <Plotly :data="HostPlotData()" :layout="HostPlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>-->
+<!--                  </div>-->
                 </div>
                 <div class="row">
                   <div class="col-12 q-px-md q-pt-md">
                     <div class="subsection-title">Relationships</div>
 <!--                    TODO add download button here -->
-                    <el-table :data="currentMetadata" stripe :default-sort="{prop: 'GMSC', order: 'ascending'}" width="100%">
+                    <el-table :data="amp.metadata.currentData" stripe :default-sort="{prop: 'GMSC', order: 'ascending'}" width="100%">
                       <el-table-column prop="GMSC" label="Gene" sortable width="260%"/>
                       <el-table-column label="Gene sequense" sortable width="400%">
                         <template #default="props">
@@ -66,8 +66,8 @@
                         </template>
                       </el-table-column>
                       <el-table-column prop="sample" label="Sample/Genome" sortable width="150%"/>
-                      <el-table-column prop="host_scientific_name" label="Host" sortable width="150%"/>
-                      <el-table-column prop="origin_scientific_name" label="AMP source" sortable width="150%"/>
+                      <el-table-column prop="habitat" label="Habitat" sortable width="150%"/>
+                      <el-table-column prop="microbial_source" label="microbial source" sortable width="150%"/>
                     </el-table>
                     <div class="block">
                       <el-pagination
@@ -76,7 +76,7 @@
                           :page-sizes="[5, 10, 20, 50, 100]"
                           :page-size="5"
                           layout="total, sizes, prev, pager, next, jumper"
-                          :total="metadata.info.totalRow"
+                          :total="amp.metadata.info.totalRow"
                       >
                       </el-pagination>
                     </div>
@@ -92,7 +92,7 @@
                         <ul>
                           <li>
                             <div class="info-item-value">
-                              The feature value of {{ accession }} was pointed out in the distribution among its entire AMP family.
+                              The feature value of {{ amp.accession }} was pointed out in the distribution among its entire AMP family.
                             </div>
                           </li>
                           <li>
@@ -116,47 +116,47 @@
                       </div>
                       <div class="col-12 col-md-4 offset-md-2 justify-center">
                         <div style="text-align: center" id="helical-wheel">
-                          <el-link :href="helicalwheel" type="primary">
+                          <el-link :href="amp.helicalwheel" type="primary">
                             <span class="medium">Helical wheel</span>
                           </el-link>
                         </div>
                         <div style="align-content: center; text-align: center;">
-                          <el-image :src="helicalwheel"></el-image>
+                          <el-image :src="amp.helicalwheel"></el-image>
                         </div>
                       </div>
                     </div>
                     <div class="row">
                       <div class="col-12 col-md-4">
                         <div class="subsection-title-center">Molecular weight<q-tooltip max-width="30rem">{{ featuresHelpMessages.MW }}</q-tooltip></div>
-                        <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.MW)"
-                                :layout="familyFeatureGraphLayout(features.MW)"/>
+                        <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.molecular_weight)"
+                                :layout="familyFeatureGraphLayout(amp.molecular_weight)"/>
                       </div>
                       <div class="col-12 col-md-4">
                         <div class="subsection-title-center">Aromaticity<q-tooltip max-width="30rem">{{ featuresHelpMessages.Aromaticity }}</q-tooltip></div>
-                        <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Aromaticity)"
-                                :layout="familyFeatureGraphLayout(features.Aromaticity)" />
+                        <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.aromaticity)"
+                                :layout="familyFeatureGraphLayout(amp.aromaticity)" />
                       </div>
                       <div  class="col-12 col-md-4">
                         <div class="subsection-title-center">GRAVY<q-tooltip max-width="30rem">{{ featuresHelpMessages.GRAVY }}</q-tooltip></div>
-                        <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.GRAVY)"
-                                :layout="familyFeatureGraphLayout(features.GRAVY, '')" />
+                        <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.gravy)"
+                                :layout="familyFeatureGraphLayout(amp.gravy)" />
                       </div>
                     </div>
                     <div class="row">
                       <div class="col-12 col-md-4">
                         <div class="subsection-title-center">Instability index<q-tooltip max-width="30rem">{{ featuresHelpMessages.Instability_index }}</q-tooltip></div>
-                        <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Instability_index)"
-                                :layout="familyFeatureGraphLayout(features.Instability_index)" />
+                        <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.instability_index)"
+                                :layout="familyFeatureGraphLayout(amp.instability_index)" />
                       </div>
                       <div class="col-12 col-md-4">
                         <div class="subsection-title-center">Isoelectric point<q-tooltip max-width="30rem">{{ featuresHelpMessages.pI }}</q-tooltip></div>
-                        <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Isoelectric_point)"
-                                :layout="familyFeatureGraphLayout(features.Isoelectric_point)" />
+                        <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.isoelectric_point)"
+                                :layout="familyFeatureGraphLayout(amp.isoelectric_point)" />
                       </div>
                       <div class="col-12 col-md-4">
                         <div class="subsection-title-center">Charge at pH 7.0<q-tooltip max-width="30rem">{{ featuresHelpMessages.Charge_at_pH_7 }}</q-tooltip></div>
-                        <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.Charge_at_pH_7)"
-                                :layout="familyFeatureGraphLayout(features.Charge_at_pH_7)" />
+                        <Plotly :data="makeFamilyFeatureTraces(famFeaturesGraphData.charge_at_pH_7)"
+                                :layout="familyFeatureGraphLayout(amp.charge_at_pH_7)" />
                       </div>
                     </div>
   <!--                  TODO update this later, remove this for a while-->
@@ -212,27 +212,6 @@
       <div class="col-xs-0 col-xl-2 bg-white"></div>
     </div>
   </div>
-
-
-
-<!--                    <el-divider></el-divider>-->
-
-<!--                    <br/>-->
-<!--                    <el-divider></el-divider>-->
-<!--    &lt;!&ndash;                      <el-pagination&ndash;&gt;-->
-<!--    &lt;!&ndash;                          @current-change="setMetadataPage"&ndash;&gt;-->
-<!--    &lt;!&ndash;                          :page-size="metadata.info.pageSize"&ndash;&gt;-->
-<!--    &lt;!&ndash;                          layout="total, prev, pager, next, jumper"&ndash;&gt;-->
-<!--    &lt;!&ndash;                          :total="metadata.info.totalRow"&ndash;&gt;-->
-<!--    &lt;!&ndash;                      >&ndash;&gt;-->
-<!--    &lt;!&ndash;                      </el-pagination>&ndash;&gt;-->
-<!--      &lt;!&ndash;                    FIXME integrate pagination buttons with the table&ndash;&gt;-->
-<!--                        </div>-->
-
-<!--                      </el-col>-->
-<!--                    </el-row>-->
-<!--                  </el-tab-pane>-->
-<!--                  <el-tab-pane label="Features">-->
 </template>
 
 <style>
@@ -284,6 +263,11 @@ export default {
     Plotly,
   },
   data() {
+    const default_distribution = {
+      geo: {type: "bubble map", lat: [], lon: [], size: [], colors: []},
+      habitat: {type: "sunburst plot", labels: [], parents: [], values: [], colorway: []},
+      origin: {type: "sunburst plot", labels: [], parents: [], values: [], colorway: []}
+    }
     return {
       // echartOption: {
       //   xAxis: {
@@ -301,37 +285,45 @@ export default {
       //   ]
       // },
       tabName: 'overview',
-      accession: this.$route.query.accession,
-      sequence: '',
-      length: 0,
-      family: '',
-      features: {
-        MW: 0,
-        Length: 0,
-        Molar_extinction: {cysteines_reduced: 0, cystines_residues: 0},
-        Aromaticity: 0,
-        GRAVY: 0,
-        Instability_index: 0,
-        Isoelectric_point: 0,
-        Charge_at_pH_7: 0,
-        Secondary_structure: {helix: 0, turn: 0, sheet: 0},
-        graph_points: {
+      amp: {
+        accession: this.$route.query.accession,
+        sequence: '',
+        length: 0,
+        family: '',
+        molecular_weight: 0,
+        aromaticity: 0,
+        gravy: 0,
+        instability_index: 0,
+        isoelectric_point: 0,
+        charge_at_pH_7: 0,
+        secondary_structure: {helix: 0, turn: 0, sheet: 0},
+        feature_graph_points: {
           transfer_energy: {type: "line plot", x: [], y: [], c: []},
           hydrophobicity_parker: {type: "line plot", x: [], y: [], c: []},
           surface_accessibility: {type: "line plot", x: [], y: [], c: []},
           flexibility: {type: "line plot", x: [], y: [], c: []}
-        }
+        },
+        metadata: {
+          info: {
+            pageSize: 5,
+            totalPage: 1,
+            totalRow: 1,
+            currentPage: 1,
+          },
+          currentData: [],
+        },
+        distribution: default_distribution,
+        default_distribution: default_distribution,
+        helicalwheel: ''
       },
       famFeaturesGraphData: {
-        MW: [],
-        Length: [],
-        Molar_extinction: {cysteines_reduced: [], cystines_residues: []},
-        Aromaticity: [],
-        GRAVY: [],
-        Instability_index: [],
-        Isoelectric_point: [],
-        Charge_at_pH_7: [],
-        Secondary_structure: {helix: [], turn: [], sheet: []},
+        molecular_weight: [],
+        length: [],
+        aromaticity: [],
+        gravy: [],
+        instability_index: [],
+        isoelectric_point: [],
+        charge_at_pH_7: [],
       },
       featuresHelpMessages: {
         MW: 'Molecular weight of a protein in Daltons.',
@@ -341,34 +333,6 @@ export default {
         Charge_at_pH_7: 'Charge corresponds to the net electrical charge of a protein at pH 7.0',
         pI: 'Isoelectric point (pI) is the pH at which a particular molecule carries no net electrical charge.'
       },
-      metadata: {
-        info: {
-          pageSize: 5,
-          totalPage: 1,
-          totalRow: 1,
-          currentPage: 1,
-        },
-        currentData: [],
-      },
-      distribution: {
-        geo: {
-          type: "bubble map",
-          lat: [], lon: [], size: [], colors: []
-        },
-        habitat: {
-          type: "sunburst plot",
-          labels: [], parents: [], values: [], colorway: []
-        },
-        host: {
-          type: "sunburst plot",
-          labels: [], parents: [], values: [], colorway: []
-        },
-        origin: {
-          type: "sunburst plot",
-          labels: [], parents: [], values: [], colorway: []
-        }
-      },
-      helicalwheel: ''
     }
   },
   // setup (){
@@ -382,7 +346,7 @@ export default {
   },
   computed: {
     currentMetadata() {
-      return this.metadata.currentData
+      return this.amp.metadata.currentData
     }
   },
   methods: {
@@ -392,17 +356,10 @@ export default {
       this.axios.get('/amps/' + amp_accession, {})
           .then(function (response) {
             console.log(response.data)
-            self.sequence = response.data.sequence
-            console.log(response.data.sequence)
-            console.log(response.data.sequence.length)
-            self.length = response.data.sequence.length
-            self.family = response.data.family
-            self.helicalwheel = 'http://18.140.248.253:443/v1/amps/' + self.accession + '/helicalwheel'
-            self.features = response.data.features
-            self.metadata.currentData = response.data.metadata.data
-            self.metadata.info.currentPage = 1
-            self.metadata.info.totalPage = response.data.metadata.info.totalPage
-            self.metadata.info.totalRow = response.data.metadata.info.totalItem
+            self.amp = response.data
+            self.amp.distribution = self.amp.default_distribution
+            self.amp.helicalwheel = 'http://18.140.248.253:443/v1/amps/' + self.amp.accession +  '/helicalwheel'
+            self.amp.metadata.info.totalRow = response.data.metadata.info.totalItem
             self.getFamilyFeatures()
           })
           .catch(function (error) {
@@ -411,7 +368,7 @@ export default {
       this.axios.get('/amps/' + amp_accession + '/distributions', {})
           .then(function (response) {
             console.log(response.data)
-            self.distribution = response.data
+            self.amp.distribution = response.data
           })
           .catch(function (error) {
             console.log(error)
@@ -419,7 +376,7 @@ export default {
     },
     getFamilyFeatures() {
       let self = this
-      this.axios.get('/families/' + self.family + '/features', {})
+      this.axios.get('/families/' + self.amp.family + '/features', {})
           .then(function (response) {
             console.log(response.data)
             self.updateFamilyFeatures(response.data)
@@ -429,7 +386,7 @@ export default {
           })
     },
     SecStructureBarData() {
-      let strucData = this.features.Secondary_structure
+      let strucData = this.amp.secondary_structure
       // strucData.disordered = 1 - strucData.turn - strucData.helix - strucData.sheet
       return [{
         type: 'bar',
@@ -453,29 +410,29 @@ export default {
     setMetadataPage(page) {
       // this.$message('setting to ' + page + 'th page')
       // Important: page index starting from zero.
-      this.metadata.info.currentPage = page - 1
-      console.log(this.metadata.info.currentPage)
+      this.amp.metadata.info.currentPage = page - 1
+      console.log(this.amp.metadata.info.currentPage)
       let config = {
-        params: {page: this.metadata.info.currentPage, page_size: this.metadata.info.pageSize}
+        params: {page: this.amp.metadata.info.currentPage, page_size: this.amp.metadata.info.pageSize}
       }
       let self = this
-      this.axios.get('/amps/' + self.accession + '/metadata', config)
+      this.axios.get('/amps/' + this.amp.accession + '/metadata', config)
           .then(function (response) {
             console.log(response.data)
-            self.metadata.currentData = response.data.data
-            self.metadata.info.totalPage = response.data.info.totalPage
-            self.metadata.info.totalRow = response.data.info.totalItem
+            self.amp.metadata.currentData = response.data.data
+            self.amp.metadata.info.totalPage = response.data.info.totalPage
+            self.amp.metadata.info.totalRow = response.data.info.totalItem
           })
           .catch(function (error) {
             console.log(error);
           })
     },
     setMetadataPageSize(size) {
-      this.metadata.info.pageSize = size
+      this.amp.metadata.info.pageSize = size
       this.setMetadataPage(1)
     },
     GeoPlotData() {
-      let data = this.distribution.geo
+      let data = this.amp.distribution.geo
       return [{
         type: 'scattergeo',
         //locationmode: 'USA-states',
@@ -518,7 +475,7 @@ export default {
       }
     },
     EnvPlotData() {
-      let data = this.distribution
+      let data = this.amp.distribution
       let env_data = {
         type: "sunburst",
         labels: data.habitat.labels, //["Eve", "Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
@@ -536,27 +493,27 @@ export default {
         sunburstcolorway: this.ColorPalette('quanlitative')
       };
     },
-    HostPlotData() {
-      let data = this.distribution
-      let host_data = {
-        type: "sunburst",
-        labels: data.host.labels, //["Eve", "Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
-        parents: data.host.parents, //["", "Eve", "Eve", "Seth", "Seth", "Eve", "Eve", "Awan", "Eve" ],
-        values: data.host.values, //[65, 14, 12, 10, 2, 6, 6, 4, 4],
-        leaf: {opacity: 0.4},
-        // marker: {line: {"width": 2}},
-        branchvalues: 'total'
-      }
-      return [host_data]
-    },
-    HostPlotLayout() {
-      return {
-        margin: {l: 0, r: 0, b: 0, t: 0}, autosize: true,
-        sunburstcolorway: this.ColorPalette('quanlitative')
-      };
-    },
+    // HostPlotData() {
+    //   let data = this.amp.distribution
+    //   let host_data = {
+    //     type: "sunburst",
+    //     labels: data.host.labels, //["Eve", "Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
+    //     parents: data.host.parents, //["", "Eve", "Eve", "Seth", "Seth", "Eve", "Eve", "Awan", "Eve" ],
+    //     values: data.host.values, //[65, 14, 12, 10, 2, 6, 6, 4, 4],
+    //     leaf: {opacity: 0.4},
+    //     // marker: {line: {"width": 2}},
+    //     branchvalues: 'total'
+    //   }
+    //   return [host_data]
+    // },
+    // HostPlotLayout() {
+    //   return {
+    //     margin: {l: 0, r: 0, b: 0, t: 0}, autosize: true,
+    //     sunburstcolorway: this.ColorPalette('quanlitative')
+    //   };
+    // },
     DistributionGraphData() {
-      let data = this.distribution
+      let data = this.amp.distribution
       let habitat_data = {
         type: "sunburst",
         labels: data.habitat.labels, //["Eve", "Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
@@ -566,73 +523,76 @@ export default {
         // marker: {line: {"width": 2}},
         branchvalues: 'total'
       }
-      let host_data = {
-        type: "sunburst",
-        labels: data.host.labels, //['Viruses', "Anelloviridae", "unclassified Anelloviridae", "Small anellovirus", "cellular organisms", "Bacteria", "Terrabacteria group", "Actinobacteria"],
-        parents: data.host.parents, // ["", 'Viruses', "Anelloviridae", "unclassified Anelloviridae", "", "cellular organisms", "Bacteria", "Terrabacteria group"],
-        values: data.host.values, //[14, 14, 14, 14, 6, 6, 6, 6],
-        outsidetextfont: {size: 20, color: "#377eb8"},
-        leaf: {opacity: 0.4},
-        // marker: {line: {width: 2}},
-        branchvalues: 'total',
-        visible: false,
-      }
-      return [habitat_data, host_data]
+      // let host_data = {
+      //   type: "sunburst",
+      //   labels: data.host.labels, //['Viruses', "Anelloviridae", "unclassified Anelloviridae", "Small anellovirus", "cellular organisms", "Bacteria", "Terrabacteria group", "Actinobacteria"],
+      //   parents: data.host.parents, // ["", 'Viruses', "Anelloviridae", "unclassified Anelloviridae", "", "cellular organisms", "Bacteria", "Terrabacteria group"],
+      //   values: data.host.values, //[14, 14, 14, 14, 6, 6, 6, 6],
+      //   outsidetextfont: {size: 20, color: "#377eb8"},
+      //   leaf: {opacity: 0.4},
+      //   // marker: {line: {width: 2}},
+      //   branchvalues: 'total',
+      //   visible: false,
+      // }
+      return [habitat_data]
     },
-    DistributionGraphLayout() {
-      return {
-        height: 400, margin: {l: 40, r: 40, b: 40, t: 40}, autosize: true,
-        sunburstcolorway: this.ColorPalette('quanlitative'),
-        updatemenus: [{
-          direction: 'left', type: 'buttons', pad: {r: 10, t: 10},
-          showactive: true, x: 0.5, y: 1.2, yanchor: 'top', xanchor: 'center',
-          buttons: [{
-            method: 'update',
-            args: [{'visible': this.makeTraceVisible(0, 2)}],
-            label: 'Habitats'
-          }, {
-            method: 'update',
-            args: [{'visible': this.makeTraceVisible(1, 2)}],
-            label: 'Hosts'
-          },
-          ]
-        }
-        ]
-      }
-    },
+    // DistributionGraphLayout() {
+    //   return {
+    //     height: 400, margin: {l: 40, r: 40, b: 40, t: 40}, autosize: true,
+    //     sunburstcolorway: this.ColorPalette('quanlitative'),
+    //     updatemenus: [{
+    //       direction: 'left', type: 'buttons', pad: {r: 10, t: 10},
+    //       showactive: true, x: 0.5, y: 1.2, yanchor: 'top', xanchor: 'center',
+    //       buttons: [{
+    //         method: 'update',
+    //         args: [{'visible': this.makeTraceVisible(0, 2)}],
+    //         label: 'Habitats'
+    //       }, {
+    //         method: 'update',
+    //         args: [{'visible': this.makeTraceVisible(1, 2)}],
+    //         label: 'Hosts'
+    //       },
+    //       ]
+    //     }
+    //     ]
+    //   }
+    // },
     initFamilyFeatures() {
       this.famFeaturesGraphData = {
-        MW: [],
-        Length: [],
-        Molar_extinction: {cysteines_reduced: [], cystines_residues: []},
-        Aromaticity: [],
-        GRAVY: [],
-        Instability_index: [],
-        Isoelectric_point: [],
-        Charge_at_pH_7: [],
-        Secondary_structure: {helix: [], turn: [], sheet: []},
+        molecular_weight: [],
+        length: [],
+        aromaticity: [],
+        gravy: [],
+        instability_index: [],
+        isoelectric_point: [],
+        charge_at_pH_7: [],
+        // Secondary_structure: {helix: [], turn: [], sheet: []},
       }
     },
     updateFamilyFeatures(data) {
       this.initFamilyFeatures()
+      console.log('data used for update')
       console.log(data)
       let self = this
+      console.log('before update')
+      console.log(this.famFeaturesGraphData)
       Object.values(data).forEach(function (amp_features) {
-            self.famFeaturesGraphData.Instability_index.push(amp_features.Instability_index)
-            self.famFeaturesGraphData.GRAVY.push(amp_features.GRAVY)
-            self.famFeaturesGraphData.MW.push(amp_features.MW)
-            self.famFeaturesGraphData.Aromaticity.push(amp_features.Aromaticity)
-            self.famFeaturesGraphData.Charge_at_pH_7.push(amp_features.Charge_at_pH_7)
-            self.famFeaturesGraphData.Isoelectric_point.push(amp_features.Isoelectric_point)
-            self.famFeaturesGraphData.Molar_extinction.cysteines_reduced.push(amp_features.Molar_extinction.cysteines_reduced)
-            self.famFeaturesGraphData.Molar_extinction.cystines_residues.push(amp_features.Molar_extinction.cystines_residues)
+            self.famFeaturesGraphData.instability_index.push(amp_features.Instability_index)
+            self.famFeaturesGraphData.gravy.push(amp_features.GRAVY)
+            self.famFeaturesGraphData.molecular_weight.push(amp_features.MW)
+            self.famFeaturesGraphData.aromaticity.push(amp_features.Aromaticity)
+            self.famFeaturesGraphData.charge_at_pH_7.push(amp_features.Charge_at_pH_7)
+            self.famFeaturesGraphData.isoelectric_point.push(amp_features.Isoelectric_point)
             // self.famFeaturesGraphData.Secondary_structure.helix.push(amp_features.Secondary_structure.helix)
             // self.famFeaturesGraphData.Secondary_structure.turn.push(amp_features.SecStructureBarData.turn)
             // self.famFeaturesGraphData.Secondary_structure.sheet.push(amp_features.Secondary_structure.sheet)
           }
       )
+      console.log('after update')
+      console.log(this.famFeaturesGraphData)
     },
     makeFamilyFeatureTraces(data) {
+      console.log(data)
       return [
         {
           type: 'violin',
@@ -821,10 +781,10 @@ export default {
       }
     },
     getFamilyPageURL() {
-      return "http://18.140.248.253/family?accession=" + this.family
+      return "http://18.140.248.253/family?accession=" + this.amp.family
     },
     CopyPeptideSequence() {
-      clipboard.writeText(this.sequence).then(
+      clipboard.writeText(this.amp.sequence).then(
           () => {
             console.log("success!");
             this.showNotif('Peptide sequences copied.')
