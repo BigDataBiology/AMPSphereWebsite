@@ -53,11 +53,11 @@
                       <div class="subsubsection-title text-center">Habitats</div>
                       <Plotly :data="EnvPlotData()" :layout="EnvPlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
                     </div>
-                    <div class="col-12 col-md-6 q-pa-md">
-                      <!--                    TODO Bigger title and figure captions -->
-                      <div class="subsubsection-title text-center">Hosts</div>
-                      <Plotly :data="HostPlotData()" :layout="HostPlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
-                    </div>
+<!--                    <div class="col-12 col-md-6 q-pa-md">-->
+<!--                      &lt;!&ndash;                    TODO Bigger title and figure captions &ndash;&gt;-->
+<!--                      <div class="subsubsection-title text-center">Hosts</div>-->
+<!--                      <Plotly :data="HostPlotData()" :layout="HostPlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>-->
+<!--                    </div>-->
                     <!--                <div>-->
                     <!--                  <Plotly :data="DistributionGraphData()"-->
                     <!--                          :layout="DistributionGraphLayout()"-->
