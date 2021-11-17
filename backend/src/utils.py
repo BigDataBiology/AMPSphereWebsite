@@ -208,7 +208,8 @@ def mmseqs_search(seq: str):
         format_alignment0 = lambda x: format_alignment(
             x['seq_query'], x['seq_target'], x['bit_score'], x['domain_start_position_target'] - 1, x['domain_end_position_target']
         ).split('\n')[0:3]
-        df['alignment_strings'] = df[['seq_query', 'seq_target', 'bit_score','domain_start_position_target', 'domain_end_position_target']].apply(format_alignment0, axis=1)
+        if df.shape[0] > 0:
+            df['alignment_strings'] = df[['seq_query', 'seq_target', 'bit_score','domain_start_position_target', 'domain_end_position_target']].apply(format_alignment0, axis=1)
         records = df.to_dict(orient='records')
         pprint(records)
         return records
