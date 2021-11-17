@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session, Query
 from sqlalchemy import or_, and_
 from src import models
 from src import utils
-from sqlalchemy import distinct, func
+from sqlalchemy import distinct, func, true, false
 from sqlalchemy.sql.expression import func as sql_func
 from fastapi import HTTPException
 
@@ -231,14 +231,12 @@ def get_statistics(db: Session):
     # TODO FIX here.
     stats = db.query(models.Statistics).first()
     return dict(
-        num_amps=stats.accession,
+        num_genes=stats.gmsc,
+        num_amps=stats.amp,
         num_families=stats.family,
         num_habitats=stats.general_envo_name,
-        # FIXME
-        num_genomes=db.query(func.count(distinct(models.Metadata.sample))). \
-                        filter(models.Metadata.general_envo_name == '').scalar() - 1,
-        num_metagenomes=db.query(func.count(distinct(models.Metadata.sample))). \
-                        filter(models.Metadata.general_envo_name != '').scalar(),
+        num_genomes=db.query(func.count(distinct(models.Metadata.sample))).filter(models.Metadata.is_metagenomic == "False").scalar(),
+        num_metagenomes=db.query(func.count(distinct(models.Metadata.sample))).filter(models.Metadata.is_metagenomic == "True").scalar(),
     )
 
 
@@ -267,9 +265,26 @@ def get_filters(db: Session):
     habitat, = zip(*db.query(models.Metadata.general_envo_name).limit(100).distinct())
     sample, = zip(*db.query(models.Metadata.sample).limit(100).distinct())
     microbial_source, = zip(*db.query(models.Metadata.microbial_source).limit(100).distinct())
+    peplen_min, peplen_max, mw_min, mw_max, \
+    pI_min, pI_max, charge_min, charge_max = db.query(
+        func.min(models.AMP.length),
+        func.max(models.AMP.length),
+        func.min(models.AMP.molecular_weight),
+        func.max(models.AMP.molecular_weight),
+        func.min(models.AMP.isoelectric_point),
+        func.max(models.AMP.isoelectric_point),
+        func.min(models.AMP.charge),
+        func.max(models.AMP.charge),
+    ).first()
+    # print(query)
+    # print(query.__dict__())
     return dict(
         family=family,
         habitat=habitat,
         sample=sample,
         microbial_source=microbial_source,
+        pep_length=dict(min=peplen_min, max=peplen_max),
+        molecular_weight=dict(min=mw_min, max=mw_max),
+        isoelectric_point=dict(min=pI_min, max=pI_max),
+        charge_at_pH_7=dict(min=charge_min, max=charge_max)
     )
