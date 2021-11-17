@@ -237,7 +237,9 @@ export default {
           sample: this.options.sample,
           microbial_source: this.options.microbial_source,
           pep_length_interval: this.options.pep_length.min.toString() + ',' + this.options.pep_length.max.toString(),
-          // TODO add more filters here
+          mw_interval: this.options.molecular_weight.min.toString() + ',' + this.options.molecular_weight.max.toString(),
+          pI_interval: this.options.isoelectric_point.min.toString() + ',' + this.options.isoelectric_point.max.toString(),
+          charge_interval: this.options.charge_at_pH_7.min.toString() + ',' + this.options.charge_at_pH_7.max.toString(),
           page: this.info.currentPage,
           page_size: this.info.pageSize
         }
