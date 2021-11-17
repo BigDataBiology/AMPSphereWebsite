@@ -218,7 +218,7 @@ class mmSeqsSearchResult(BaseModel):
     bit_score: int
     seq_query: str
     seq_target: str
-    alignment_strings: List[str]
+    alignment_strings: Optional[List[str]]
 
     class Config:
         orm_mode = True
@@ -252,9 +252,9 @@ class HMMERSearchResult(BaseModel):
 
 
 class Statistics(BaseModel):
+    num_genes: int
     num_amps: int
     num_families: int
-    num_hosts: int
     num_habitats: int
     num_genomes: int
     num_metagenomes: int
@@ -266,9 +266,8 @@ class Statistics(BaseModel):
 class Filters(BaseModel):
     family: List[str]
     habitat: List[str]
-    host: List[str]
-    sample: List[str]
-    origin: List[str]
+    sample_genome: List[str]
+    microbial_source: List[str]
 
     class Config:
         orm_mode = True
