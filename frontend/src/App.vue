@@ -46,13 +46,13 @@
       <!--        </div>-->
       <!--        <div class="col-xs-0 col-xl-2 bg-white"></div>-->
       <!--      </div>-->
-      <router-view class="q-ma-auto q-pt-md" />
+      <router-view class="q-px-md q-pt-md" />
     </q-page-container>
 
     <q-footer reveal bordered class="bg-white text-white" >
-      <div class="row text-left">
-        <div class="col-xs-0 col-sm-1 col-md-2 bg-white"></div>
-        <div class="col-xs-12 col-sm-10 col-md-8 justify-end text-black">
+      <div class="row text-center q-pa-xs">
+<!--        <div class="col-0 col-sm-1 col-md-2 bg-white"></div>-->
+        <div class="col-12 text-black">
           <q-separator light />
           Powered by
           <a href="https://vuejs.org/index.html" type="success">Vue.js</a>
@@ -61,14 +61,14 @@
           <el-divider direction="vertical"></el-divider>
           <a href="https://fastapi.tiangolo.com/" type="success">FastAPI</a>
         </div>
-        <div class="col-0 col-xl-2 bg-white"></div>
-        <div class="col-0 col-xl-2 bg-white"></div>
-        <div class="col-12 col-xl-8 justify-end text-black">
+<!--        <div class="col-0 col-sm-1 col-md-2 bg-white"></div>-->
+<!--        <div class="col-0 col-sm-1 col-md-2 bg-white"></div>-->
+        <div class="col-12 text-black">
           &copy;2021-{{year}}
           <a href="https://www.fudan.edu.cn/" type="warning">Fudan University</a>
           All Rights Reserved.
         </div>
-        <div class="col-xs-0 col-sm-1 col-md-2 bg-white"></div>
+<!--        <div class="col-0 col-sm-1 col-md-2 bg-white"></div>-->
       </div>
     </q-footer>
   </q-layout>
