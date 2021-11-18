@@ -477,20 +477,29 @@ export default {
     EnvPlotData() {
       let data = this.amp.distribution
       let env_data = {
-        type: "sunburst",
-        labels: data.habitat.labels, //["Eve", "Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
-        parents: data.habitat.parents, //["", "Eve", "Eve", "Seth", "Seth", "Eve", "Eve", "Awan", "Eve" ],
-        values: data.habitat.values, //[65, 14, 12, 10, 2, 6, 6, 4, 4],
-        leaf: {opacity: 0.4},
-        // marker: {line: {"width": 2}},
-        branchvalues: 'total'
+        type: "bar",
+        x: data.habitat.values,
+        y: data.habitat.labels,
+        orientation: 'h',
+        marker: {
+          color: '#1b9e77',
+          width: 1
+        },
       }
       return [env_data]
     },
     EnvPlotLayout() {
       return {
-        margin: {l: 0, r: 0, b: 0, t: 0}, autosize: true,
-        sunburstcolorway: this.ColorPalette('quanlitative')
+        margin: {l: 160, r: 20, b: 80, t: 0}, autosize: true,
+        xaxis: {
+          type: 'log', autorange: true,
+          title: {
+            text: '# smORF genes (in exponential)',
+            font: {
+              size: 18,
+            }
+          },
+        },
       };
     },
     // HostPlotData() {
