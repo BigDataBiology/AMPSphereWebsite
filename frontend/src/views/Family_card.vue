@@ -494,7 +494,7 @@ export default {
     },
     EnvPlotLayout(){
       return {
-        margin: {l: 160, r: 50, b: 80, t: 20}, autosize: false, height: 500,
+        margin: {l: 200, r: 50, b: 80, t: 20}, autosize: false, height: 500,
         xaxis: {
           type: 'log', autorange: true,
           title: {
@@ -522,7 +522,7 @@ export default {
     },
     MicrobialSourcePlotLayout(){
       return {
-        margin: {l: 160, r: 50, b: 80, t: 20}, autosize: false, height: 500,
+        margin: {l: 200, r: 50, b: 80, t: 20}, autosize: false, height: 500,
         xaxis: {
           type: 'log', autorange: true,
           title: {

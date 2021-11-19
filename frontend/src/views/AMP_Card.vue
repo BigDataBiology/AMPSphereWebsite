@@ -488,7 +488,7 @@ export default {
     },
     EnvPlotLayout() {
       return {
-        margin: {l: 160, r: 50, b: 80, t: 20}, autosize: false, height: 500,
+        margin: {l: 200, r: 50, b: 80, t: 20}, autosize: false, height: 500,
         xaxis: {
           type: 'log', autorange: true,
           title: {
@@ -516,7 +516,7 @@ export default {
     },
     MicrobialSourcePlotLayout(){
       return {
-        margin: {l: 160, r: 50, b: 80, t: 20}, autosize: false, height: 500,
+        margin: {l: 200, r: 50, b: 80, t: 20}, autosize: false, height: 500,
         xaxis: {
           type: 'log', autorange: true,
           title: {
@@ -791,7 +791,8 @@ export default {
       }
     },
     getFamilyPageURL() {
-      return "http://18.140.248.253/family?accession=" + this.amp.family
+      // TODO Change URL here
+      return "http://18.140.248.253:8080/family?accession=" + this.amp.family
     },
     CopyPeptideSequence() {
       clipboard.writeText(this.amp.sequence).then(
