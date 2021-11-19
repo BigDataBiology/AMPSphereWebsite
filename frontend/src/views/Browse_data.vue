@@ -130,6 +130,9 @@
 </style>
 
 <script>
+import {useQuasar} from 'quasar'
+
+
 export default {
   name: "BrowseData",
 
@@ -191,6 +194,20 @@ export default {
       avalOptionsFull: options_full,
       availableOptions: options_full,
     }
+  },
+  setup(){
+    const $q = useQuasar()
+    $q.notify({
+      message: '<strong>Note</strong>: The filters may need tens of seconds to load. Please be patient.',
+      html: true,
+      color: 'primary',
+      position: 'top',
+      timeout: 10000,
+      icon: 'announcement',
+      actions: [
+        { label: 'Got it', color: 'yellow', handler: () => { /* ... */ } }
+      ]
+    })
   },
   created() {
     let self = this
