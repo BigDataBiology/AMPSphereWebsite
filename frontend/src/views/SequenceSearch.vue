@@ -27,6 +27,13 @@
                   <el-button type="text" @click="AMPDetail(props.row.target_identifier)">{{ props.row.target_identifier }}</el-button>
                 </template>
               </el-table-column>
+              <el-table-column label="Family" width="200">
+                <template #default="props">
+<!--                  <el-button type="text" @click="familyDetail(props.row.family)">-->
+                    {{ props.row.family }}
+<!--                  </el-button>-->
+                </template>
+              </el-table-column>
               <el-table-column label="Identity (%)" sortable>
                 <template #default="props">
                   {{ props.row.sequence_identity * 100 }}

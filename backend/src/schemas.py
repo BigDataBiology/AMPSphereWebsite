@@ -219,6 +219,8 @@ class mmSeqsSearchResult(BaseModel):
     seq_query: str
     seq_target: str
     alignment_strings: Optional[List[str]]
+    family: Optional[str]
+
 
     class Config:
         orm_mode = True
