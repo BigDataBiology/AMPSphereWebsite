@@ -28,10 +28,12 @@
                           <span class="subsubsection-title">{{ num_amps }}</span>
                         </el-link>
                       </span>
-                      <div class="subsubsection-title">
+                      <div v-if="consensusSequence !== ''" class="subsubsection-title">
                         Consensus sequence <q-btn @click="CopyPeptideSequence()" icon="content_copy" size="sm"></q-btn>
                       </div>
-                      <pre><code id="aa-sequence">{{ consensusSequence }}</code></pre>
+                      <div v-if="consensusSequence !== ''">
+                        <pre><code id="aa-sequence">{{ consensusSequence }}</code></pre>
+                      </div>
                       <div style="alignment: left;">
                         <div class="subsubsection-title">Secondary Structure</div>
                         <Plotly :data="secondaryStructureGraphData" :layout="secondaryStructureLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
