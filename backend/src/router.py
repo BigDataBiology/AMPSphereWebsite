@@ -305,7 +305,7 @@ def text_search(db: Session = Depends(get_db),
 @default_router.get(path="/search/mmseqs",
                     response_model=List[schemas.mmSeqsSearchResult],
                     summary=default_route_summary)
-def mmseqs_search(query: str = 'KKVKSIFKKALAMMGENEVKAWGIGIK'):
+def mmseqs_search(query: str = 'KKVKSIFKKALAMMGENEVKAWGIGIK', db: Session = Depends(get_db)):
     """
     **tested**
 
@@ -313,7 +313,7 @@ def mmseqs_search(query: str = 'KKVKSIFKKALAMMGENEVKAWGIGIK'):
     - :param query: sequence
     - :return:
     """
-    return utils.mmseqs_search(query)
+    return crud.mmseqs_search(query, db)
 
 
 @default_router.get(path="/search/hmmer",
@@ -327,7 +327,7 @@ def hmmscan_search(query: str = 'KKVKSIFKKALAMMGENEVKAWGIGIK'):
     - :param method:
     - :return:
     """
-    return utils.hmmscan_search(query)
+    return crud.hmmscan_search(query)
 
 ## --------------------------Deprecated----------------------------------
 

@@ -13,7 +13,6 @@ from sqlalchemy.sql.expression import func as sql_func
 from fastapi import HTTPException
 
 
-
 def get_amps(db: Session, page: int = 0, page_size: int = 20, **kwargs):
     query = db.query(distinct(models.AMP.accession)).outerjoin(models.Metadata)
 
@@ -205,7 +204,7 @@ def search_by_text(db: Session, text: str, page: int, page_size: int):
     :return:
     """
     query = db.query(distinct(models.AMP.accession)).outerjoin(models.Metadata)
-
+    # Consider blank space as + for query text.
     query = query.filter(or_(
         models.AMP.accession.like(text),
         models.AMP.family.like(text),
@@ -235,8 +234,10 @@ def get_statistics(db: Session):
         num_amps=stats.amp,
         num_families=stats.family,
         num_habitats=stats.general_envo_name,
-        num_genomes=db.query(func.count(distinct(models.Metadata.sample))).filter(models.Metadata.is_metagenomic == "False").scalar(),
-        num_metagenomes=db.query(func.count(distinct(models.Metadata.sample))).filter(models.Metadata.is_metagenomic == "True").scalar(),
+        num_genomes=db.query(func.count(distinct(models.Metadata.sample))).filter(
+            models.Metadata.is_metagenomic == "False").scalar(),
+        num_metagenomes=db.query(func.count(distinct(models.Metadata.sample))).filter(
+            models.Metadata.is_metagenomic == "True").scalar(),
     )
 
 
@@ -288,3 +289,116 @@ def get_filters(db: Session):
         isoelectric_point=dict(min=pI_min, max=pI_max),
         charge_at_pH_7=dict(min=charge_min, max=charge_max)
     )
+
+
+def mmseqs_search(seq: str, db):
+    query_id = str(utils.uuid.uuid4())
+    query_time_now = utils.datetime.now()
+    tmp_dir = pathlib.Path(utils.cfg['tmp_dir'])
+    input_seq_file = tmp_dir.joinpath(query_id + '.input')
+    output_file = tmp_dir.joinpath(query_id + '.output')
+    stdout_file = tmp_dir.joinpath(query_id + '.stdout')
+    output_format = 'query,target,fident,alnlen,mismatch,gapopen,qstart,qend,tstart,tend,evalue,bits,qseq,tseq'
+    # TODO calculate alignment string based on qaln,taln,gapopen,qstart,qend,tstart,alnlen
+    # TODO add hint when the length of input sequence is not between 8 and 98
+    # HINT: The search result may not reflect the reality as your sequence is too long/short.
+    if not tmp_dir.exists():
+        tmp_dir.mkdir(parents=True)
+    with open(input_seq_file, 'w') as f:
+        f.write(seq)
+    # sensitivity = 1
+    command_base = 'mmseqs createdb {query_seq} {query_seq}.mmseqsdb && ' \
+                   'mmseqs search {query_seq}.mmseqsdb  {database} {out}.mmseqsdb {tmp_dir} -a && ' \
+                   'mmseqs convertalis {query_seq}.mmseqsdb {database} {out}.mmseqsdb {out} --format-output {output_format}'
+    command = command_base.format_map({
+        'query_seq': input_seq_file,
+        'database': utils.cfg['mmseqs_db'],
+        'out': output_file,
+        'tmp_dir': str(tmp_dir),
+        'output_format': output_format,
+        # 's': sensitivity
+    })
+    try:
+        # TODO redirect the stdout to a temporary file and return its content when there is no match.
+        with open(stdout_file, 'w') as f:
+            utils.subprocess.run(command, shell=True, check=True, stdout=f)  ## FIXME
+    except utils.subprocess.CalledProcessError as e:
+        print('error when executing the command (code {})'.format(e))
+        print(e.output)
+        return None  # TODO better handle this
+    else:
+        columns = ['query_identifier', 'target_identifier', 'sequence_identity', 'alignment_length',
+                   'number_mismatches', 'number_gap_openings', 'domain_start_position_query',
+                   'domain_end_position_query', 'domain_start_position_target',
+                   'domain_end_position_target', 'E_value', 'bit_score', 'seq_query', 'seq_target']
+        try:
+            df = pd.read_table(output_file, sep='\t', header=None)
+        except pd.errors.EmptyDataError:
+            df = pd.DataFrame(columns=columns)
+        df.columns = columns
+        format_alignment0 = lambda x: utils.format_alignment(
+            x['seq_query'], x['seq_target'], x['bit_score'], x['domain_start_position_target'] - 1, x['domain_end_position_target']
+        ).split('\n')[0:3]
+        if df.shape[0] > 0:
+            df['alignment_strings'] = df[['seq_query', 'seq_target', 'bit_score','domain_start_position_target', 'domain_end_position_target']].apply(format_alignment0, axis=1)
+            df['family'] = df['target_identifier'].apply(lambda x: get_family_by_amp(x, db))
+        records = df.to_dict(orient='records')
+        # pprint(records)
+        return records
+
+
+def get_family_by_amp(amp_accession, db):
+    family, = db.query(models.AMP.family).filter(models.AMP.accession == amp_accession).first()
+    # print(type(family))
+    # print(family)
+    return family
+
+
+def hmmscan_search(seq: str):
+    query_id = str(utils.uuid.uuid4())
+    query_time_now = utils.datetime.now()
+    tmp_dir = pathlib.Path(utils.cfg['tmp_dir'])
+    input_seq_file = tmp_dir.joinpath(query_id + '.input')
+    output_file = tmp_dir.joinpath(query_id + '.output')
+    stdout_file = tmp_dir.joinpath(query_id + '.stdout')
+    # TODO add hint when the length of input sequence is not between 8 and 98
+    # HINT: The search result may not reflect the reality as your sequence is too long/short.
+
+    if not tmp_dir.exists():
+        tmp_dir.mkdir(parents=True)
+    # with open(input_seq_file, 'w') as f:
+    #     f.write(f'>submitted_sequence\n{seq}')
+    with open(input_seq_file, 'w') as f:
+        f.write(seq)  # already in fasta format
+
+    command_base = 'hmmscan --domtblout {out} {hmm_profiles} {query_seq}'
+    command = command_base.format_map({
+        'out': output_file,
+        'hmm_profiles': utils.cfg['hmmprofile_db'],
+        'query_seq': input_seq_file,
+        'out_tmp': tmp_dir.joinpath(query_id + '.tmp')
+    })
+    try:
+        # TODO redirect the stdout to a temporary file and return its content when there is no match.
+        with open(stdout_file, 'w') as f:
+            utils.subprocess.run(command, shell=True, check=True, stdout=f)  ## FIXME
+    except utils.subprocess.CalledProcessError as e:
+        print('error when executing the command (code {})'.format(e))
+        print(e.output)
+        return None
+    else:
+        columns = [
+            'target_name', 'target_accession', 'target_length', 'query_name',
+            'query_accession', 'query_length', 'E_value', 'score', 'bias',
+            'domain_index', 'num_domain', 'c_Evalue', 'i_Evalue', 'score',
+            'bias', 'from_hmm', 'to_hmm', 'from_ali', 'to_ali', 'from_env',
+            'to_env', 'acc', 'description_of_target']
+        try:
+            df = pd.read_table(output_file, header=2, skipfooter=10, sep='\s+', engine='python')
+        except pd.errors.EmptyDataError:
+            df = pd.DataFrame(columns=columns)
+        df.columns = columns
+        # print(df)
+        records = df.to_dict(orient='records')
+        # pprint(records)
+        return records
