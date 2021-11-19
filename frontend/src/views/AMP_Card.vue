@@ -36,29 +36,42 @@
                   </div>
                   <div class="col-12 col-md-8 offset-md-1 q-pt-md q-px-md justify-center" id="global distribution">
                     <div class="subsubsection-title text-center">Geographical Distribution</div>
-                    <Plotly :data="GeoPlotData()" :layout="GeoPlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                    <div v-if="distribution.geo.lat.length > 0">
+                      <Plotly :data="GeoPlotData()" :layout="GeoPlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                    </div>
+                    <div v-else>
+                      <div style="height:400px; line-height: 400px" class="text-center q-px-md">
+                        Empty, all associated smORF genes were from Progenomes2 genomes (no geographical information).
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-12 q-px-md q-pt-md">
                     <div class="subsection-title">Distribution</div>
                   </div>
-                  <div class="col-12 col-md-6">
+                  <div class="col-12 col-md-6 q-px-md">
 <!--                    TODO Bigger title  and figure captions-->
                     <div class="subsubsection-title text-center">Habitats</div>
-                    <Plotly :data="EnvPlotData()" :layout="EnvPlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                    <div v-if="distribution.habitat.labels.length !== 0">
+                      <Plotly :data="EnvPlotData()" :layout="EnvPlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                    </div>
+                    <div v-else style="height:500px; display: -webkit-flex; display: flex; align-items: center; " class="text-center q-px-md">
+                      <p>Empty, all associated smORF genes were from Progenomes2 genomes (no habitat information).</p>
+                    </div>
                   </div>
-<!--                  <div class="col-12 col-md-6">-->
-<!--                    &lt;!&ndash;                    TODO Bigger title and figure captions &ndash;&gt;-->
-<!--                    <div class="subsubsection-title text-center">Hosts</div>-->
-<!--                    <Plotly :data="HostPlotData()" :layout="HostPlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>-->
-<!--                  </div>-->
+                  <div class="col-12 col-md-6 q-px-md">
+                    <div class="subsubsection-title text-center">Microbial sources</div>
+                    <div>
+                      <Plotly :data="MicrobialSourcePlotData()" :layout="MicrobialSourcePlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                    </div>
+                  </div>
                 </div>
                 <div class="row">
                   <div class="col-12 q-px-md q-pt-md">
                     <div class="subsection-title">Relationships</div>
 <!--                    TODO add download button here -->
-                    <el-table :data="amp.metadata.currentData" stripe :default-sort="{prop: 'GMSC', order: 'ascending'}" width="100%">
+                    <el-table :data="currentMetadata" stripe :default-sort="{prop: 'GMSC', order: 'ascending'}" width="100%">
                       <el-table-column prop="GMSC" label="Gene" sortable width="260%"/>
                       <el-table-column label="Gene sequense" sortable width="400%">
                         <template #default="props">
@@ -233,22 +246,6 @@
   line-height: 200px;
   margin: 0;
 }
-
-.el-tabs__item {
-  font-size: 17px;
-}
-
-.el-aside {
-  /*background-color: #D3DCE6;*/
-  color: #333;
-  text-align: center;
-  line-height: 200px;
-}
-
-.el-main {
-  color: #333;
-  text-align: center;
-}
 </style>
 
 <script>
@@ -265,8 +262,8 @@ export default {
   data() {
     const default_distribution = {
       geo: {type: "bubble map", lat: [], lon: [], size: [], colors: []},
-      habitat: {type: "sunburst plot", labels: [], parents: [], values: [], colorway: []},
-      origin: {type: "sunburst plot", labels: [], parents: [], values: [], colorway: []}
+      habitat: {type: "bar plot", labels: [], values: []},
+      microbial_source: {type: "bar plot", labels: [], values: []}
     }
     return {
       // echartOption: {
@@ -310,12 +307,12 @@ export default {
             totalRow: 1,
             currentPage: 1,
           },
-          currentData: [],
+          data: [],
         },
-        distribution: default_distribution,
-        default_distribution: default_distribution,
         helicalwheel: ''
       },
+      distribution: default_distribution,
+      default_distribution: default_distribution,
       famFeaturesGraphData: {
         molecular_weight: [],
         length: [],
@@ -346,7 +343,7 @@ export default {
   },
   computed: {
     currentMetadata() {
-      return this.amp.metadata.currentData
+      return this.amp.metadata.data
     }
   },
   methods: {
@@ -357,7 +354,6 @@ export default {
           .then(function (response) {
             console.log(response.data)
             self.amp = response.data
-            self.amp.distribution = self.amp.default_distribution
             self.amp.helicalwheel = 'http://18.140.248.253:443/v1/amps/' + self.amp.accession +  '/helicalwheel'
             self.amp.metadata.info.totalRow = response.data.metadata.info.totalItem
             self.getFamilyFeatures()
@@ -368,7 +364,7 @@ export default {
       this.axios.get('/amps/' + amp_accession + '/distributions', {})
           .then(function (response) {
             console.log(response.data)
-            self.amp.distribution = response.data
+            self.distribution = response.data
           })
           .catch(function (error) {
             console.log(error)
@@ -419,9 +415,10 @@ export default {
       this.axios.get('/amps/' + this.amp.accession + '/metadata', config)
           .then(function (response) {
             console.log(response.data)
-            self.amp.metadata.currentData = response.data.data
+            self.amp.metadata.data = response.data.data
             self.amp.metadata.info.totalPage = response.data.info.totalPage
             self.amp.metadata.info.totalRow = response.data.info.totalItem
+            console.log(self.amp.metadata.data)
           })
           .catch(function (error) {
             console.log(error);
@@ -432,7 +429,7 @@ export default {
       this.setMetadataPage(1)
     },
     GeoPlotData() {
-      let data = this.amp.distribution.geo
+      let data = this.distribution.geo
       return [{
         type: 'scattergeo',
         //locationmode: 'USA-states',
@@ -455,6 +452,7 @@ export default {
         // title: {
         //   text: 'Geographical distribution'
         // },
+        height: 400,
         showlegend: false,
         geo: {
           scope: 'global',
@@ -475,14 +473,14 @@ export default {
       }
     },
     EnvPlotData() {
-      let data = this.amp.distribution
+      let data = this.distribution
       let env_data = {
         type: "bar",
         x: data.habitat.values,
         y: data.habitat.labels,
         orientation: 'h',
         marker: {
-          color: '#1b9e77',
+          color: this.ColorPalette('quanlitative')[0],
           width: 1
         },
       }
@@ -490,7 +488,7 @@ export default {
     },
     EnvPlotLayout() {
       return {
-        margin: {l: 160, r: 20, b: 80, t: 0}, autosize: true,
+        margin: {l: 160, r: 50, b: 80, t: 20}, autosize: false, height: 500,
         xaxis: {
           type: 'log', autorange: true,
           title: {
@@ -500,29 +498,38 @@ export default {
             }
           },
         },
-      };
+      }
     },
-    // HostPlotData() {
-    //   let data = this.amp.distribution
-    //   let host_data = {
-    //     type: "sunburst",
-    //     labels: data.host.labels, //["Eve", "Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
-    //     parents: data.host.parents, //["", "Eve", "Eve", "Seth", "Seth", "Eve", "Eve", "Awan", "Eve" ],
-    //     values: data.host.values, //[65, 14, 12, 10, 2, 6, 6, 4, 4],
-    //     leaf: {opacity: 0.4},
-    //     // marker: {line: {"width": 2}},
-    //     branchvalues: 'total'
-    //   }
-    //   return [host_data]
-    // },
-    // HostPlotLayout() {
-    //   return {
-    //     margin: {l: 0, r: 0, b: 0, t: 0}, autosize: true,
-    //     sunburstcolorway: this.ColorPalette('quanlitative')
-    //   };
-    // },
+    MicrobialSourcePlotData(){
+      let data = this.distribution
+      let env_data = {
+        type: "bar",
+        x: data.microbial_source.values,
+        y: data.microbial_source.labels,
+        orientation: 'h',
+        marker: {
+          color: this.ColorPalette('quanlitative')[1],
+          width: 1
+        },
+      }
+      return [env_data]
+    },
+    MicrobialSourcePlotLayout(){
+      return {
+        margin: {l: 160, r: 50, b: 80, t: 20}, autosize: false, height: 500,
+        xaxis: {
+          type: 'log', autorange: true,
+          title: {
+            text: '# smORF genes (in exponential)',
+            font: {
+              size: 18,
+            }
+          },
+        },
+      }
+    },
     DistributionGraphData() {
-      let data = this.amp.distribution
+      let data = this.distribution
       let habitat_data = {
         type: "sunburst",
         labels: data.habitat.labels, //["Eve", "Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
@@ -580,11 +587,7 @@ export default {
     },
     updateFamilyFeatures(data) {
       this.initFamilyFeatures()
-      console.log('data used for update')
-      console.log(data)
       let self = this
-      console.log('before update')
-      console.log(this.famFeaturesGraphData)
       Object.values(data).forEach(function (amp_features) {
             self.famFeaturesGraphData.instability_index.push(amp_features.Instability_index)
             self.famFeaturesGraphData.gravy.push(amp_features.GRAVY)
@@ -597,8 +600,6 @@ export default {
             // self.famFeaturesGraphData.Secondary_structure.sheet.push(amp_features.Secondary_structure.sheet)
           }
       )
-      console.log('after update')
-      console.log(this.famFeaturesGraphData)
     },
     makeFamilyFeatureTraces(data) {
       console.log(data)

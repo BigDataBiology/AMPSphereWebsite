@@ -19,52 +19,60 @@
               <q-tab-panels v-model="tabName">
                 <q-tab-panel name="overview">
                   <div class="row" style="text-align: left">
-                    <div class="col-12 col-md-3 q-pa-md">
-                      <span class="subsubsection-title">
+                    <div class="col-12 col-md-3 q-pt-md q-px-md justify-center">
+                      <div>
+                        <span class="subsubsection-title">
                         Number of AMPs:
-                        <!--                      </span>-->
-                        <!--                    <span>-->
+                                                <!--                      </span>-->
+                                                <!--                    <span>-->
                         <el-link href="#amps" type="primary">
                           <span class="subsubsection-title">{{ num_amps }}</span>
                         </el-link>
                       </span>
+                      </div>
                       <div v-if="consensusSequence !== ''" class="subsubsection-title">
                         Consensus sequence <q-btn @click="CopyPeptideSequence()" icon="content_copy" size="sm"></q-btn>
                       </div>
                       <div v-if="consensusSequence !== ''">
                         <pre><code id="aa-sequence">{{ consensusSequence }}</code></pre>
                       </div>
-                      <div style="alignment: left;">
-                        <div class="subsubsection-title">Secondary Structure</div>
-                        <Plotly :data="secondaryStructureGraphData" :layout="secondaryStructureLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
-                      </div>
-
+                      <div class="subsubsection-title">Secondary Structure</div>
+                      <Plotly :data="SecStructureBarData()" :layout="secondaryStructureLayout()"
+                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>
                     </div>
-                    <div class="col-12 col-md-8 offset-1">
+                    <div class="col-12 col-md-8 offset-md-1 q-pt-md q-px-md justify-center" id="global distribution">
                       <div class="subsubsection-title text-center">Geographical Distribution</div>
-                      <Plotly :data="GeoPlotData()" :layout="GeoPlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                      <div v-if="distribution.geo.lat.length > 0">
+                        <Plotly :data="GeoPlotData()" :layout="GeoPlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                      </div>
+                      <div v-else>
+                        <div style="height:400px; line-height: 400px" class="text-center q-px-md">
+                          Empty, all associated smORF genes were from Progenomes2 genomes (no geographical information).
+                        </div>
+                      </div>
                     </div>
                   </div>
 
                   <div class="row">
-                    <div class="col-12 subsection-title">Distribution</div>
-                  </div>
-                  <div class="row">
-                    <div class="col-12 col-md-6 q-pa-md">
+                    <div class="col-12 q-px-md q-pt-md">
+                      <div class="subsection-title">Distribution</div>
+                    </div>
+                    <div class="col-12 col-md-6 q-px-md">
                       <!--                    TODO Bigger title  and figure captions-->
                       <div class="subsubsection-title text-center">Habitats</div>
-                      <Plotly :data="EnvPlotData()" :layout="EnvPlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                      <div v-if="distribution.habitat.labels.length !== 0">
+                        <Plotly :data="EnvPlotData()" :layout="EnvPlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                      </div>
+                      <div v-else style="height:500px; display: -webkit-flex; display: flex; align-items: center; " class="text-center q-px-md">
+                        <p>Empty, all associated smORF genes were from Progenomes2 genomes (no habitat information).</p>
+                      </div>
                     </div>
-<!--                    <div class="col-12 col-md-6 q-pa-md">-->
-<!--                      &lt;!&ndash;                    TODO Bigger title and figure captions &ndash;&gt;-->
-<!--                      <div class="subsubsection-title text-center">Hosts</div>-->
-<!--                      <Plotly :data="HostPlotData()" :layout="HostPlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>-->
-<!--                    </div>-->
-                    <!--                <div>-->
-                    <!--                  <Plotly :data="DistributionGraphData()"-->
-                    <!--                          :layout="DistributionGraphLayout()"-->
-                    <!--                          :toImageButtonOptions="{format: 'svg', scale: 1}"/>-->
-                    <!--                </div>-->
+                    <div class="col-12 col-md-6 q-px-md">
+                      <div class="subsubsection-title text-center">Microbial sources</div>
+                      <div>
+                        <Plotly :data="MicrobialSourcePlotData()" :layout="MicrobialSourcePlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                      </div>
+                    </div>
                   </div>
 
                   <div class="row">
@@ -300,11 +308,7 @@ export default {
           type: "sunburst plot",
           labels: [], parents: [], values: [], colorway: []
         },
-        host: {
-          type: "sunburst plot",
-          labels: [], parents: [], values: [], colorway: []
-        },
-        origin: {
+        microbial_source: {
           type: "sunburst plot",
           labels: [], parents: [], values: [], colorway: []
         }
@@ -376,9 +380,9 @@ export default {
         // disordered: []
       }
       Object.values(this.features).forEach(function(amp_features) {
-        console.log(amp_features)
+        // console.log(amp_features)
         const amp_structure = amp_features.Secondary_structure
-        console.log(amp_structure)
+        // console.log(amp_structure)
         probabilities.helix.push(amp_structure.helix)
         probabilities.sheet.push(amp_structure.sheet)
         probabilities.turn.push(amp_structure.turn)
@@ -459,6 +463,7 @@ export default {
     },
     GeoPlotLayout(){
       return {
+        height: 400,
         showlegend: false,
         geo: {
           scope: 'global',
@@ -481,7 +486,7 @@ export default {
         y: data.habitat.labels,
         orientation: 'h',
         marker: {
-          color: '#1b9e77',
+          color: this.ColorPalette('quanlitative')[0],
           width: 1
         },
       }
@@ -489,7 +494,7 @@ export default {
     },
     EnvPlotLayout(){
       return {
-        margin: {l: 160, r: 20, b: 80, t: 0}, autosize: true,
+        margin: {l: 160, r: 50, b: 80, t: 20}, autosize: false, height: 500,
         xaxis: {
           type: 'log', autorange: true,
           title: {
@@ -499,26 +504,35 @@ export default {
             }
           },
         },
-      };
-    },
-    HostPlotData(){
-      let data = this.distribution
-      let host_data = {
-        type: "sunburst",
-        labels: data.host.labels, //["Eve", "Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
-        parents: data.host.parents, //["", "Eve", "Eve", "Seth", "Seth", "Eve", "Eve", "Awan", "Eve" ],
-        values:  data.host.values, //[65, 14, 12, 10, 2, 6, 6, 4, 4],
-        leaf: {opacity: 0.4},
-        // marker: {line: {"width": 2}},
-        branchvalues: 'total'
       }
-      return [host_data]
     },
-    HostPlotLayout(){
+    MicrobialSourcePlotData(){
+      let data = this.distribution
+      let env_data = {
+        type: "bar",
+        x: data.microbial_source.values,
+        y: data.microbial_source.labels,
+        orientation: 'h',
+        marker: {
+          color: this.ColorPalette('quanlitative')[1],
+          width: 1
+        },
+      }
+      return [env_data]
+    },
+    MicrobialSourcePlotLayout(){
       return {
-        margin: {l: 40, r: 40, b: 40, t: 40}, autosize: true,
-        sunburstcolorway: this.ColorPalette('quanlitative')
-      };
+        margin: {l: 160, r: 50, b: 80, t: 20}, autosize: false, height: 500,
+        xaxis: {
+          type: 'log', autorange: true,
+          title: {
+            text: '# smORF genes (in exponential)',
+            font: {
+              size: 18,
+            }
+          },
+        },
+      }
     },
     DistributionGraphData(){
       let data = this.distribution

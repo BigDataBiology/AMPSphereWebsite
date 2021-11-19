@@ -47,7 +47,7 @@
               <el-table-column type="expand" label="Alignment">
                 <template #default="props">
                   <div class="justify-center">
-<!--                    TODO　Restyle this.-->
+<!--                    TODO Restyle this.-->
                     <code><pre>
                       {{props.row.domain_start_position_query}}{{'-'.repeat(props.row.domain_end_position_query - props.row.domain_start_position_query - 1)}}{{props.row.domain_end_position_query}}
                       {{props.row.alignment_strings[0]}}

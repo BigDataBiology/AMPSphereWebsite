@@ -22,12 +22,10 @@ class FeatureGraphPoints(BaseModel):
     flexibility: LinePlotData
 
 
-class SunburstPlotData(BaseModel):
-    type: str = 'sunburst plot'
+class BarPlotData(BaseModel):
+    type: str = 'bar plot'
     labels: List[str]
-    parents: List[str]
     values: List[float]
-    colorway: List[str] = ['']
 
     class Config:
         orm_mode = True
@@ -46,8 +44,11 @@ class BubbleMapData(BaseModel):
 
 class Distributions(BaseModel):
     geo: BubbleMapData
-    habitat: SunburstPlotData
-    microbial_source: Optional[SunburstPlotData]
+    habitat: BarPlotData
+    microbial_source: Optional[BarPlotData]
+
+    class Config:
+        orm_mode = True
 
 
 # Object for AMP_card page ------------------------------------------------
