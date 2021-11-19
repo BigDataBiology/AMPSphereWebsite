@@ -6,67 +6,72 @@
         <div class="row">
           <div class="col-12 col-md-6 q-pr-md">
             <h4>Overview</h4>
-            Antimicrobial peptides (AMPs) are small proteins with lengths ranging from 10 to 100
-            residues of amino acids, which disturb microbial growth and can be produced by a wide
-            range of organisms belonging to all life domains. These peptides are ancient defense
-            molecules and some recently have shown activity against multi-resistant pathogens.
-            Besides their clinical applications, AMPs also can be widely used in food preservation
-            and agriculture. <br/><br/>
-            Although small molecules, their diversity is huge and is hidden from most of the current
-            bioinformatics techniques. In other words, peptides are not detected with enough
-            confidence by the gene prediction methods and are often discharged to reduce the false
-            discovery rate. Therefore, uncovering the diversity of AMPs is not just a matter of
-            function prediction by homology, instead involves complex patterns and feature discovery
-            with machine learning.<br/><br/>
-            Recently, the <el-link type='primary' href="https://big-data-biology.org">Big Data
-            Biology Research Group</el-link> from the Institute of Science and Technology
-            for Brain-inspired Intelligence (ISTBI / Fudan University) developed a method called Macrel,
-            which differs from other methods was directed to metagenomic approaches and can handle a
-            variety of data formats (from reads to peptide sequences). By using Macrel, we started the
-            Global AMPs Survey, a project which intends to collect all AMP sequences available in the
-            public databases to date. Thus, motivated to develop a database-assisted platform that
-            provides comprehensive functional and physicochemical features of large-scale (meta)genomic-
-            derived AMPs, we created AMPsphere!<br/><br/>
-            Just as the ecosphere is the worldwide sum of all ecosystems, the AMPsphere is the complexity
-            of prokaryotic AMPs assembled in one dataset. To this date, it was analyzed ProGenomes2, which
-            includes 86 thousand high-quality genomes, as well as a dataset of over 35,000 publicly
-            available metagenomes. After redundancy removal, we produced a collection of AMPs from the
-            global microbiome, containing 317,790 distinct sequences, clustered into 4,705 AMP families.<br/><br/>
+            <p>
+              Antimicrobial peptides (AMPs) are small proteins with 10 to 100 residues of amino acids.
+              The small proteins are able to disturb microbial growth and can be produced by a wide range
+              of organisms being found in all life domains. These peptides are ancient defense molecules
+              and some recently have shown activity against multi-resistant pathogens. Besides their potential
+              to clinical applications, AMPs also are widely used in food preservation and agriculture.
+            </p>
+            <p>
+              Although small molecules, they have an immense diversity and cannot be detected with enough
+              confidence by the gene prediction methods. Because of that, AMPs are often discharged to reduce
+              the false discovery rate. Therefore, uncovering the diversity of AMPs is not just a matter of
+              homology-based function prediction, instead it involves complex patterns and feature discovery
+              with machine learning.
+            </p>
+            <p>
+              Recently, the [Big Data Biology Research Group](big-data-biology.org/) from the
+              [Institute of Science and Technology for Brain-inspired Intelligence (ISTBI / Fudan University)]
+              (istbi.fudan.edu.cn/) developed a method called <a href="http://big-data-biology.org/software/macrel/">Macrel</a>,
+              which differently from other methods, was developed to metagenomic approaches also handling a variety
+              of data formats (from reads to peptide sequences). By using Macrel, we started the Global Survey for AMPs
+              , a project which intends to collect all AMP sequences available in the publicly-available databases to
+              date.
+              Thus, motivated to develop a database-assisted platform that provides comprehensive functional and
+              physicochemical features of large-scale (meta)genomic-derived AMPs, we created AMPsphere!
+            </p>
+            <p>
+              Just as the ecosphere is the worldwide sum of all ecosystems, the AMPsphere comprises the complexity of
+              prokaryotic AMPs assembled in one dataset. To this date, it was analyzed the 86k high-quality genomes in
+              [ProGenomes2](progenomes.embl.de/), and over 63k metagenomes from
+              [ENA](https://www.ebi.ac.uk/ena/browser/), [NCBI](ncbi.nlm.nih.gov/) and
+              [JGI](https://genome.jgi.doe.gov/portal/). After redundancy removal, we produced a collection of AMPs from
+              the global microbiome, containing 863,498 distinct sequences, clustered into 10,715 AMP families with at
+              least 7 sequences each. AMPSphere is permanently deposited in Zenodo in the
+              [link](https://doi.org/10.5281/zenodo.4574468).
+            </p>
+
           </div>
           <div class="col-12 col-md-6 q-pl-md ">
             <h4>Benefits and Features</h4>
 
-            <div style="font-weight: bold">1. Integration</div>
-            AMPsphere displays each AMP as a flashcard and also as a list, clicking on it, you can access its
-            family, location, and even samples where it was found. In the cases when AMPs were spotted in other
-            databases, preferentially DRAMP, we also referred to their accession code, allowing users to cross
-            information.<br/><br/>
+            <p>AMPSphere has benefits and features implemented to our users:</p>
 
-            <div style="font-weight: bold">2. Functional and physicochemical properties</div>
-            In the flashcard of each AMP there is information such as pI, charge, molecular weight, hydrophobicity,
-            the proportion of charged residues, and the probabilities associated with the predictions of its
-            antimicrobial and hemolytic activities. In some cases, the targets also were predicted using machine
-            learning. Functionalities are available to filter the more than 300 thousand AMPs present in AMPsphere by
-            physical-chemical properties or geographical/sample type origin.<br/><br/>
+            <div class="text-bold">Integration</div>
+            <p>AMPSphere is available as a web resource that displays each AMP as a flashcard and also as
+            a list, which can be browsed by the user to access sequences by family, location, and samples where it was
+              found.</p>
 
-            <div style="font-weight: bold">3. AMPs from different species</div>
-            An user-friendly interface for browsing the collected AMPs in AMPsphere provides users the possibility to
-            map AMPs back to specI clusters, species name, NCBI taxID access codes, and also metagenome access codes.
-            Besides that, AMPsphere presents a classification of all collected AMPs into families by identity, with
-            phylogenetic trees, hidden Markov models (HMM), and alignments.<br/><br/>
+            <div class="text-bold">Functional and physicochemical properties</div>
+            <p>In the individual AMP cards, information such as pI, charge,
+            molecular weight, hydrophobicity, the proportion of charged residues, and the probabilities associated with
+            the predictions of its antimicrobial and hemolytic activities are available.</p>
 
-            <div style="font-weight: bold">4. Tools</div>
-            AMPsphere presents a section of tools with search tools preloaded with our database, where users
-            can insert query sequences and search for homologs. Adjusting parameters, Blast can be used for
-            direct ortholog search of AMP sequences and HMMSearch for AMP families. The database also is
-            linked with the Macrel developing team and tool, allowing users to contribute actively with the
-            search for new AMPs.<br/><br/>
+            <div class="text-bold">AMPs from different species</div>
+            <p>Collected AMPs can be mapped back to binomial species, NCBI taxID access
+            codes, and also the codes of (meta)genomes. Besides that, AMP families also have pre-calculated phylogenetic
+            trees, hidden Markov models (HMM), and alignments available.</p>
 
-            <div style="font-weight: bold">5. AMP web interface</div>
-            Users can interact with the AMPsphere team and other users in a google community.
-            To enable local analyses, the complete database is available for download on two
-            different sites, the latest releases are both in Zenodo and on this
-            web page. Users are allowed to browse all the AMPs' functionalities.<br/><br/>
+            <div class="text-bold">Tools</div> <p>AMPSphere has two tools for sequence searching by homology direct alignment and HMM profiles of
+            families preloaded with our database.</p>
+
+            <div class="text-bold">AMP web interface</div>
+            <p>Users can interact in a
+            <a href="https://groups.google.com/g/ampsphere-users">google
+              community</a> dedicated to the resource. To enable local analyses,
+            the complete database is available for download</p>
+
           </div>
         </div>
       </div>
