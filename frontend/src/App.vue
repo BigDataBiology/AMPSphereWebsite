@@ -7,7 +7,9 @@
         <div class="col-12 col-xl-8">
           <div class="row justify-center q-my-none q-pb-none q-px-md" style="height: 100px">
             <div class="col-xs-4 col-sm-2 col-md-1">
+              <a href="/home">
               <q-img :src="require('./assets/logo.png')" sizes="(max-width: 100px) 100px, 100px" style="height: 100px" alt="Cannot load" fit="scale-down"></q-img>
+              </a>
             </div>
             <div class="col-xs-8 col-sm-8 col-md-6 offset-sm-1 offset-md-5">
               <q-input  clearable clear-icon="close" filled color="primary" label="Search" v-model="searchTerm"
