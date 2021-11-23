@@ -26,7 +26,6 @@
               <q-tabs align="center" class="bg-primary text-white" v-model="activeMenuItem" inline-label>
                 <q-route-tab to="/home" label="Home" />
                 <q-route-tab to="/browse_data" label="Browse" />
-                <q-route-tab to="/api" label="API" />
                 <q-route-tab to="/about" label="About" />
                 <q-route-tab to="/downloads" label="Downloads" />
                 <q-route-tab to="/contact" label="Contact" />
