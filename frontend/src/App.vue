@@ -54,20 +54,12 @@
       <div class="row text-center q-pa-xs">
 <!--        <div class="col-0 col-sm-1 col-md-2 bg-white"></div>-->
         <div class="col-12 text-black">
-          <q-separator light />
-          Powered by
-          <a href="https://vuejs.org/index.html" type="success">Vue.js</a>
-          <el-divider direction="vertical"></el-divider>
-          <a href="https://quasar.dev/" type="primary">Quasar</a>
-          <el-divider direction="vertical"></el-divider>
-          <a href="https://fastapi.tiangolo.com/" type="success">FastAPI</a>
         </div>
 <!--        <div class="col-0 col-sm-1 col-md-2 bg-white"></div>-->
 <!--        <div class="col-0 col-sm-1 col-md-2 bg-white"></div>-->
         <div class="col-12 text-black">
           &copy;2021-{{year}}
-          <a href="https://www.fudan.edu.cn/" type="warning">Fudan University</a>
-          All Rights Reserved.
+          <cite>AMPSphere authors</cite>.
         </div>
 <!--        <div class="col-0 col-sm-1 col-md-2 bg-white"></div>-->
       </div>
