@@ -1,237 +1,213 @@
 <template>
   <div class="Family_card">
-    <el-row>
-      <el-col :span="24">
-        <el-container>
-          <el-main>
-            <div class="title">Antimicrobial peptide family: {{ accession }}
-<!--              <el-button class="button" @click="downloadCurrPage()" type="primary" icon="el-icon-download" plain></el-button>-->
+    <div class="row justify-center">
+        <div class="col-xs-0 col-xl-2 bg-white"></div>
+        <div class="col-12 col-xl-8 justify-center q-pr-md q-ma-auto">
+          <div class="row">
+            <div class="text-h4">Antimicrobial peptide family: {{ accession }}
+              <!--              <el-button class="button" @click="downloadCurrPage()" type="primary" icon="el-icon-download" plain></el-button>-->
             </div>
-            <!--          TODO test: move this description down to the overview tab-->
-
-            <el-tabs type="border-card">
-              <el-tab-pane label="Overview" id="#overview">
-                <el-row style="text-align: left">
-                  <el-col :span="6" class="margin-col">
-                    <span class="info-item">
-                      Number of AMPs:
-<!--                      </span>-->
-<!--                    <span>-->
-                      <el-link href="#amps" type="primary">
-                        <span class="info-item-value">{{ num_amps }}</span>
-                      </el-link>
-                    </span>
-<!--                    <div class="info-item" id="sequence">-->
-<!--                      Consensus sequence-->
-<!--                      <el-button @click="CopyPeptideSequence()" icon="el-icon-document-copy"-->
-<!--                                 size="mini" type="primary" plain>-->
-<!--                      </el-button>-->
-<!--                    </div>-->
-<!--                    <pre><code id="aa-sequence">{{ sequence }}</code></pre>-->
-<!--                    TODO update this-->
-<!--                    <div>-->
-<!--                      <el-button type="text" @click="SeqLogoDialogVisible = true">-->
-<!--                        Sequence logo-->
-<!--                      </el-button>-->
-<!--                      <el-dialog-->
-<!--                          v-model="SeqLogoDialogVisible"-->
-<!--                          title="Tips"-->
-<!--                          width="30%"-->
-<!--                          :before-close="handleDialogClose">-->
-<!--                        <span> {{ downloads[4].file }}</span>-->
-<!--                      </el-dialog>-->
-<!--                    </div>-->
-                    <div style="alignment: left;">
-                      <div class="info-item" id="secondary-structure">Secondary Structure</div>
-<!--                      TODO change this to an error bars chart.-->
-<!--                      https://codepen.io/plotly/pen/VvEVgq-->
-                      <Plotly :data="secondaryStructureGraphData"
-                              :layout="secondaryStructureLayout()"
+          </div>
+          <!--          TODO test: move this description down to the overview tab-->
+          <div class="row">
+            <div class="col-12">
+              <q-tabs v-model="tabName" dense align="left" class="text-teal text-white">
+                <q-tab name="overview" label="Overview" />
+                <q-tab name="features" label="Features" />
+                <q-tab name="downloads" label="Downloads" />
+              </q-tabs>
+              <q-tab-panels v-model="tabName">
+                <q-tab-panel name="overview">
+                  <div class="row" style="text-align: left">
+                    <div class="col-12 col-md-3 q-pt-md q-px-md justify-center">
+                      <div>
+                        <span class="subsubsection-title">
+                        Number of AMPs:
+                                                <!--                      </span>-->
+                                                <!--                    <span>-->
+                        <el-link href="#amps" type="primary">
+                          <span class="subsubsection-title">{{ num_amps }}</span>
+                        </el-link>
+                      </span>
+                      </div>
+                      <div v-if="consensusSequence !== ''" class="subsubsection-title">
+                        Consensus sequence <q-btn @click="CopyPeptideSequence()" icon="content_copy" size="sm"></q-btn>
+                      </div>
+                      <div v-if="consensusSequence !== ''">
+                        <pre><code id="aa-sequence">{{ consensusSequence }}</code></pre>
+                      </div>
+                      <div class="subsubsection-title">Secondary Structure</div>
+                      <Plotly :data="SecStructureBarData()" :layout="secondaryStructureLayout()"
                               :toImageButtonOptions="{format: 'svg', scale: 1}"/>
                     </div>
-
-                  </el-col>
-                  <el-col :span="14" :offset="2">
-                    <!--                   TODO Geographical distribution -->
-                    <div id="global distribution">
-                      <Plotly :data="GeoPlotData()"
-                              :layout="GeoPlotLayout()"
-                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                    <div class="col-12 col-md-8 offset-md-1 q-pt-md q-px-md justify-center" id="global distribution">
+                      <div class="subsubsection-title text-center">Geographical Distribution</div>
+                      <div v-if="distribution.geo.lat.length > 0">
+                        <Plotly :data="GeoPlotData()" :layout="GeoPlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                      </div>
+                      <div v-else>
+                        <div style="height:400px; line-height: 400px" class="text-center q-px-md">
+                          Empty, all associated smORF genes were from Progenomes2 genomes (no geographical information).
+                        </div>
+                      </div>
                     </div>
-                  </el-col>
-                </el-row>
+                  </div>
 
-                <el-divider></el-divider>
-
-                <el-row>
-                  <el-col style="margin-left: 30px" :offset="1">
-                    <h3 id="distribution" class="subsection-title">Distribution</h3>
-                  </el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="10" class="margin-col">
-                    <!--                    TODO Bigger title  and figure captions-->
-                    <h4 id="distribution-across-habitats">Habitats</h4>
-                    <div>
-                      <Plotly :data="EnvPlotData()"
-                              :layout="EnvPlotLayout()"
-                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                  <div class="row">
+                    <div class="col-12 q-px-md q-pt-md">
+                      <div class="subsection-title">Distribution</div>
                     </div>
-                  </el-col>
-                  <el-col :span="3" style="line-height: 100px">
-                    <el-divider direction="vertical"></el-divider>
-                  </el-col>
-
-                  <el-col :span="10">
-                    <!--                    TODO Bigger title and figure captions -->
-                    <h4 id="distribution-across-hosts">Hosts</h4>
-                    <div>
-                      <Plotly :data="HostPlotData()"
-                              :layout="HostPlotLayout()"
-                              :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                    <div class="col-12 col-md-6 q-px-md">
+                      <!--                    TODO Bigger title  and figure captions-->
+                      <div class="subsubsection-title text-center">Habitats</div>
+                      <div v-if="distribution.habitat.labels.length !== 0">
+                        <Plotly :data="EnvPlotData()" :layout="EnvPlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                      </div>
+                      <div v-else style="height:500px; display: -webkit-flex; display: flex; align-items: center; " class="text-center q-px-md">
+                        <p>Empty, all associated smORF genes were from Progenomes2 genomes (no habitat information).</p>
+                      </div>
                     </div>
-                  </el-col>
-                  <!--                <div>-->
-                  <!--                  <Plotly :data="DistributionGraphData()"-->
-                  <!--                          :layout="DistributionGraphLayout()"-->
-                  <!--                          :toImageButtonOptions="{format: 'svg', scale: 1}"/>-->
-                  <!--                </div>-->
-                </el-row>
-                <br/>
-                <el-divider></el-divider>
-                <el-row>
-                  <el-col :offset="1" class="margin-col">
-                    <h3 id="amps" class="subsection-title">Associated AMPs</h3>
-                    <!--                    TODO add download button here -->
-                    <el-table :data="associatedAMPs.currentData" stripe style="width: 100%"
-                              v-loading="loading"
-                              element-loading-text="Loading..."
-                              element-loading-spinner="el-icon-loading">
-                      <el-table-column label="Accession" width="200">
-                        <template #default="props">
-                          <el-button @click="AMPDetail(props.row.accession)" type="text">{{ props.row.accession }}</el-button>
-                        </template>
-                      </el-table-column>
-                      <el-table-column label="Peptide sequence" width="500%">
-                        <template #default="props">
-                          <pre><code><small>{{ props.row.sequence }}</small></code></pre>
-                        </template>
-                      </el-table-column>
-                      <el-table-column label="# smORF genes" width="150%">
-                        <template #default="props">
-                          <!--                <el-tooltip class="item" effect="dark" content="Associated number of small ORF genes." placement="right">-->
-                          <span>{{ props.row.metadata.info.totalItem }}</span>
-                          <!--                </el-tooltip>-->
-                        </template>
-                      </el-table-column>
-                      <el-table-column label="Tag" width="150%">
-                        <template #default="props">
-                          <el-tag :type="props.row.quality_tag.level"> {{ props.row.quality_tag.msg }} </el-tag>
-                          <!--                <el-tag type="warning"> {{ props.row.quality_tag.msg }} </el-tag>-->
-                        </template>
-                      </el-table-column>
-                    </el-table>
-                    <el-pagination
-                        @size-change="setAMPsPageSize"
-                        @current-change="setAMPsPage"
-                        :page-sizes="[5, 10, 20, 50, 100]"
-                        :page-size="5"
-                        layout="total, sizes, prev, pager, next, jumper"
-                        :total="associatedAMPs.info.totalRow">
-                    </el-pagination>
-
-                  </el-col>
-                </el-row>
-              </el-tab-pane>
-              <el-tab-pane label="Features" id="#features">
-                <el-row>
-                  <el-col class="margin-col">
-                    <h3 id="properties" class="info-item">Biochemical property distributions</h3>
-                    <div class="info-item-value">
-                      These features below were calculated by using the
-                      <el-link href="https://biopython.org/docs/1.79/api/Bio.SeqUtils.ProtParam.html" type="primary">
-                        Bio.SeqUtils.ProtParam.ProteinAnalysis
-                      </el-link>
-                      module from
-                      <el-link href="https://doi.org/10.1093/bioinformatics/btp163" type="primary">
-                        BioPython
-                      </el-link> (version 1.79).
+                    <div class="col-12 col-md-6 q-px-md">
+                      <div class="subsubsection-title text-center">Microbial sources</div>
+                      <div>
+                        <Plotly :data="MicrobialSourcePlotData()" :layout="MicrobialSourcePlotLayout()" :toImageButtonOptions="{format: 'svg', scale: 1}"/>
+                      </div>
                     </div>
-                    <el-row>
-                      <el-col :span="7">
-                        <Plotly :data="featuresGraphData.MW"
-                                :layout="featuresBoxplotLayout('Molecular weight')" />
-                      </el-col>
-                      <el-col :span="7">
-                        <Plotly :data="featuresGraphData.Aromaticity"
-                                :layout="featuresBoxplotLayout('Aromaticity')" />
-                      </el-col>
-                      <el-col :span="7">
-                        <Plotly :data="featuresGraphData.GRAVY"
-                                :layout="featuresBoxplotLayout('GRAVY (grand average of hydropathy)')" />
-                      </el-col>
-                    </el-row>
-                    <el-row>
-                      <el-col :span="7">
-                        <Plotly :data="featuresGraphData.Instability_index"
-                                :layout="featuresBoxplotLayout('Instability index')" />
-                      </el-col>
-                      <el-col :span="7">
-                        <Plotly :data="featuresGraphData.Isoelectric_point"
-                                :layout="featuresBoxplotLayout('Isoelectric point')" />
-                      </el-col>
-                      <el-col :span="7">
-                        <Plotly :data="featuresGraphData.Charge_at_pH_7"
-                                :layout="featuresBoxplotLayout('Charge at pH 7.0')" />
-                      </el-col>
-                    </el-row>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-12">
+                      <h5 id="amps" class="subsection-title">Associated AMPs</h5>
+                      <!--                    TODO add download button here -->
+                      <el-table :data="associatedAMPs.currentData" stripe style="width: 100%"
+                                v-loading="loading"
+                                element-loading-text="Loading..."
+                                element-loading-spinner="el-icon-loading">
+                        <el-table-column label="Accession" width="200">
+                          <template #default="props">
+                            <el-button @click="AMPDetail(props.row.accession)" type="text">{{ props.row.accession }}</el-button>
+                          </template>
+                        </el-table-column>
+                        <el-table-column label="Peptide sequence" width="500%">
+                          <template #default="props">
+                            <pre><code><small>{{ props.row.sequence }}</small></code></pre>
+                          </template>
+                        </el-table-column>
+                        <el-table-column label="# smORF genes" width="150%">
+                          <template #default="props">
+                            <!--                <el-tooltip class="item" effect="dark" content="Associated number of small ORF genes." placement="right">-->
+                            <span>{{ props.row.metadata.info.totalItem }}</span>
+                            <!--                </el-tooltip>-->
+                          </template>
+                        </el-table-column>
+                        <el-table-column label="Tag" width="150%">
+                          <template #default="props">
+                            <el-tag :type="props.row.quality_tag.level"> {{ props.row.quality_tag.msg }} </el-tag>
+                            <!--                <el-tag type="warning"> {{ props.row.quality_tag.msg }} </el-tag>-->
+                          </template>
+                        </el-table-column>
+                      </el-table>
+                      <el-pagination
+                          @size-change="setAMPsPageSize"
+                          @current-change="setAMPsPage"
+                          :page-sizes="[5, 10, 20, 50, 100]"
+                          :page-size="5"
+                          layout="total, sizes, prev, pager, next, jumper"
+                          :total="associatedAMPs.info.totalRow">
+                      </el-pagination>
+
+                    </div>
+                  </div>
+                </q-tab-panel>
+                <q-tab-panel name="features" id="#features">
+                  <div class="row">
+                    <div class="col-12 q-pa-md">
+                      <div class="subsection-title">Biochemical property distributions</div>
+                      <div class="main-text">
+                        These features below were calculated by using the
+                        <el-link href="https://biopython.org/docs/1.79/api/Bio.SeqUtils.ProtParam.html" type="primary">
+                          Bio.SeqUtils.ProtParam.ProteinAnalysis
+                        </el-link>
+                        module from
+                        <el-link href="https://doi.org/10.1093/bioinformatics/btp163" type="primary">
+                          BioPython
+                        </el-link> (version 1.79).
+                      </div>
+                      <div class="row">
+                        <div class="col-12 col-md-4">
+                          <div class="subsection-title-center">Molecular weight<q-tooltip max-width="30rem">{{ featuresHelpMessages.MW }}</q-tooltip></div>
+                          <Plotly :data="featuresGraphData.MW" :layout="featuresBoxplotLayout()" />
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <div class="subsection-title-center">Aromaticity<q-tooltip max-width="30rem">{{ featuresHelpMessages.Aromaticity }}</q-tooltip></div>
+                          <Plotly :data="featuresGraphData.Aromaticity" :layout="featuresBoxplotLayout()" />
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <div class="subsection-title-center">GRAVY<q-tooltip max-width="30rem">{{ featuresHelpMessages.GRAVY }}</q-tooltip></div>
+                          <Plotly :data="featuresGraphData.GRAVY" :layout="featuresBoxplotLayout()" />
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-12 col-md-4">
+                          <div class="subsection-title-center">Instability index<q-tooltip max-width="30rem">{{ featuresHelpMessages.Instability_index }}</q-tooltip></div>
+                          <Plotly :data="featuresGraphData.Instability_index" :layout="featuresBoxplotLayout()" />
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <div class="subsection-title-center">Isoelectric point<q-tooltip max-width="30rem">{{ featuresHelpMessages.pI }}</q-tooltip></div>
+                          <Plotly :data="featuresGraphData.Isoelectric_point" :layout="featuresBoxplotLayout()" />
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <div class="subsection-title-center">Charge at pH 7.0<q-tooltip max-width="30rem">{{ featuresHelpMessages.Charge_at_pH_7 }}</q-tooltip></div>
+                          <Plotly :data="featuresGraphData.Charge_at_pH_7" :layout="featuresBoxplotLayout()" />
+                        </div>
+                      </div>
 
 
-<!--                    <el-table :data="Object.values(feature_statistics).slice(1)" v-loading="loading">-->
-<!--                      <el-table-column type="index" :index="indexByStatsName" width="100%"></el-table-column>-->
-<!--                      <el-table-column prop="Aromaticity" label="Aromaticity" width="100%"></el-table-column>-->
-<!--                      <el-table-column prop="Charge_at_pH_7" label="Charge at pH 7" width="150%"></el-table-column>-->
-<!--                      <el-table-column prop="GRAVY" label="GRAVY" width="100%"></el-table-column>-->
-<!--                      <el-table-column prop="Instability_index" label="Instability index" width="150%"></el-table-column>-->
-<!--                      <el-table-column prop="Isoelectric_point" label="Isoelectric point" width="150%"></el-table-column>-->
-<!--                      <el-table-column prop="MW" label="Molecular Weight" width="150%"></el-table-column>-->
-<!--                      <el-table-column label="Molar extinction" width="150%">-->
-<!--                        <template #default="props">-->
-<!--                          {{ props.row.Molar_extinction.cysteines_reduced }}-->
-<!--                          {{ props.row.Molar_extinction.cystines_residues }}-->
-<!--                        </template>-->
-<!--                      </el-table-column>-->
-<!--                    </el-table>-->
-<!--                    Maybe replace this with a boxplot...-->
-                  </el-col>
-                </el-row>
-              </el-tab-pane>
-              <el-tab-pane label="Downloads" id="#downloads">
-                <el-row>
-                  <el-col class="margin-col">
-                    <h3 id="downloads" class="info-item">Downloads</h3>
-                    <el-table :data="downloads" v-loading="loading">
-                      <el-table-column prop="name" label="Name" width="150%"></el-table-column>
-                      <el-table-column prop="file" label="File" width="150%">
-                        <template #default="props">
-                          <el-link @click.prevent="download(props.row.file)" type="primary"> Download </el-link>
-                        </template>
-                      </el-table-column>
-                      <el-table-column label="Description" width="800%">
-                        <template #default="props">
-                          <div class="download-desc">{{ props.row.desc }}</div>
-                        </template>
-                      </el-table-column>
-                    </el-table>
-                  </el-col>
-                </el-row>
-              </el-tab-pane>
-            </el-tabs>
-          </el-main>
-        </el-container>
-      </el-col>
-    </el-row>
-
+                      <!--                    <el-table :data="Object.values(feature_statistics).slice(1)" v-loading="loading">-->
+                      <!--                      <el-table-column type="index" :index="indexByStatsName" width="100%"></el-table-column>-->
+                      <!--                      <el-table-column prop="Aromaticity" label="Aromaticity" width="100%"></el-table-column>-->
+                      <!--                      <el-table-column prop="Charge_at_pH_7" label="Charge at pH 7" width="150%"></el-table-column>-->
+                      <!--                      <el-table-column prop="GRAVY" label="GRAVY" width="100%"></el-table-column>-->
+                      <!--                      <el-table-column prop="Instability_index" label="Instability index" width="150%"></el-table-column>-->
+                      <!--                      <el-table-column prop="Isoelectric_point" label="Isoelectric point" width="150%"></el-table-column>-->
+                      <!--                      <el-table-column prop="MW" label="Molecular Weight" width="150%"></el-table-column>-->
+                      <!--                      <el-table-column label="Molar extinction" width="150%">-->
+                      <!--                        <template #default="props">-->
+                      <!--                          {{ props.row.Molar_extinction.cysteines_reduced }}-->
+                      <!--                          {{ props.row.Molar_extinction.cystines_residues }}-->
+                      <!--                        </template>-->
+                      <!--                      </el-table-column>-->
+                      <!--                    </el-table>-->
+                      <!--                    Maybe replace this with a boxplot...-->
+                    </div>
+                  </div>
+                </q-tab-panel>
+                <q-tab-panel name="downloads" id="#downloads">
+                  <div class="row">
+                    <div class="col-12">
+                      <h3 id="downloads" class="info-item">Downloads</h3>
+                      <el-table :data="downloads" v-loading="loading">
+                        <el-table-column prop="name" label="Name" width="150%"></el-table-column>
+                        <el-table-column prop="file" label="File" width="150%">
+                          <template #default="props">
+                            <el-link @click.prevent="download(props.row.file)" type="primary"> Download </el-link>
+                          </template>
+                        </el-table-column>
+                        <el-table-column label="Description" width="800%">
+                          <template #default="props">
+                            <div class="download-desc">{{ props.row.desc }}</div>
+                          </template>
+                        </el-table-column>
+                      </el-table>
+                    </div>
+                  </div>
+                </q-tab-panel>
+              </q-tab-panels>
+            </div>
+          </div>
+        </div>
+        <div class="col-xs-0 col-xl-2 bg-white"></div>
+      </div>
   </div>
 </template>
 
@@ -276,6 +252,8 @@
 import Plotly from "../components/Plotly"
 import * as clipboard from "clipboard-polyfill/text";
 import { std, mean } from 'mathjs'
+import {Notify} from "quasar";
+
 
 export default {
   name: 'Family_card',
@@ -295,6 +273,7 @@ export default {
           Secondary_structure: {helix: 0, turn: 0, sheet: 0},
         }
     return {
+      tabName: 'overview',
       loading: false,
       SeqLogoDialogVisible: false,
       accession: this.$route.query.accession,
@@ -303,6 +282,14 @@ export default {
       features: {'': features_base},
       secondaryStructureGraphData: [],
       featuresGraphData: {},
+      featuresHelpMessages: {
+        MW: 'Molecular weight of a protein in Daltons.',
+        Aromaticity: 'Aromaticity according to Lobry (1994), simply the relative frequency of Phe+Trp+Tyr.',
+        Instability_index: 'Instability index according to Guruprasad et al (1990) is a test of a protein for stability. Values above 40 correspont to unstable proteins (short half lives).',
+        GRAVY: 'Grand average of hydropathicity index (GRAVY) represents the hydrophobicity value of a peptide, and consists of the sum of the hydropathy values of all the amino acids divided by the sequence length. If GRAVY is positive, it indicates a hydrophobic protein as well as its opposite, when GRAVY is negative.',
+        Charge_at_pH_7: 'Charge corresponds to the net electrical charge of a protein at pH 7.0',
+        pI: 'Isoelectric point (pI) is the pH at which a particular molecule carries no net electrical charge.'
+      },
       associatedAMPs: {
         info: {
           pageSize: 5,
@@ -321,11 +308,7 @@ export default {
           type: "sunburst plot",
           labels: [], parents: [], values: [], colorway: []
         },
-        host: {
-          type: "sunburst plot",
-          labels: [], parents: [], values: [], colorway: []
-        },
-        origin: {
+        microbial_source: {
           type: "sunburst plot",
           labels: [], parents: [], values: [], colorway: []
         }
@@ -376,6 +359,7 @@ export default {
             console.log(response.data)
             // self.consensusSequence = response.data.sequence
             self.num_amps = response.data.num_amps
+            self.consensusSequence = response.data.consensus_sequence
             self.features = response.data.feature_statistics
             self.distribution = response.data.distributions
             self.downloads = self.toDownloadsTable(response.data.downloads)
@@ -396,9 +380,9 @@ export default {
         // disordered: []
       }
       Object.values(this.features).forEach(function(amp_features) {
-        console.log(amp_features)
+        // console.log(amp_features)
         const amp_structure = amp_features.Secondary_structure
-        console.log(amp_structure)
+        // console.log(amp_structure)
         probabilities.helix.push(amp_structure.helix)
         probabilities.sheet.push(amp_structure.sheet)
         probabilities.turn.push(amp_structure.turn)
@@ -479,6 +463,7 @@ export default {
     },
     GeoPlotLayout(){
       return {
+        height: 400,
         showlegend: false,
         geo: {
           scope: 'global',
@@ -496,40 +481,58 @@ export default {
     EnvPlotData(){
       let data = this.distribution
       let env_data = {
-        type: "sunburst",
-        labels: data.habitat.labels, //["Eve", "Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
-        parents: data.habitat.parents, //["", "Eve", "Eve", "Seth", "Seth", "Eve", "Eve", "Awan", "Eve" ],
-        values:  data.habitat.values, //[65, 14, 12, 10, 2, 6, 6, 4, 4],
-        leaf: {opacity: 0.4},
-        // marker: {line: {"width": 2}},
-        branchvalues: 'total'
+        type: "bar",
+        x: data.habitat.values,
+        y: data.habitat.labels,
+        orientation: 'h',
+        marker: {
+          color: this.ColorPalette('quanlitative')[0],
+          width: 1
+        },
       }
       return [env_data]
     },
     EnvPlotLayout(){
       return {
-        margin: {l: 40, r: 40, b: 40, t: 40}, autosize: true,
-        sunburstcolorway: this.ColorPalette('quanlitative')
-      };
-    },
-    HostPlotData(){
-      let data = this.distribution
-      let host_data = {
-        type: "sunburst",
-        labels: data.host.labels, //["Eve", "Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
-        parents: data.host.parents, //["", "Eve", "Eve", "Seth", "Seth", "Eve", "Eve", "Awan", "Eve" ],
-        values:  data.host.values, //[65, 14, 12, 10, 2, 6, 6, 4, 4],
-        leaf: {opacity: 0.4},
-        // marker: {line: {"width": 2}},
-        branchvalues: 'total'
+        margin: {l: 200, r: 50, b: 80, t: 20}, autosize: false, height: 500,
+        xaxis: {
+          type: 'log', autorange: true,
+          title: {
+            text: '# smORF genes (in exponential)',
+            font: {
+              size: 18,
+            }
+          },
+        },
       }
-      return [host_data]
     },
-    HostPlotLayout(){
+    MicrobialSourcePlotData(){
+      let data = this.distribution
+      let env_data = {
+        type: "bar",
+        x: data.microbial_source.values,
+        y: data.microbial_source.labels,
+        orientation: 'h',
+        marker: {
+          color: this.ColorPalette('quanlitative')[1],
+          width: 1
+        },
+      }
+      return [env_data]
+    },
+    MicrobialSourcePlotLayout(){
       return {
-        margin: {l: 40, r: 40, b: 40, t: 40}, autosize: true,
-        sunburstcolorway: this.ColorPalette('quanlitative')
-      };
+        margin: {l: 200, r: 50, b: 80, t: 20}, autosize: false, height: 500,
+        xaxis: {
+          type: 'log', autorange: true,
+          title: {
+            text: '# smORF genes (in exponential)',
+            font: {
+              size: 18,
+            }
+          },
+        },
+      }
     },
     DistributionGraphData(){
       let data = this.distribution
@@ -699,11 +702,11 @@ export default {
         Charge_at_pH_7: [this.makefeaturesBoxplotTrace(Charge_at_pH_7, colors[8])],
       }
     },
-    featuresBoxplotLayout(name){
+    featuresBoxplotLayout(){
       return {
-        title: name,
+        // title: name,
         autosize: true,
-        margin: {l: 50, r: 20, b: 20, t: 80},
+        margin: {l: 50, r: 20, b: 20, t: 20},
         // height: 300,
         // width: 300,
       }
@@ -787,10 +790,25 @@ export default {
     },
     CopyPeptideSequence(){
       clipboard.writeText(this.sequence).then(
-          () => { console.log("success!"); },
+          () => {
+            console.log("success!");
+            this.showNotif('Peptide sequences copied.')
+          },
           () => { console.log("error!"); }
       )
-      this.$message('Amino acid sequence copied!')
+    },
+    showNotif(message){
+      Notify.create({
+        message: message,
+        // html: true,
+        color: 'primary',
+        position: 'bottom',
+        timeout: 3000,
+        icon: 'announcement',
+        actions: [
+          { label: 'Got it', color: 'yellow', handler: () => { /* ... */ } }
+        ]
+      })
     },
     makeTraceVisible(index, totalTrace){
       var visibility = []

@@ -1,12 +1,8 @@
 <template>
   <div id="Downloads">
-    <el-row>
-      <el-col :span="24" :offset="0">
-        <el-breadcrumb separator-class="el-icon-arrow-right">
-          <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
-          <el-breadcrumb-item :to="{ path: '/downloads' }">Downloads</el-breadcrumb-item>
-        </el-breadcrumb>
-        <br/>
+    <div class="row justify-center">
+      <div class="col-xs-0 col-xl-2 bg-white"></div>
+      <div class="col-12 col-xl-8 justify-center q-pr-md q-ma-auto">
         <div class="subsection-title">Core resources</div>.
         <el-table :data="downloadable_files" width="100%">
           <el-table-column prop="name" label="Name" width="200%"></el-table-column>
@@ -16,7 +12,7 @@
               <el-link :href="props.row.file" type="primary">Download</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop="desc" label="Description" width="800%"></el-table-column>
+          <el-table-column prop="desc" label="Description" width="700%"></el-table-column>
         </el-table>
         <el-divider></el-divider>
 <!--        <div class="subsection-title">Full AMPSphere data</div>-->
@@ -27,8 +23,9 @@
           </el-link>
           to see all the resources.
         </div>
-      </el-col>
-    </el-row>
+      </div>
+      <div class="col-xs-0 col-xl-2 bg-white"></div>
+    </div>
   </div>
 </template>
 

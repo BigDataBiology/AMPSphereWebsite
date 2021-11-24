@@ -1,76 +1,70 @@
 <template>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <div id="AMPSphere">
-    <el-container>
-      <el-header height="150px">
-        <div class="header-wrapper">
-          <div class="logo">
-            <el-image style="height: 150px; width: 150px" :src="url" lazy></el-image>
+  <div id="AMPSphere" class="q-pa-md">
+  <q-layout view="hHh lpR fFf" class="shadow-2 rounded-borders">
+    <q-header reveal bordered class="bg-white text-black" reveal-offset="100px" height-hint="160" style="height: 160px">
+      <div class="row q-pl-auto q-pr-auto" style="height: 150px">
+        <div class="col-0 col-xl-2 bg-white"></div>
+        <div class="col-12 col-xl-8">
+          <div class="row justify-center q-my-none q-pb-none q-px-md" style="height: 100px">
+            <div class="col-xs-4 col-sm-2 col-md-1">
+              <a href="/home">
+              <q-img :src="require('./assets/logo.png')" sizes="(max-width: 100px) 100px, 100px" style="height: 100px" alt="Cannot load" fit="scale-down"></q-img>
+              </a>
+            </div>
+            <div class="col-xs-8 col-sm-8 col-md-6 offset-sm-1 offset-md-5">
+              <q-input  clearable clear-icon="close" filled color="primary" label="Search" v-model="searchTerm"
+                        type="search" hint="Entity accession, Habitat (Aquatic) or Host (Homo sapiens)"
+                        style="max-width: 600px" @keydown.enter.prevent="textSearch()">
+                <template v-slot:append>
+                  <q-btn @click="textSearch()" label="Search" icon-right="search"></q-btn>
+                </template>
+              </q-input>
+            </div>
           </div>
-          <div class="search-box">
-            <span>
-              <el-input placeholder="Text search" v-model="searchTerm" @keyup.enter="textSearch" clearable
-                                    maxlength="40" show-word-limit=true>
-              <template #append>
-                <el-button type="primary" icon="el-icon-search" @click="textSearch">Search</el-button>
-              </template>
-              </el-input>
-<!--              <el-button type="primary" icon="el-icon-search" @click="textSearch">Search</el-button>-->
-            </span>
-            <span>
-              <br/><br/>
-              Examples:
-              <el-link href="/AMP?accession=AMP10.000_001" target="_blank" type="primary">AMP10.000_001</el-link>,
-              <el-link href="/family?accession=SPHERE-III.001_396" target="_blank" type="primary">SPHERE-III.001_396</el-link>,
-              <el-link href="/text_search?query=Aquatic" target="_blank" type="primary">Aquatic</el-link>,
-              <el-link href="/text_search?query=Homo sapiens" target="_blank" type="primary">Homo sapiens</el-link>
-            </span>
-          </div>
-          <div class="menu">
-            <el-menu mode="horizontal" :default-active="activeMenuItem" :router="true">
-              <el-menu-item index="home">Home</el-menu-item>
-              <el-menu-item index="browse_data">Browse data</el-menu-item>
-              <el-menu-item index="api">API</el-menu-item>
-              <el-menu-item index="about">About</el-menu-item>
-              <el-menu-item index="downloads">Downloads</el-menu-item>
-              <el-menu-item index="contact">Contact</el-menu-item>
-            </el-menu>
+          <div class="row justify-center q-my-none q-pt-none q-px-md" style="height: 50px">
+            <div class="col-12">
+              <q-tabs align="center" class="bg-primary text-white" v-model="activeMenuItem" inline-label>
+                <q-route-tab to="/home" label="Home" />
+                <q-route-tab to="/browse_data" label="Browse" />
+                <q-route-tab to="/about" label="About" />
+                <q-route-tab to="/downloads" label="Downloads" />
+                <q-route-tab to="/contact" label="Contact" />
+              </q-tabs>
+            </div>
           </div>
         </div>
-      </el-header>
+        <div class="col-0 col-xl-2 bg-white"></div>
+      </div>
+    </q-header>
 
-      <el-main>
-<!--        Use CDN to speed up the production build: https://segmentfault.com/a/1190000015709430-->
-        <el-row>
-          <el-col :offset="1" :span="22">
-            <div>
-              <router-view/>
-            </div>
-          </el-col>
-        </el-row>
-      </el-main>
+    <q-page-container>
+      <!--     TODO  Define space on different screen size inside each view component.-->
+      <!--     template-->
+      <!--      <div class="row justify-center">-->
+      <!--        <div class="col-xs-0 col-xl-2 bg-white"></div>-->
+      <!--        <div class="col-12 col-xl-8 justify-center q-pr-md q-ma-auto">-->
+      <!--          content...-->
+      <!--        </div>-->
+      <!--        <div class="col-xs-0 col-xl-2 bg-white"></div>-->
+      <!--      </div>-->
+      <router-view class="q-px-md q-pt-md" />
+    </q-page-container>
 
-      <el-footer height="120px">
-        <el-row type="flex" justify="center">
-          <el-col :span="22" :offset="1" type="flex" justify="bottom">
-            <el-divider></el-divider>
-            Powered by
-            <el-link href="https://vuejs.org/index.html" type="success">Vue.js</el-link>
-            <el-divider direction="vertical"></el-divider>
-            <el-link href="https://element-plus.org/#/en-US" type="primary">Element</el-link>
-            <el-divider direction="vertical"></el-divider>
-            <el-link href="https://fastapi.tiangolo.com/" type="success">FastAPI</el-link>
-          </el-col>
-        </el-row>
-        <el-row type="flex" justify="center">
-          <el-col :span="22" :offset="1" type="flex" justify="bottom">
-            &copy;2021-{{year}}
-            <el-link href="https://www.fudan.edu.cn/" type="warning">Fudan University</el-link>
-            All Rights Reserved.
-          </el-col>
-        </el-row>
-      </el-footer>
-    </el-container>
+    <q-footer reveal bordered class="bg-white text-white" >
+      <div class="row text-center q-pa-xs">
+<!--        <div class="col-0 col-sm-1 col-md-2 bg-white"></div>-->
+        <div class="col-12 text-black">
+        </div>
+<!--        <div class="col-0 col-sm-1 col-md-2 bg-white"></div>-->
+<!--        <div class="col-0 col-sm-1 col-md-2 bg-white"></div>-->
+        <div class="col-12 text-black">
+          &copy;2021-{{year}}
+          <cite>AMPSphere authors</cite>.
+        </div>
+<!--        <div class="col-0 col-sm-1 col-md-2 bg-white"></div>-->
+      </div>
+    </q-footer>
+  </q-layout>
   </div>
 </template>
 
@@ -160,11 +154,11 @@ export default {
   methods: {
     textSearch(){
       if (this.searchTerm.startsWith('AMP')) {
-        window.open('/AMP?accession=' + this.searchTerm, '_blank')
+        window.open('/AMP?accession=' + this.searchTerm, '_self')
       } else if (this.searchTerm.startsWith('SPHERE')) {
-        window.open('/family?accession=' + this.searchTerm, '_blank')
+        window.open('/family?accession=' + this.searchTerm, '_self')
       } else {
-        window.open(encodeURI('/text_search?query=' + this.searchTerm), '_blank')}
+        window.open(encodeURI('/text_search?query=' + this.searchTerm), '_self')}
       }
   }
 }

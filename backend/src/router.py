@@ -34,9 +34,12 @@ amp_router = APIRouter(
 def amps(db: Session = Depends(get_db),
          family: str = None,
          habitat: str = None,
-         host: str = None,
          sample: str = None,
-         origin: str = None,
+         microbial_source: str = None,
+         pep_length_interval: str = None,
+         mw_interval: str = None,
+         pI_interval: str = None,
+         charge_interval: str = None,
          page_size: int = 20,
          page: int = 0):
     """
@@ -48,10 +51,10 @@ def amps(db: Session = Depends(get_db),
     - :param db:
     - :return:
     """
-    return crud.get_amps(
-        db, page=page, page_size=page_size,
-        family=family, habitat=habitat, host=host, origin=origin, sample=sample
-    )
+    return crud.get_amps(db, page=page, page_size=page_size,
+                         family=family, habitat=habitat, microbial_source=microbial_source, sample=sample,
+                         pep_length_interval=pep_length_interval, mw_interval=mw_interval,
+                         pI_interval=pI_interval, charge_interval=charge_interval)
 
 
 @amp_router.get(path="/{accession}",
@@ -139,9 +142,8 @@ family_router = APIRouter(
                    summary=default_route_summary)
 def families(db: Session = Depends(get_db),
              habitat: str = None,
-             host: str = None,
              sample: str = None,
-             origin: str = None,
+             microbail_source: str = None,
              page_size: int = 5,
              page: int = 0):
     """
@@ -152,7 +154,7 @@ def families(db: Session = Depends(get_db),
     """
     families = crud.get_families(
         db, page=page, page_size=page_size,
-        habitat=habitat, host=host, origin=origin, sample=sample
+        habitat=habitat, microbail_source=microbail_source, sample=sample
     )
     return families
 
@@ -303,7 +305,7 @@ def text_search(db: Session = Depends(get_db),
 @default_router.get(path="/search/mmseqs",
                     response_model=List[schemas.mmSeqsSearchResult],
                     summary=default_route_summary)
-def mmseqs_search(query: str = 'KKVKSIFKKALAMMGENEVKAWGIGIK'):
+def mmseqs_search(query: str = 'KKVKSIFKKALAMMGENEVKAWGIGIK', db: Session = Depends(get_db)):
     """
     **tested**
 
@@ -311,7 +313,7 @@ def mmseqs_search(query: str = 'KKVKSIFKKALAMMGENEVKAWGIGIK'):
     - :param query: sequence
     - :return:
     """
-    return utils.mmseqs_search(query)
+    return crud.mmseqs_search(query, db)
 
 
 @default_router.get(path="/search/hmmer",
@@ -325,7 +327,7 @@ def hmmscan_search(query: str = 'KKVKSIFKKALAMMGENEVKAWGIGIK'):
     - :param method:
     - :return:
     """
-    return utils.hmmscan_search(query)
+    return crud.hmmscan_search(query)
 
 ## --------------------------Deprecated----------------------------------
 

@@ -1,96 +1,128 @@
 <template>
   <div class="BrowseData">
-    <el-row>
-      <el-col :span="24">
-        <el-breadcrumb separator-class="el-icon-arrow-right">
-          <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
-          <el-breadcrumb-item :to="{ path: '/browse_data' }">Browse data</el-breadcrumb-item>
-        </el-breadcrumb>
-        <br/>
-<!--    multiple filter criteria:-->
-<!--    TODO https://stackoverflow.com/questions/56223664/search-multiple-fields-in-a-table-in-vue-js-with-different-v-model-->
-<!--    在后端添加分页信息，读取分页信息并建立pagination。filters如何实现？-->
-<!--    https://www.cxyzjd.com/article/baidu_33552969/88977014-->
-        <span>
-          Select filters:
-          <el-select v-model="options.family" filterable clearable placeholder="Family"
-                     @change="onFamilyChange" size="mini"
-                     v-loading="isloading" element-loading-spinner="el-icon-loading">
-            <el-option v-for="item in availableOptions.family" :label="item" :value="item" :key="item"></el-option>
-          </el-select>
-          <el-select v-model="options.habitat" filterable clearable placeholder="Habitat"
-                     @change="onHabitatChange" size="mini"
-                     v-loading="isloading" element-loading-spinner="el-icon-loading">
-            <el-option v-for="item in availableOptions.habitat" :label="item" :value="item" :key="item"></el-option>
-          </el-select>
-          <el-select v-model="options.host" filterable clearable placeholder="Host"
-                     @change="onHostChange" size="mini"
-                     v-loading="isloading" element-loading-spinner="el-icon-loading">
-            <el-option v-for="item in availableOptions.host" :label="item" :value="item" :key="item"></el-option>
-          </el-select>
-<!--          TODO MEDIUM PRIORITY: change this filter into peptide length-->
-          <el-select v-model="options.sample" filterable clearable placeholder="Sample"
-                     @change="onSampleChange" size="mini"
-                     v-loading="isloading" element-loading-spinner="el-icon-loading">
-            <el-option v-for="item in availableOptions.sample" :label="item" :value="item" :key="item"></el-option>
-          </el-select>
-          <el-select v-model="options.origin" filterable clearable placeholder="Origin"
-                     @change="onOriginChange" size="mini"
-                     v-loading="isloading" element-loading-spinner="el-icon-loading">
-            <el-option v-for="item in availableOptions.origin" :label="item" :value="item" :key="item"></el-option>
-          </el-select>
-<!--          <el-button @click="clearFilters" type="primary"><span>Clear</span></el-button>-->
-          </span>
-          <el-table :data="amps" stripe style="width: 100%"
-                    v-loading="isloading"
-                    element-loading-text="Loading..."
-                    element-loading-spinner="el-icon-loading">
-            <el-table-column label="Accession" width="200">
-              <template #default="props">
-                <el-button @click="AMPDetail(props.row.accession)" type="text">{{ props.row.accession }}</el-button>
-              </template>
-            </el-table-column>
-            <el-table-column label="Family" width="200">
-              <template #default="props">
-                <el-button @click="familyDetail(props.row.family)" type="text">{{ props.row.family }}</el-button>
-              </template>
-            </el-table-column>
-            <el-table-column label="Peptide sequence" width="500%">
-              <template #default="props">
-                <pre><code><small>{{ props.row.sequence }}</small></code></pre>
-              </template>
-            </el-table-column>
-            <el-table-column label="# smORF genes" width="150%">
-              <template #default="props">
-<!--                <el-tooltip class="item" effect="dark" content="Associated number of small ORF genes." placement="right">-->
-                  <span>{{ props.row.metadata.info.totalItem }}</span>
-<!--                </el-tooltip>-->
-              </template>
-            </el-table-column>
-            <el-table-column label="Tag" width="150%">
-              <template #default="props">
-                <el-tag :type="props.row.quality_tag.level"> {{ props.row.quality_tag.msg }} </el-tag>
-<!--                <el-tag type="warning"> {{ props.row.quality_tag.msg }} </el-tag>-->
-              </template>
-            </el-table-column>
-          </el-table>
-        <el-pagination
-            @size-change="setAMPsPageSize"
-            @current-change="setAMPsPage"
-            :page-sizes="[20, 50, 100, 200]"
-            :page-size="20"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="info.totalRow"
+    <div class="row justify-center">
+      <div class="col-xs-0 col-xl-2 bg-white"></div>
+      <div class="col-12 col-xl-8 justify-center q-pa-auto">
+        <q-expansion-item
+            class="shadow-1 overflow-hidden"
+            style="border-radius: 30px"
+            label="Filters"
+            header-class="bg-secondary text-white"
+            expand-icon-class="text-white"
         >
-        </el-pagination>
-      </el-col>
-    </el-row>
+          <q-card>
+            <q-card-section>
+              <div class="row justify-center q-py-md">
+                <div class="col-12 col-md-2 text-bold justify-center">
+                  Filter by metadata
+                </div>
+                <div class="col-12 col-md-2 justify-center q-pa-xs">
+                  <q-select filled v-model="options.family" label="Family" @update:model-value="onFamilyChange"
+                            :options="availableOptions.family" @filter="filterFamily"
+                            input-debounce="0" use-input fill-input hide-selected
+                            behavior="menu" align="center" clearable />
+                </div>
+                <div class="col-12 col-md-2 justify-center q-pa-xs">
+                  <q-select filled v-model="options.habitat" label="Habitat" @update:model-value="onHabitatChange"
+                            :options="availableOptions.habitat" @filter="filterHabitat"
+                            input-debounce="0" use-input fill-input hide-selected
+                            behavior="menu" align="center" clearable />
+                </div>
+                <div class="col-12 col-md-3 justify-center q-pa-xs">
+                  <q-select filled v-model="options.sample" label="Sample/Progenomes2 genome" @update:model-value="onSampleChange"
+                            :options="availableOptions.sample" @filter="filterSample"
+                            input-debounce="0" use-input fill-input hide-selected
+                            behavior="menu" align="center" clearable />
+                </div>
+                <div class="col-12 col-md-3 justify-center q-pa-xs">
+                  <q-select filled v-model="options.microbial_source" label="Microbial source" @update:model-value="onMicrobialSourceChange"
+                            :options="availableOptions.microbial_source" @filter="filterMicrobialSource"
+                            input-debounce="0" use-input fill-input hide-selected
+                            behavior="menu" align="center" clearable />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 col-md-2 justify-center text-bold q-pa-sm">Peptide length: </div>
+                <div class="col-12 col-md-10 justify-center q-pa-sm">
+                  <q-range v-model="options.pep_length" @change="onPepLengthChange"
+                           :min="availableOptions.pep_length.min"
+                           :max="availableOptions.pep_length.max" label color="secondary"/>
+                </div>
+                <div class="col-12 col-md-2 justify-center text-bold q-pa-sm">Molecular weight: </div>
+                <div class="col-12 col-md-10 justify-center q-pa-sm">
+                  <q-range v-model="options.molecular_weight" @change="onMWChange"
+                           :min="availableOptions.molecular_weight.min"
+                           :max="availableOptions.molecular_weight.max" label color="secondary"/>
 
+                </div>
+                <div class="col-12 col-md-2 justify-center text-bold q-pa-sm">Isoelectric point: </div>
+                <div class="col-12 col-md-10 justify-center q-pa-sm">
+                  <q-range v-model="options.isoelectric_point" @change="onpIChange"
+                           :min="availableOptions.isoelectric_point.min"
+                           :max="availableOptions.isoelectric_point.max" label color="secondary"/>
+                </div>
+                <div class="col-12 col-md-2 justify-center text-bold q-pa-sm">Charge at pH 7.0</div>
+                <div class="col-12 col-md-10 justify-center q-pa-sm">
+                  <q-range v-model="options.charge_at_pH_7" @change="onChargechange"
+                           :min="availableOptions.charge_at_pH_7.min" label
+                           :max="availableOptions.charge_at_pH_7.max" color="secondary"/>
+                </div>
+              </div>
+            </q-card-section>
+          </q-card>
+        </q-expansion-item>
+        <div class="row justify-center q-py-md">
+          <div class="col-12">
+            <el-table :data="amps" stripe style="width: 100%"
+                      v-loading="isloading"
+                      element-loading-text="Loading..."
+                      element-loading-spinner="el-icon-loading">
+              <el-table-column label="Accession" width="200">
+                <template #default="props">
+                  <el-button @click="AMPDetail(props.row.accession)" type="text">{{ props.row.accession }}</el-button>
+                </template>
+              </el-table-column>
+              <el-table-column label="Family" width="200">
+                <template #default="props">
+                  <el-button @click="familyDetail(props.row.family)" type="text">{{ props.row.family }}</el-button>
+                </template>
+              </el-table-column>
+              <el-table-column label="Peptide sequence" width="500%">
+                <template #default="props">
+                  <pre><code><small>{{ props.row.sequence }}</small></code></pre>
+                </template>
+              </el-table-column>
+              <el-table-column label="# smORF genes" width="150%">
+                <template #default="props">
+                  <!--                <el-tooltip class="item" effect="dark" content="Associated number of small ORF genes." placement="right">-->
+                  <span>{{ props.row.metadata.info.totalItem }}</span>
+                  <!--                </el-tooltip>-->
+                </template>
+              </el-table-column>
+              <el-table-column label="Tag" width="150%">
+                <template #default="props">
+                  <el-tag :type="props.row.quality_tag.level"> {{ props.row.quality_tag.msg }}</el-tag>
+                  <!--                <el-tag type="warning"> {{ props.row.quality_tag.msg }} </el-tag>-->
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+        </div>
+        <div class="row justify-center q-py-md">
+          <div class="col-12">
+            <el-pagination @size-change="setAMPsPageSize" @current-change="setAMPsPage" :page-sizes="[20, 50, 100, 200]"
+                           :page-size="20" layout="sizes, pager, jumper" :total="info.totalRow">
+            </el-pagination>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-0 col-xl-2 bg-white"></div>
+    </div>
   </div>
 </template>
 
 <style>
-.env-logos{
+.env-logos {
   width: 100%;
   height: 100px;
   background-color: #ffffff;
@@ -98,10 +130,35 @@
 </style>
 
 <script>
+import {useQuasar} from 'quasar'
+
+
 export default {
   name: "BrowseData",
 
   data() {
+    const options_full = {
+      family: [],
+      habitat: [],
+      sample: [],
+      microbial_source: [],
+      pep_length: {
+        min: 8,
+        max: 98
+      },
+      molecular_weight: {
+        min: 813.0397,
+        max: 12285.954999999973
+      },
+      isoelectric_point: {
+        min: 4.0500284194946286,
+        max: 11.999967765808105
+      },
+      charge_at_pH_7: {
+        min: -56.17037696904594,
+        max: 43.781710336808885
+      }
+    }
     return {
       amps: [],
       axiosRefCount: 0,
@@ -115,18 +172,42 @@ export default {
       options: {
         family: null,
         habitat: null,
-        host: null,
         sample: null,
-        origin: null,
+        microbial_source: null,
+        pep_length: {
+          min: 8,
+          max: 98
+        },
+        molecular_weight: {
+          min: 813.0397,
+          max: 12285.954999999973
+        },
+        isoelectric_point: {
+          min: 4.0500284194946286,
+          max: 11.999967765808105
+        },
+        charge_at_pH_7: {
+          min: -56.17037696904594,
+          max: 43.781710336808885
+        }
       },
-      availableOptions: {
-        family: [],
-        habitat: [],
-        host: [],
-        sample: [],
-        origin: [],
-      }
+      avalOptionsFull: options_full,
+      availableOptions: options_full,
     }
+  },
+  setup(){
+    const $q = useQuasar()
+    $q.notify({
+      message: '<strong>Note</strong>: The filters may need tens of seconds to load. Please be patient.',
+      html: true,
+      color: 'primary',
+      position: 'top',
+      timeout: 10000,
+      icon: 'announcement',
+      actions: [
+        { label: 'Got it', color: 'yellow', handler: () => { /* ... */ } }
+      ]
+    })
   },
   created() {
     let self = this
@@ -160,7 +241,7 @@ export default {
     }
   },
   methods: {
-    setAMPsPage(page){
+    setAMPsPage(page) {
       // this.$message('setting to ' + page + 'th page')
       // Important: page index starting from zero.
       this.info.currentPage = page - 1
@@ -171,63 +252,126 @@ export default {
           habitat: this.options.habitat,
           host: this.options.host,
           sample: this.options.sample,
-          origin: this.options.origin,
+          microbial_source: this.options.microbial_source,
+          pep_length_interval: this.options.pep_length.min.toString() + ',' + this.options.pep_length.max.toString(),
+          mw_interval: this.options.molecular_weight.min.toString() + ',' + this.options.molecular_weight.max.toString(),
+          pI_interval: this.options.isoelectric_point.min.toString() + ',' + this.options.isoelectric_point.max.toString(),
+          charge_interval: this.options.charge_at_pH_7.min.toString() + ',' + this.options.charge_at_pH_7.max.toString(),
           page: this.info.currentPage,
           page_size: this.info.pageSize
         }
       }
       let self = this
       this.axios.get('/amps', config)
-        .then(function (response) {
-          console.log(response.data.data)
-          self.amps = self.initQualityTag(response.data.data)
-          self.info.totalPage = response.data.info.totalPage
-          self.info.totalRow = response.data.info.totalItem
-        })
-        .catch(function (error) {
-          console.log(error);
-        })
+          .then(function (response) {
+            console.log(response.data.data)
+            self.amps = self.initQualityTag(response.data.data)
+            self.info.totalPage = response.data.info.totalPage
+            self.info.totalRow = response.data.info.totalItem
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
     },
     setAMPsPageSize(size) {
       this.info.pageSize = size
       this.setAMPsPage(1)
     },
-    getAvailableOptions(){
+    getAvailableOptions() {
       let self = this
       this.axios.get('/available_filters')
-        .then(function (response) {
-          console.log(response.data)
-          self.availableOptions = response.data
-        })
-        .catch(function (error) {
-          console.log(error);
-        })
+          .then(function (response) {
+            console.log(response.data)
+            self.avalOptionsFull = Object.assign({}, response.data)
+            self.availableOptions = response.data
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
     },
-    onFamilyChange(option) { this.options.family = option; this.setAMPsPage(1) },
-    onHabitatChange(option) { this.options.habitat = option; this.setAMPsPage(1) },
-    onHostChange(option) { this.options.host = option; this.setAMPsPage(1) },
-    onSampleChange(option) { this.options.sample = option; this.setAMPsPage(1) },
-    onOriginChange(option) { this.options.origin = option; this.setAMPsPage(1) },
+    filterFamily(val, update, abort){
+      update(() => {
+        val = val.toLowerCase()
+        this.availableOptions.family = this.avalOptionsFull.family.filter(v => v.toLowerCase().indexOf(val) > -1)
+      })
+    },
+    filterSample(val, update, abort){
+      update(() => {
+        val = val.toLowerCase()
+        this.availableOptions.sample = this.avalOptionsFull.sample.filter(v => v.toLowerCase().indexOf(val) > -1)
+      })
+    },
+    filterHabitat(val, update, abort){
+      update(() => {
+        val = val.toLowerCase()
+        this.availableOptions.habitat = this.avalOptionsFull.habitat.filter(v => v.toLowerCase().indexOf(val) > -1)
+      })
+    },
+    filterMicrobialSource(val, update, abort){
+      update(() => {
+        val = val.toLowerCase()
+        this.availableOptions.microbial_source = this.avalOptionsFull.microbial_source.filter(v => v.toLowerCase().indexOf(val) > -1)
+      })
+    },
+    onFamilyChange(option) {
+      this.options.family = option;
+      this.setAMPsPage(1)
+    },
+    onHabitatChange(option) {
+      this.options.habitat = option;
+      this.setAMPsPage(1)
+    },
+    onSampleChange(option) {
+      this.options.sample = option;
+      this.setAMPsPage(1)
+    },
+    onMicrobialSourceChange(option) {
+      this.options.microbial_source = option;
+      this.setAMPsPage(1)
+    },
+    onPepLengthChange(value) {
+      // this.options.pep_length = {min: 0, max: 100}
+      console.log('peplength changed.')
+      this.setAMPsPage(1)
+    },
+    onMWChange(value) {
+      // this.options.pep_length = {min: 0, max: 100}
+      console.log('MW changed.')
+      this.setAMPsPage(1)
+    },
+    onpIChange(value) {
+      // this.options.pep_length = {min: 0, max: 100}
+      console.log('pI changed.')
+      this.setAMPsPage(1)
+    },
+    onChargechange(value) {
+      // this.options.pep_length = {min: 0, max: 100}
+      console.log('Charge changed.')
+      this.setAMPsPage(1)
+    },
     clearFilters() {
       this.options = {
         family: null,
         habitat: null,
-        host: null,
         sample: null,
-        origin: null,
+        microbial_source: null,
+        pep_length: {
+          min: 0,
+          max: 100
+        }
       }
     },
-    initQualityTag(amps){
-      for (let i=0; i < amps.length; i++) {
+    initQualityTag(amps) {
+      for (let i = 0; i < amps.length; i++) {
         Object.assign(amps[i], {quality_tag: {msg: 'Not available', level: 'warning'}})
       }
       return amps
     },
-    AMPDetail(accession){
-      window.open('/amp?accession='+accession, '_blank')
+    AMPDetail(accession) {
+      window.open('/amp?accession=' + accession, '_blank')
     },
-    familyDetail(accession){
-      window.open('/family?accession='+accession, '_blank')
+    familyDetail(accession) {
+      window.open('/family?accession=' + accession, '_blank')
     },
     setLoading(isLoading) {
       if (isLoading) {

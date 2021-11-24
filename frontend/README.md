@@ -1,4 +1,6 @@
-# app
+# AMPSphere frontend
+
+
 
 ## Project setup
 ```

@@ -2,13 +2,16 @@ import configparser
 import pathlib
 import subprocess
 
+import numpy as np
 from Bio.SeqUtils.ProtParam import ProtParamData
 from Bio.SeqUtils.ProtParam import ProteinAnalysis
 from datetime import datetime
 from pprint import pprint
 import uuid
 import pandas as pd
-from Bio import SearchIO
+from Bio import SearchIO, AlignIO
+from Bio.Align import AlignInfo
+from Bio.pairwise2 import format_alignment
 import livingTree as lt
 
 
@@ -95,6 +98,11 @@ def get_amp_features(seq, include_graph_points=True):
     return out
 
 
+def get_secondary_structure(seq):
+    analyzed_seq = ProteinAnalysis(str(seq))
+    return dict(zip(['helix', 'turn', 'sheet'], analyzed_seq.secondary_structure_fraction()))
+
+
 def get_graph_points(seq):
     graphs = ['transfer_energy', 'hydrophobicity_parker', 'surface_accessibility', 'flexibility']
     param_dict_list = [scales['ez'], scales['Parker'], ProtParamData.em, ProtParamData.Flex]
@@ -152,101 +160,14 @@ def download(file_type: str):
     return mapping[file_type]
 
 
-def mmseqs_search(seq: str):
-    query_id = str(uuid.uuid4())
-    query_time_now = datetime.now()
-    tmp_dir = pathlib.Path(cfg['tmp_dir'])
-    input_seq_file = tmp_dir.joinpath(query_id + '.input')
-    output_file = tmp_dir.joinpath(query_id + '.output')
-    stdout_file = tmp_dir.joinpath(query_id + '.stdout')
-    # TODO add hint when the length of input sequence is not between 8 and 98
-    # HINT: The search result may not reflect the reality as your sequence is too long/short.
-    if not tmp_dir.exists():
-        tmp_dir.mkdir(parents=True)
-    with open(input_seq_file, 'w') as f:
-        f.write(seq)
-    # sensitivity = 1
-    command_base = 'mmseqs createdb {query_seq} {query_seq}.mmseqsdb && ' \
-                   'mmseqs search {query_seq}.mmseqsdb  {database} {out}.mmseqsdb {tmp_dir} && ' \
-                   'mmseqs convertalis {query_seq}.mmseqsdb {database} {out}.mmseqsdb {out}'
-    command = command_base.format_map({
-        'query_seq': input_seq_file,
-        'database': cfg['mmseqs_db'],
-        'out': output_file,
-        'tmp_dir': str(tmp_dir),
-        # 's': sensitivity
-    })
-    try:
-        # TODO redirect the stdout to a temporary file and return its content when there is no match.
-        with open(stdout_file, 'w') as f:
-            subprocess.run(command, shell=True, check=True, stdout=f)  ## FIXME
-    except subprocess.CalledProcessError as e:
-        print('error when executing the command (code {})'.format(e))
-        print(e.output)
-        return None  # TODO better handle this
+def cal_consensus_seq(accession):
+    file = pathlib.Path(cfg.get('pre_computed_data')).joinpath('families/aln/{}.aln'.format(accession))
+    if file.exists():
+        alignment = AlignIO.read(file, 'fasta')
+        summary_align = AlignInfo.SummaryInfo(alignment)
+        return str(summary_align.dumb_consensus())
     else:
-        columns = ['query_identifier', 'target_identifier', 'sequence_identity', 'alignment_length',
-                   'number_mismatches', 'number_gap_openings', 'domain_start_position_query',
-                   'domain_end_position_query', 'domain_start_position_target',
-                   'domain_end_position_target', 'E_value', 'bit_score']
-        try:
-            df = pd.read_table(output_file, sep='\t', header=None)
-        except pd.errors.EmptyDataError:
-            df = pd.DataFrame(columns=columns)
-        df.columns = columns
-        records = df.to_dict(orient='records')
-        # pprint(records)
-        return records
-
-
-def hmmscan_search(seq: str):
-    query_id = str(uuid.uuid4())
-    query_time_now = datetime.now()
-    tmp_dir = pathlib.Path(cfg['tmp_dir'])
-    input_seq_file = tmp_dir.joinpath(query_id + '.input')
-    output_file = tmp_dir.joinpath(query_id + '.output')
-    stdout_file = tmp_dir.joinpath(query_id + '.stdout')
-    # TODO add hint when the length of input sequence is not between 8 and 98
-    # HINT: The search result may not reflect the reality as your sequence is too long/short.
-
-    if not tmp_dir.exists():
-        tmp_dir.mkdir(parents=True)
-    # with open(input_seq_file, 'w') as f:
-    #     f.write(f'>submitted_sequence\n{seq}')
-    with open(input_seq_file, 'w') as f:
-        f.write(seq)  # already in fasta format
-
-    command_base = 'hmmscan --domtblout {out} {hmm_profiles} {query_seq}'
-    command = command_base.format_map({
-        'out': output_file,
-        'hmm_profiles': cfg['hmmprofile_db'],
-        'query_seq': input_seq_file,
-        'out_tmp': tmp_dir.joinpath(query_id + '.tmp')
-    })
-    try:
-        # TODO redirect the stdout to a temporary file and return its content when there is no match.
-        with open(stdout_file, 'w') as f:
-            subprocess.run(command, shell=True, check=True, stdout=f)  ## FIXME
-    except subprocess.CalledProcessError as e:
-        print('error when executing the command (code {})'.format(e))
-        print(e.output)
-        return None
-    else:
-        columns = [
-            'target_name', 'target_accession', 'target_length', 'query_name',
-            'query_accession', 'query_length', 'E_value', 'score', 'bias',
-            'domain_index', 'num_domain', 'c_Evalue', 'i_Evalue', 'score',
-            'bias', 'from_hmm', 'to_hmm', 'from_ali', 'to_ali', 'from_env',
-            'to_env', 'acc', 'description_of_target']
-        try:
-            df = pd.read_table(output_file, header=2, skipfooter=10, sep='\s+', engine='python')
-        except pd.errors.EmptyDataError:
-            df = pd.DataFrame(columns=columns)
-        df.columns = columns
-        # print(df)
-        records = df.to_dict(orient='records')
-        # pprint(records)
-        return records
+        return ''
 
 
 def obj_to_dict(obj):
@@ -325,39 +246,45 @@ def compute_distribution_from_query_data(query_data):
         metadata = pd.DataFrame([obj.__dict__ for obj in query_data]).drop(columns='_sa_instance_state')
         # print(metadata)
         color_map = {}  # TODO supply here
-        metadata['latitude'] = metadata['latitude'].replace('', None).astype(float).round(1)
-        metadata['longitude'] = metadata['longitude'].replace('', None).astype(float).round(1)
-        metadata['habitat_type'] = pd.Categorical(metadata['microontology'].apply(lambda x: x.split(':')[0]))
+        metadata['latitude'] = metadata['latitude'].replace('', np.nan).astype(float).round(1)
+        metadata['longitude'] = metadata['longitude'].replace('', np.nan).astype(float).round(1)
+        metadata['habitat_type'] = pd.Categorical(metadata['general_envo_name'].apply(lambda x: x.split(':')[0]))
         # print(metadata[['habitat_type', 'microontology']])
         # metadata['color'] = metadata['habitat_type'].map(color_map)
         data = dict(
             geo=metadata[['AMPSphere_code', 'latitude', 'longitude', 'habitat_type']].
                 groupby(['latitude', 'longitude', 'habitat_type'], as_index=False, observed=True).size(),
-            host=metadata[['AMPSphere_code', 'host_tax_id', 'host_scientific_name']].
-                groupby('host_tax_id', as_index=False).size(),
-            habitat=metadata[['AMPSphere_code', 'microontology', 'habitat_type']].
-                groupby(['microontology', 'habitat_type'], as_index=False, observed=True).size(),
-            origin=metadata[['AMPSphere_code', 'origin_tax_id', 'origin_scientific_name']].
-                groupby('origin_tax_id', as_index=False).size()
+            habitat=metadata[['AMPSphere_code', 'general_envo_name', 'habitat_type']].
+                groupby(['general_envo_name', 'habitat_type'], as_index=False, observed=True).size(),
+            microbial_source=metadata[['AMPSphere_code', 'microbial_source']].
+                groupby('microbial_source', as_index=False).size()
         )
-        # print('after groupby')
-        # print(data['habitat'])
-        # FIXME fix color map for geo plot
-        # print('Processing geo data...')
         names = {'latitude': 'lat', 'longitude': 'lon', 'AMPSphere_code': 'size'}
         data['geo'].rename(columns=names, inplace=True)
         data['geo'] = data['geo'].to_dict(orient='list')
-        # print(data['geo'])
         # FIXME hierarchical structure generation.
-        data['habitat'] = data['habitat'][data['habitat'].microontology != '']
-        # pprint(data['habitat'])
-        data['habitat'] = get_sunburst_data(data['habitat'][['microontology', 'size']], sep=':')
-        # Fix id inconsistency.
-        data['host'] = data['host'][data['host'].host_tax_id != '']
-        data['host']['host_tax_id'] = data['host']['host_tax_id'].apply(lambda x: x if x != 2116673.0 else 85678.0)
-        data['host']['host_lineage'] = lt.LineageTracker(ids=data['host']['host_tax_id'].astype(int)).paths_sp
-        data['host'] = get_sunburst_data(data['host'][['host_lineage', 'size']], sep=None)
-        data['origin'] = None
+        data['habitat'] = data['habitat'][data['habitat'].general_envo_name != '']
+        if data['habitat'].shape[0] > 0:
+            data['habitat'] = get_sunburst_data(data['habitat'][['general_envo_name', 'size']], sep=':')
+        else:
+            data['habitat'] = dict(zip(['labels', 'parents', 'values'], [[], [], []]))
+
+        def simplify(data):
+            data = data.sort_values(by='size', ascending=False)
+            top_9 = data[0:9]
+            return pd.DataFrame(top_9.values.tolist(), columns=data.columns).append(
+                {'microbial_source': 'others', 'size': data.loc[9:, 'size'].sum()},
+                ignore_index=True
+            )
+
+        if data['microbial_source'].shape[0] > 9:
+            data['microbial_source'] = simplify(data['microbial_source'])
+        # print()
+        data['microbial_source'] = dict(
+            labels=data['microbial_source']['microbial_source'].tolist(),
+            values=data['microbial_source']['size'].tolist()
+        )
+        print(data['microbial_source'])
         return data
     else:
         empty_sunburst = dict(

@@ -11,6 +11,13 @@ class AMP(Base):
     accession = Column(String, primary_key=True, index=True)
     sequence = Column(String)
     family = Column(String, index=True)
+    length = Column(Integer, index=True)
+    molecular_weight = Column(Float, index=True)
+    isoelectric_point = Column(Float, index=True)
+    charge = Column(Float, index=True)
+    aromaticity = Column(Float)
+    instability_index = Column(Float)
+    gravy = Column(Float)
 
 
 class GMSC(Base):
@@ -23,23 +30,22 @@ class GMSC(Base):
     AMP = Column(String, ForeignKey(AMP.accession), index=True)
 
 
-
 class Metadata(Base):
     """
-
+    gmsc	amp	sample	source	specI	is_metagenomic	geographic_location	latitude	longitude	general envo name	environment_material
     """
     __tablename__ = "Metadata"
     GMSC = Column(String, primary_key=True, index=True)
     AMPSphere_code = Column(String, ForeignKey(AMP.accession), index=True)
     sample = Column(String, index=True)
-    microontology = Column(String, index=True)
-    environmental_features = Column(String)
-    host_tax_id = Column(Integer)
-    host_scientific_name = Column(String, index=True)
+    microbial_source = Column(String, index=True)
+    specI = Column(String, index=True)
+    is_metagenomic = Column(Boolean, index=True)
+    geographic_location = Column(String, index=True)
     latitude = Column(Float)
     longitude = Column(Float)
-    origin_tax_id = Column(Integer)
-    origin_scientific_name = Column(String, index=True)
+    general_envo_name = Column(String, index=True)
+    environment_material = Column(String)
 
 
 class Statistics(Base):
@@ -47,11 +53,15 @@ class Statistics(Base):
 
     """
     __tablename__ = "Statistics"
-    GMSC = Column(Integer, primary_key=True)
+    gmsc = Column(Integer, primary_key=True)
+    amp = Column(Integer)
     sample = Column(Integer)
-    microontology = Column(Integer)
-    environmental_features = Column(Integer)
-    host_scientific_name = Column(Integer)
-    origin_scientific_name = Column(Integer)
-    accession = Column(Integer)
+    source = Column(Integer)
+    specI = Column(Integer)
+    is_metagenomic = Column(Integer)
+    geographic_location = Column(Integer)
+    latitude = Column(Integer)
+    longitude = Column(Integer)
+    general_envo_name = Column(Integer)
+    environment_material = Column(Integer)
     family = Column(Integer)

@@ -1,16 +1,8 @@
 <template>
   <div class="TextSearch">
-    <el-row>
-      <el-col :span="24">
-        <el-breadcrumb separator-class="el-icon-arrow-right">
-          <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
-          <el-breadcrumb-item :to="{ path: '/text_search' }">Text search</el-breadcrumb-item>
-        </el-breadcrumb>
-        <br/>
-        <!--    multiple filter criteria:-->
-        <!--    TODO https://stackoverflow.com/questions/56223664/search-multiple-fields-in-a-table-in-vue-js-with-different-v-model-->
-        <!--    在后端添加分页信息，读取分页信息并建立pagination。filters如何实现？-->
-        <!--    https://www.cxyzjd.com/article/baidu_33552969/88977014-->
+    <div class="row justify-center">
+      <div class="col-xs-0 col-xl-2 bg-white"></div>
+      <div class="col-12 col-xl-8 justify-center q-pr-md q-ma-auto">
         <el-table :data="amps" stripe style="width: 100%"
                   v-loading="isloading"
                   element-loading-text="Loading..."
@@ -50,11 +42,24 @@
             :page-sizes="[20, 50, 100, 200]"
             :page-size="20"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="info.totalRow"
-        >
+            :total="info.totalRow">
         </el-pagination>
-      </el-col>
-    </el-row>
+      </div>
+      <div class="col-xs-0 col-xl-2 bg-white"></div>
+    </div>
+<!--    <el-row>-->
+<!--      <el-col :span="24">-->
+<!--        <el-breadcrumb separator-class="el-icon-arrow-right">-->
+<!--          <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>-->
+<!--          <el-breadcrumb-item :to="{ path: '/text_search' }">Text search</el-breadcrumb-item>-->
+<!--        </el-breadcrumb>-->
+<!--        <br/>-->
+<!--        &lt;!&ndash;    multiple filter criteria:&ndash;&gt;-->
+<!--        &lt;!&ndash;    TODO https://stackoverflow.com/questions/56223664/search-multiple-fields-in-a-table-in-vue-js-with-different-v-model&ndash;&gt;-->
+<!--        &lt;!&ndash;    在后端添加分页信息，读取分页信息并建立pagination。filters如何实现？&ndash;&gt;-->
+<!--        &lt;!&ndash;    https://www.cxyzjd.com/article/baidu_33552969/88977014&ndash;&gt;-->
+<!--      </el-col>-->
+<!--    </el-row>-->
   </div>
 </template>
 
