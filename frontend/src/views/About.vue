@@ -23,7 +23,7 @@
             <p>
               Recently, the [Big Data Biology Research Group](big-data-biology.org/) from the
               [Institute of Science and Technology for Brain-inspired Intelligence (ISTBI / Fudan University)]
-              (istbi.fudan.edu.cn/) developed a method called <a href="http://big-data-biology.org/software/macrel/">Macrel</a>,
+              (istbi.fudan.edu.cn/) developed a method called <a href="https://big-data-biology.org/software/macrel/">Macrel</a>,
               which differently from other methods, was developed to metagenomic approaches also handling a variety
               of data formats (from reads to peptide sequences). By using Macrel, we started the Global Survey for AMPs
               , a project which intends to collect all AMP sequences available in the publicly-available databases to
@@ -46,31 +46,35 @@
           <div class="col-12 col-md-6 q-pl-md ">
             <h4>Benefits and Features</h4>
 
-            <p>AMPSphere has benefits and features implemented to our users:</p>
-
             <div class="text-bold">Integration</div>
-            <p>AMPSphere is available as a web resource that displays each AMP as a flashcard and also as
-            a list, which can be browsed by the user to access sequences by family, location, and samples where it was
-              found.</p>
+            <p>AMPSphere is available as a web resource that displays each AMP
+            for browsing by family, location, and samples where it was
+            found.</p>
 
             <div class="text-bold">Functional and physicochemical properties</div>
             <p>In the individual AMP cards, information such as pI, charge,
-            molecular weight, hydrophobicity, the proportion of charged residues, and the probabilities associated with
-            the predictions of its antimicrobial and hemolytic activities are available.</p>
+            molecular weight, hydrophobicity, the proportion of charged
+            residues, and the probabilities associated with the predictions of
+            its antimicrobial and hemolytic activities are available.</p>
 
             <div class="text-bold">AMPs from different species</div>
-            <p>Collected AMPs can be mapped back to binomial species, NCBI taxID access
-            codes, and also the codes of (meta)genomes. Besides that, AMP families also have pre-calculated phylogenetic
-            trees, hidden Markov models (HMM), and alignments available.</p>
+            <p>Collected AMPs can be mapped back to species, NCBI taxID accession
+            codes, and also the accession of (meta)genomes. Besides that, AMP
+            families also have pre-calculated phylogenetic trees, hidden Markov
+            models (HMM), and alignments available.</p>
 
             <div class="text-bold">Tools</div> <p>AMPSphere has two tools for sequence searching by homology direct alignment and HMM profiles of
             families preloaded with our database.</p>
 
-            <div class="text-bold">AMP web interface</div>
+            <div class="text-bold">Getting more help</div>
             <p>Users can interact in a
-            <a href="https://groups.google.com/g/ampsphere-users">google
-              community</a> dedicated to the resource. To enable local analyses,
-            the complete database is available for download</p>
+            <a href="https://groups.google.com/g/ampsphere-users">mailing
+            list</a> dedicated to the resource. To enable local analyses, the
+            complete database is available for download</p>
+
+            <div class="text-bold">Downloads &amp; API</div>
+            <p>Advanced users can <a href="/downloads">download all our data</a>
+            or query it using <a href="/api">an API</a>.</p>
 
           </div>
         </div>

@@ -7,7 +7,9 @@
         <div class="col-12 col-xl-8">
           <div class="row justify-center q-my-none q-pb-none q-px-md" style="height: 100px">
             <div class="col-xs-4 col-sm-2 col-md-1">
+              <a href="/home">
               <q-img :src="require('./assets/logo.png')" sizes="(max-width: 100px) 100px, 100px" style="height: 100px" alt="Cannot load" fit="scale-down"></q-img>
+              </a>
             </div>
             <div class="col-xs-8 col-sm-8 col-md-6 offset-sm-1 offset-md-5">
               <q-input  clearable clear-icon="close" filled color="primary" label="Search" v-model="searchTerm"
@@ -24,7 +26,6 @@
               <q-tabs align="center" class="bg-primary text-white" v-model="activeMenuItem" inline-label>
                 <q-route-tab to="/home" label="Home" />
                 <q-route-tab to="/browse_data" label="Browse" />
-                <q-route-tab to="/api" label="API" />
                 <q-route-tab to="/about" label="About" />
                 <q-route-tab to="/downloads" label="Downloads" />
                 <q-route-tab to="/contact" label="Contact" />
@@ -53,20 +54,12 @@
       <div class="row text-center q-pa-xs">
 <!--        <div class="col-0 col-sm-1 col-md-2 bg-white"></div>-->
         <div class="col-12 text-black">
-          <q-separator light />
-          Powered by
-          <a href="https://vuejs.org/index.html" type="success">Vue.js</a>
-          <el-divider direction="vertical"></el-divider>
-          <a href="https://quasar.dev/" type="primary">Quasar</a>
-          <el-divider direction="vertical"></el-divider>
-          <a href="https://fastapi.tiangolo.com/" type="success">FastAPI</a>
         </div>
 <!--        <div class="col-0 col-sm-1 col-md-2 bg-white"></div>-->
 <!--        <div class="col-0 col-sm-1 col-md-2 bg-white"></div>-->
         <div class="col-12 text-black">
           &copy;2021-{{year}}
-          <a href="https://www.fudan.edu.cn/" type="warning">Fudan University</a>
-          All Rights Reserved.
+          <cite>AMPSphere authors</cite>.
         </div>
 <!--        <div class="col-0 col-sm-1 col-md-2 bg-white"></div>-->
       </div>
