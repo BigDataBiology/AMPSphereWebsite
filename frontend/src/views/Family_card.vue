@@ -186,19 +186,24 @@
                   <div class="row">
                     <div class="col-12">
                       <h3 id="downloads" class="info-item">Downloads</h3>
-                      <el-table :data="downloads" v-loading="loading">
-                        <el-table-column prop="name" label="Name" width="150%"></el-table-column>
-                        <el-table-column prop="file" label="File" width="150%">
-                          <template #default="props">
-                            <el-link @click.prevent="download(props.row.file)" type="primary"> Download </el-link>
-                          </template>
-                        </el-table-column>
-                        <el-table-column label="Description" width="800%">
-                          <template #default="props">
-                            <div class="download-desc">{{ props.row.desc }}</div>
-                          </template>
-                        </el-table-column>
-                      </el-table>
+                      <div v-if="num_amps >= 8">
+                        <el-table :data="downloads" v-loading="loading">
+                          <el-table-column prop="name" label="Name" width="150%"></el-table-column>
+                          <el-table-column prop="file" label="File" width="150%">
+                            <template #default="props">
+                              <el-link @click.prevent="download(props.row.file)" type="primary"> Download </el-link>
+                            </template>
+                          </el-table-column>
+                          <el-table-column label="Description" width="800%">
+                            <template #default="props">
+                              <div class="download-desc">{{ props.row.desc }}</div>
+                            </template>
+                          </el-table-column>
+                        </el-table>
+                      </div>
+                      <div class="row" v-else>
+                        <p>There is no file generated for {{ accession }}, as it has too few (less than 8) AMPs.</p>
+                      </div>
                     </div>
                   </div>
                 </q-tab-panel>

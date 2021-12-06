@@ -21,9 +21,9 @@
               with machine learning.
             </p>
             <p>
-              Recently, the [Big Data Biology Research Group](big-data-biology.org/) from the
-              [Institute of Science and Technology for Brain-inspired Intelligence (ISTBI / Fudan University)]
-              (istbi.fudan.edu.cn/) developed a method called <a href="https://big-data-biology.org/software/macrel/">Macrel</a>,
+              Recently, the <a href="big-data-biology.org/">Big Data Biology Research Group</a> from the
+              <a href="istbi.fudan.edu.cn/">Institute of Science and Technology for Brain-inspired Intelligence (ISTBI / Fudan University)</a>
+              developed a method called <a href="https://big-data-biology.org/software/macrel/">Macrel</a>,
               which differently from other methods, was developed to metagenomic approaches also handling a variety
               of data formats (from reads to peptide sequences). By using Macrel, we started the Global Survey for AMPs
               , a project which intends to collect all AMP sequences available in the publicly-available databases to
@@ -34,12 +34,12 @@
             <p>
               Just as the ecosphere is the worldwide sum of all ecosystems, the AMPsphere comprises the complexity of
               prokaryotic AMPs assembled in one dataset. To this date, it was analyzed the 86k high-quality genomes in
-              [ProGenomes2](progenomes.embl.de/), and over 63k metagenomes from
-              [ENA](https://www.ebi.ac.uk/ena/browser/), [NCBI](ncbi.nlm.nih.gov/) and
-              [JGI](https://genome.jgi.doe.gov/portal/). After redundancy removal, we produced a collection of AMPs from
+              <a href="progenomes.embl.de/">ProGenomes2</a>, and over 63k metagenomes from
+              <a href="https://www.ebi.ac.uk/ena/browser/">ENA</a>, <a href="ncbi.nlm.nih.gov/">NCBI</a> and
+              <a href="https://genome.jgi.doe.gov/portal/">JGI</a>. After redundancy removal, we produced a collection of AMPs from
               the global microbiome, containing 863,498 distinct sequences, clustered into 10,715 AMP families with at
               least 7 sequences each. AMPSphere is permanently deposited in Zenodo in the
-              [link](https://doi.org/10.5281/zenodo.4574468).
+              <a href="https://doi.org/10.5281/zenodo.4574468">link</a>.
             </p>
 
           </div>
