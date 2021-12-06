@@ -38,12 +38,12 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-12">
+          <div class="col-12 q-pa-md">
             <q-carousel animated v-model="slideIndex" control-color="primary" control-text-color="black" arrows
-                        navigation autoplay height="31rem">
-              <q-carousel-slide :name="1" :img-src="distributioinGraphs[0].image" fit="scale-down"/>
-              <q-carousel-slide :name="2" :img-src="distributioinGraphs[1].image" fit="scale-down"/>
-              <q-carousel-slide :name="3" :img-src="distributioinGraphs[2].image" fit="scale-down"/>
+                        autoplay height="30rem">
+              <q-carousel-slide :name="1" :img-src="distributionGraphs[0].image" fit="scale-down"/>
+              <q-carousel-slide :name="2" :img-src="distributionGraphs[1].image" fit="scale-down"/>
+              <q-carousel-slide :name="3" :img-src="distributionGraphs[2].image" fit="scale-down"/>
             </q-carousel>
           </div>
 
@@ -138,13 +138,10 @@ export default {
           {number: (73).toLocaleString('en-US'), type: 'habitats'},
         ]
       },
-      geoDistribution: require('../assets/geoDistribution.svg'),
-      hostDistribution: require('../assets/hostDistribution.svg'),
-      habitatDistribution: require('../assets/habitatDistribution.svg'),
-      distributioinGraphs: [
-        {type: 'geography', image: require('../assets/geoDistribution.svg')},
-        {type: 'host', image: require('../assets/hostDistribution.svg')},
-        {type: 'habitat', image: require('../assets/habitatDistribution.svg')},
+      distributionGraphs: [
+        {type: 'geography', image: require('../assets/geographical_distribution.svg')},
+        {type: 'microbial_source', image: require('../assets/microbial_source_distribution.svg')},
+        {type: 'habitat', image: require('../assets/habitat_distribution.svg')},
       ],
       // exampleSequences:
       //     ">AMP10.000_002 | SPHERE-III.010_054\n" +
