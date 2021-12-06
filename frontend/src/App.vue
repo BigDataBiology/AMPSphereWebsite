@@ -12,8 +12,8 @@
               </a>
             </div>
             <div class="col-xs-8 col-sm-8 col-md-6 offset-sm-1 offset-md-5">
-              <q-input  clearable clear-icon="close" filled color="primary" label="Search" v-model="searchTerm"
-                        type="search" hint="Entity accession, Habitat (Aquatic) or Host (Homo sapiens)"
+              <q-input  clearable disable clear-icon="close" filled color="primary" label="Search" v-model="searchTerm"
+                        type="search" hint="Temporarily disabled."
                         style="max-width: 600px" @keydown.enter.prevent="textSearch()">
                 <template v-slot:append>
                   <q-btn @click="textSearch()" label="Search" icon-right="search"></q-btn>
