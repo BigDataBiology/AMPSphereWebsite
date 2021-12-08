@@ -39,11 +39,17 @@
         </div>
         <div class="row">
           <div class="col-12 q-pa-md">
-            <q-carousel animated v-model="slideIndex" control-color="primary" control-text-color="black" arrows
-                        autoplay height="30rem">
-              <q-carousel-slide :name="1" :img-src="distributionGraphs[0].image" fit="scale-down"/>
-              <q-carousel-slide :name="2" :img-src="distributionGraphs[1].image" fit="scale-down"/>
-              <q-carousel-slide :name="3" :img-src="distributionGraphs[2].image" fit="scale-down"/>
+            <q-carousel animated v-model="slideIndex" control-color="primary" control-text-color="black"
+                        arrows autoplay height="30rem">
+              <q-carousel-slide :name="1" class="column ">
+                <q-img :src="distributionGraphs[0].image" fit="scale-down"></q-img>
+              </q-carousel-slide>
+              <q-carousel-slide :name="2" class="column ">
+                <q-img :src="distributionGraphs[1].image" fit="scale-down"></q-img>
+              </q-carousel-slide>
+              <q-carousel-slide :name="3" class="column ">
+                <q-img :src="distributionGraphs[2].image" fit="scale-down"></q-img>
+              </q-carousel-slide>
             </q-carousel>
           </div>
 
