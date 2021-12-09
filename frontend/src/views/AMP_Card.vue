@@ -17,10 +17,10 @@
                     </q-tooltip>
                     :
                   </span>
-                  <q-img class="col" :src="makeQualityBadge('Antifam', amp.quality.Antifam)" height="2rem" fit="scale-down"></q-img>
-                  <q-img class="col" :src="makeQualityBadge('coordinates', amp.quality.coordinates)" height="2rem" fit="scale-down"></q-img>
-                  <q-img class="col" :src="makeQualityBadge('metaproteomes', amp.quality.metaproteomes)" height="2rem" fit="scale-down"></q-img>
-                  <q-img class="col" :src="makeQualityBadge('RNAcode', amp.quality.RNAcode)" height="2rem" fit="scale-down"></q-img>
+                  <q-img v-if="amp.quality.Antifam !== 'yellow'" class="col" :src="makeQualityBadge('Antifam', amp.quality.Antifam)" height="2rem" fit="scale-down"></q-img>
+                  <q-img v-if="amp.quality.coordinates !== 'yellow'" class="col" :src="makeQualityBadge('coordinates', amp.quality.coordinates)" height="2rem" fit="scale-down"></q-img>
+                  <q-img v-if="amp.quality.metaproteomes !== 'yellow'" class="col" :src="makeQualityBadge('metaproteomes', amp.quality.metaproteomes)" height="2rem" fit="scale-down"></q-img>
+                  <q-img v-if="amp.quality.RNAcode !== 'yellow'" class="col" :src="makeQualityBadge('RNAcode', amp.quality.RNAcode)" height="2rem" fit="scale-down"></q-img>
                 </div>
               </div>
             </div>
@@ -401,9 +401,9 @@ export default {
     },
     getBadgeLabel(quality_level){
       const quality_level_mapping = {
-        green: 'High',
+        green: 'Pass',
         yellow: 'Medium',
-        red: 'Low'
+        red: 'Fail'
       }
       return quality_level_mapping[quality_level]
     },
