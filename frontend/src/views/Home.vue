@@ -9,7 +9,8 @@
             <el-table :data="distributionData.genes_amps" style="width: 120%" :show-header="false">
               <el-table-column prop="number" label="Number">
                 <template #default="props">
-                  <a href="/browse_data" style="font-size: medium"> {{ props.row.number }}</a>
+                  {{ props.row.number }}
+<!--                  <a href="/browse_data" style="font-size: medium"> {{ props.row.number }}</a>-->
                 </template>
               </el-table-column>
               <el-table-column prop="type" label="Type"></el-table-column>
@@ -20,7 +21,8 @@
             <el-table :data="distributionData.families_habitats" style="width: 120%" :show-header="false">
               <el-table-column prop="number" label="Number">
                 <template #default="props">
-                  <a href="/browse_data" style="font-size: medium"> {{ props.row.number }}</a>
+                  {{ props.row.number }}
+<!--                  <a href="/browse_data" style="font-size: medium"> {{ props.row.number }}</a>-->
                 </template>
               </el-table-column>
               <el-table-column prop="type" label="Type"></el-table-column>
@@ -30,7 +32,8 @@
             <el-table :data="distributionData.genomes_metagenomes" style="width: 120%" :show-header="false">
               <el-table-column prop="number" label="Number">
                 <template #default="props">
-                  <a href="/browse_data" style="font-size: medium"> {{ props.row.number }}</a>
+                  {{ props.row.number }}
+<!--                  <a href="/browse_data" style="font-size: medium"> {{ props.row.number }}</a>-->
                 </template>
               </el-table-column>
               <el-table-column prop="type" label="Type"></el-table-column>
