@@ -102,8 +102,8 @@
                         </el-table-column>
                         <el-table-column label="Tag" width="150%">
                           <template #default="props">
-                            <el-tag :type="props.row.quality_tag.level"> {{ props.row.quality_tag.msg }} </el-tag>
-                            <!--                <el-tag type="warning"> {{ props.row.quality_tag.msg }} </el-tag>-->
+                            <!--                  <q-badge :color="getBadgeColor(props.row.quality.badge)" :label="getBadgeLabel(props.row.quality.badge)" text-color="black"/>-->
+                            <q-img :src="makeBadgeURL(props.row.quality.badge)" height="70%" fit="scale-down"></q-img>
                           </template>
                         </el-table-column>
                       </el-table>
@@ -752,6 +752,22 @@ export default {
       //   marker: {size: 2, color: color},
       //   line: {width: 1}
       // };
+    },
+    makeBadgeURL(quality) {
+      const quality_level_mapping = {
+        gold: 'high',
+        silver: 'medium',
+        bronze: 'low'
+      }
+      const color_mapping = {
+        gold: 'FFD700',
+        silver: 'C0C0C0',
+        bronze: 'CD7F32'
+      }
+      // const URL = 'https://badgen.net/badge/quality/' + quality_level_mapping[quality]  + '/' +
+      const URL = 'https://img.shields.io/static/v1?style=flat&label=quality&color=' + color_mapping[quality] + '&message=' + quality_level_mapping[quality] + '&style=flat'
+      // console.log(URL)
+      return URL
     },
     MapColors(categories, colors){
       const levels = [...new Set(categories)]
