@@ -58,8 +58,12 @@ def get_amp(accession: str, db: Session):
     # setattr(amp_obj, "gene_sequences", gene_seqs)
     setattr(amp_obj, "secondary_structure", utils.get_secondary_structure(amp_obj.sequence))
     setattr(amp_obj, "metadata", metadata)
+    setattr(amp_obj, "quality", get_amp_quality(accession, db))
     return amp_obj
 
+
+def get_amp_quality(accession, db):
+    return db.query(models.Quality).filter(models.Quality.AMP == accession).first()
 
 def get_amp_helicalwheel(accession):
     return "data/pre_computed/amps/helical_wheels/helicalwheel_{}.svg".format(accession)

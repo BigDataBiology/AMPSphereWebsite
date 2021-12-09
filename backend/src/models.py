@@ -20,6 +20,20 @@ class AMP(Base):
     gravy = Column(Float)
 
 
+class Quality(Base):
+    """
+
+    """
+    __tablename__ = "Quality"
+    AMP = Column(String, primary_key=True, index=True)
+    Antifam = Column(String)
+    RNAcode = Column(String)
+    metaproteomes = Column(String)
+    coordinates = Column(String)
+    score = Column(Float)
+    badge = Column(String, index=True)
+
+
 class GMSC(Base):
     """
 

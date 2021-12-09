@@ -118,6 +118,18 @@ class PagedMetadata(BaseModel):
         orm_mode = True
 
 
+class AMPQuality(BaseModel):
+    Antifam: str
+    RNAcode: str
+    metaproteomes: str
+    coordinates: str
+    score: float
+    badge: str
+
+    class Config:
+        orm_mode = True
+
+
 class AMP(BaseModel):
     accession: str
     sequence: str
@@ -132,7 +144,8 @@ class AMP(BaseModel):
     secondary_structure: Dict[str, float]
     feature_graph_points: Optional[FeatureGraphPoints]
     metadata: PagedMetadata
-
+    quality: AMPQuality
+    
     class Config:
         orm_mode = True
 
