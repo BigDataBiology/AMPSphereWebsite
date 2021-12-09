@@ -26,14 +26,6 @@
             <p>Institute of Science and Technology for Brain-Inspired Intelligence (<a href="https://istbi.fudan.edu.cn/">ISTBI</a>). 23rd Floor, East Main Building of Guanghua Tower Fudan University 220 Handan Road, Yangpu District Shanghai(200433), China.</p>
           </div>
         </div>
-        <div class="row justify-center">
-          <div class="text-h5 col-12 text-bold text-center q-py-md">Acknowledgements</div>
-          <div class="text-center">
-            <p>This project is conducted in collaboration with the <a href="https://www.embl.org/groups/bork/">Bork Group at EMBL</a> and the <a href="http://compgenomics.org/">Huerta-Cepas group at CPGB</a>.</p>
-            <p>We would like to acknowledge in special: T.S.B. Schmidt; A.N. Fullam; Y. Duan; P. Bork; X. Zhao and J. Huerta-Cepas.</p>
-          </div>
-        </div>
-
       </div>
       <div class="col-xs-0 col-xl-2 bg-white"></div>
     </div>

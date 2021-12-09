@@ -76,6 +76,9 @@
             <p>Advanced users can <a href="/downloads">download all our data</a>
             or query it using <a href="/api">an API</a>.</p>
 
+            <div class="text-bold">Acknowledgements</div>
+            <p>This project is conducted in collaboration with the <a href="https://www.embl.org/groups/bork/">Bork Group at EMBL</a> and the <a href="http://compgenomics.org/">Huerta-Cepas group at CPGB</a>.</p>
+            <p>We would like to acknowledge in special: T.S.B. Schmidt; A.N. Fullam; Y. Duan; P. Bork; X. Zhao and J. Huerta-Cepas.</p>
           </div>
         </div>
       </div>
