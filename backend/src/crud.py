@@ -11,6 +11,7 @@ from src import utils
 from sqlalchemy import distinct, func, true, false
 from sqlalchemy.sql.expression import func as sql_func
 from fastapi import HTTPException
+from decimal import Decimal, ROUND_FLOOR, ROUND_CEILING
 
 
 def get_amps(db: Session, page: int = 0, page_size: int = 20, **kwargs):
@@ -281,17 +282,17 @@ def get_filters(db: Session):
         func.min(models.AMP.charge),
         func.max(models.AMP.charge),
     ).first()
-    # print(query)
-    # print(query.__dict__())
+    round_floor = lambda x: Decimal(x).quantize(Decimal("0.000"), rounding=ROUND_FLOOR)
+    round_ceiling = lambda x: Decimal(x).quantize(Decimal("0.000"), rounding=ROUND_CEILING)
     return dict(
         family=family,
         habitat=habitat,
         sample=sample,
         microbial_source=microbial_source,
-        pep_length=dict(min=peplen_min, max=peplen_max),
-        molecular_weight=dict(min=mw_min, max=mw_max),
-        isoelectric_point=dict(min=pI_min, max=pI_max),
-        charge_at_pH_7=dict(min=charge_min, max=charge_max)
+        pep_length=dict(min=int(peplen_min), max=int(peplen_max) + 1),
+        molecular_weight=dict(min=round_floor(mw_min), max=round_ceiling(mw_max)),
+        isoelectric_point=dict(min=round_floor(pI_min), max=round_ceiling(pI_max)),
+        charge_at_pH_7=dict(min=round_floor(charge_min), max=round_ceiling(charge_max))
     )
 
 
