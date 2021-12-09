@@ -176,19 +176,19 @@ export default {
         microbial_source: null,
         pep_length: {
           min: 8,
-          max: 98
+          max: 99
         },
         molecular_weight: {
-          min: 813.0397,
-          max: 12285.954999999973
+          min: 813.039,
+          max: 12285.955
         },
         isoelectric_point: {
-          min: 4.0500284194946286,
-          max: 11.999967765808105
+          min: 4.05,
+          max: 12
         },
         charge_at_pH_7: {
-          min: -56.17037696904594,
-          max: 43.781710336808885
+          min: -56.171,
+          max: 43.782
         }
       },
       avalOptionsFull: options_full,
@@ -396,7 +396,7 @@ export default {
       }
       // const URL = 'https://badgen.net/badge/quality/' + quality_level_mapping[quality]  + '/' +
       const URL = 'https://img.shields.io/static/v1?style=flat&label=quality&color=' + color_mapping[quality] + '&message=' + quality_level_mapping[quality] + '&style=flat'
-      console.log(URL)
+      // console.log(URL)
       return URL
     },
     AMPDetail(accession) {
