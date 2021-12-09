@@ -5,8 +5,25 @@
       <div class="col-12 col-xl-8 justify-center q-pr-md q-ma-auto">
         <div class="row">
           <div class="col-12 q-px-md">
-            <div class="text-h4">Antimicrobial peptide: {{ amp.accession }}</div>
+            <div class="text-h4 q-my-md">Antimicrobial peptide: {{ amp.accession }}</div>
             <!--                    TODO test: move this description down to the overview tab-->
+            <div class="row">
+              <div class="col-6">
+                <div class="row">
+                  <span class="text-bold">Quality
+                    <a href="/about">?</a>
+                    <q-tooltip :offset="[10, 10]">
+                      Understand how we controlled the quality.
+                    </q-tooltip>
+                    :
+                  </span>
+                  <q-img class="col" :src="makeQualityBadge('Antifam', amp.quality.Antifam)" height="2rem" fit="scale-down"></q-img>
+                  <q-img class="col" :src="makeQualityBadge('coordinates', amp.quality.coordinates)" height="2rem" fit="scale-down"></q-img>
+                  <q-img class="col" :src="makeQualityBadge('metaproteomes', amp.quality.metaproteomes)" height="2rem" fit="scale-down"></q-img>
+                  <q-img class="col" :src="makeQualityBadge('RNAcode', amp.quality.RNAcode)" height="2rem" fit="scale-down"></q-img>
+                </div>
+              </div>
+            </div>
             <div class="text-body1">
               The AMP belongs to
               <el-link :href="getFamilyPageURL()" type="primary">
@@ -309,7 +326,14 @@ export default {
           },
           data: [],
         },
-        helicalwheel: ''
+        helicalwheel: '',
+        quality: {
+          Antifam: "yellow",
+          RNAcode: "yellow",
+          metaproteomes: "yellow",
+          coordinates: "yellow",
+          score: 0,
+        },
       },
       distribution: default_distribution,
       default_distribution: default_distribution,
@@ -369,6 +393,19 @@ export default {
           .catch(function (error) {
             console.log(error)
           })
+    },
+    makeQualityBadge(name, value){
+      const URL = 'https://img.shields.io/static/v1?style=flat&label=' + name + '&color=' + value + '&message=' + this.getBadgeLabel(value) + '&style=flat'
+      console.log(URL)
+      return URL
+    },
+    getBadgeLabel(quality_level){
+      const quality_level_mapping = {
+        green: 'High',
+        yellow: 'Medium',
+        red: 'Low'
+      }
+      return quality_level_mapping[quality_level]
     },
     getFamilyFeatures() {
       let self = this
