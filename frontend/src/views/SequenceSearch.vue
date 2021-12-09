@@ -20,40 +20,39 @@
           </div>
           <div class="col-12" v-else-if="method === 'MMseqs'">
             <el-table :data="result" stripe style="width: 100%" v-loading="loading">
-              <el-table-column label="Query" prop="query_identifier" :filters="queryFilters" :filter-method="filterTable">
-              </el-table-column>
-              <el-table-column label="Target" width="200">
+              <el-table-column label="Query" prop="query_identifier" :filters="queryFilters" :filter-method="filterTable" width="150"></el-table-column>
+              <el-table-column label="Target" width="150">
                 <template #default="props">
                   <el-button type="text" @click="AMPDetail(props.row.target_identifier)">{{ props.row.target_identifier }}</el-button>
                 </template>
               </el-table-column>
-              <el-table-column label="Family" width="200">
+              <el-table-column label="Family" width="150">
                 <template #default="props">
 <!--                  <el-button type="text" @click="familyDetail(props.row.family)">-->
                     {{ props.row.family }}
 <!--                  </el-button>-->
                 </template>
               </el-table-column>
-              <el-table-column label="Identity (%)" sortable>
+              <el-table-column label="Identity (%)" sortable width="150">
                 <template #default="props">
-                  {{ props.row.sequence_identity * 100 }}
+                  {{ (props.row.sequence_identity * 100).toFixed(3) }}
                 </template>
               </el-table-column>
 <!--              <el-table-column label="Aligned length" sortable prop="alignment_length"></el-table-column>-->
-              <el-table-column label="# mismatches" sortable prop="number_mismatches"></el-table-column>
-              <el-table-column label="# gap" sortable prop="number_gap_openings"></el-table-column>
-              <el-table-column label="E value" sortable prop="E_value"></el-table-column>
-              <el-table-column label="Bit score" sortable prop="bit_score"></el-table-column>
-              <el-table-column type="expand" label="Alignment">
+              <el-table-column label="# mismatches" sortable width="200" prop="number_mismatches"></el-table-column>
+              <el-table-column label="# gap" sortable width="100" prop="number_gap_openings"></el-table-column>
+              <el-table-column label="E value" sortable width="100" prop="E_value"></el-table-column>
+              <el-table-column label="Bit score" sortable width="100" prop="bit_score"></el-table-column>
+              <el-table-column type="expand" width="100" label="Alignment">
                 <template #default="props">
                   <div class="justify-center">
 <!--                    TODO Restyle this.-->
                     <code><pre>
-                      {{props.row.domain_start_position_query}}{{'-'.repeat(props.row.domain_end_position_query - props.row.domain_start_position_query - 1)}}{{props.row.domain_end_position_query}}
-                      {{props.row.alignment_strings[0]}}
-                      {{props.row.alignment_strings[1]}}
-                      {{props.row.alignment_strings[2]}}
-                      {{props.row.domain_start_position_target}}{{'-'.repeat(props.row.domain_end_position_target - props.row.domain_start_position_target - 1)}}{{props.row.domain_end_position_target}}
+                              {{props.row.domain_start_position_query}}{{'-'.repeat(props.row.domain_end_position_query - props.row.domain_start_position_query - 1)}}{{props.row.domain_end_position_query}}
+                      Query:  {{props.row.alignment_strings[0]}}
+                              {{props.row.alignment_strings[1]}}
+                      Target: {{props.row.alignment_strings[2]}}
+                              {{props.row.domain_start_position_target}}{{'-'.repeat(props.row.domain_end_position_target - props.row.domain_start_position_target - 1)}}{{props.row.domain_end_position_target}}
                     </pre></code>
                   </div>
 <!--                  <p>Positions_Query: {{ props.row.domain_start_position_query }}, {{ props.row.domain_end_position_query }}</p>-->
