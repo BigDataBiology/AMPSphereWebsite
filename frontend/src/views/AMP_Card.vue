@@ -26,9 +26,9 @@
             </div>
             <div class="text-body1">
               The AMP belongs to
-              <el-link :href="getFamilyPageURL()" type="primary">
+              <a :href="getFamilyPageURL()">
                 <span class="text-body1">{{ amp.family }}</span>
-              </el-link>
+              </a>
               family and has {{ amp.length }} amino acid residues.
             </div>
           </div>
@@ -396,7 +396,7 @@ export default {
     },
     makeQualityBadge(name, value){
       const URL = 'https://img.shields.io/static/v1?style=flat&label=' + name + '&color=' + value + '&message=' + this.getBadgeLabel(value) + '&style=flat'
-      console.log(URL)
+      // console.log(URL)
       return URL
     },
     getBadgeLabel(quality_level){
@@ -829,7 +829,7 @@ export default {
     },
     getFamilyPageURL() {
       // TODO Change URL here
-      return "http://18.140.248.253:8080/family?accession=" + this.amp.family
+      return "/family?accession=" + this.amp.family
     },
     CopyPeptideSequence() {
       clipboard.writeText(this.amp.sequence).then(
