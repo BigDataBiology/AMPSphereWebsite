@@ -11,16 +11,36 @@
               <div class="col-6">
                 <div class="row">
                   <span class="text-bold">Quality
-                    <a href="/about">?</a>
-                    <q-tooltip :offset="[10, 10]">
-                      Understand how we controlled the quality.
-                    </q-tooltip>
+<!--                    <a href="/about">?</a>-->
+<!--                    <q-tooltip :offset="[10, 10]">-->
+<!--                      Understand how we did the quality control:-->
+<!--                      1. Search against <a href="https://www.ebi.ac.uk/research/bateman/software/antifam-tool-identify-spurious-proteins">Antifam</a>, which consists of a database of profile-HMMs created from translations of commonly occurring non-coding RNAs;-->
+<!--                      2. Identification of protein-coding regions with <a href="https://github.com/ViennaRNA/RNAcode">RNAcode</a> in alignments produced with nucleotide sequences from families of at least eight members. RNAcode assesses evolutionary signatures typical for protein genes;-->
+<!--                      3. Mapping of exact matches in metaproteomic sets from <a href="https://www.ebi.ac.uk/pride/">PRIDE database</a>;-->
+<!--                      4. Mapping genes to their coordinates in the contigs, marking those at 5' terminal as suspicious.-->
+<!--                    </q-tooltip>-->
                     :
                   </span>
-                  <q-img v-if="amp.quality.Antifam !== 'yellow'" class="col" :src="makeQualityBadge('Antifam', amp.quality.Antifam)" height="2rem" fit="scale-down"></q-img>
-                  <q-img v-if="amp.quality.coordinates !== 'yellow'" class="col" :src="makeQualityBadge('coordinates', amp.quality.coordinates)" height="2rem" fit="scale-down"></q-img>
-                  <q-img v-if="amp.quality.metaproteomes !== 'yellow'" class="col" :src="makeQualityBadge('metaproteomes', amp.quality.metaproteomes)" height="2rem" fit="scale-down"></q-img>
-                  <q-img v-if="amp.quality.RNAcode !== 'yellow'" class="col" :src="makeQualityBadge('RNAcode', amp.quality.RNAcode)" height="2rem" fit="scale-down"></q-img>
+                  <q-img v-if="amp.quality.Antifam !== 'yellow'" class="col" :src="makeQualityBadge('Antifam', amp.quality.Antifam)" height="2rem" fit="scale-down">
+                    <q-tooltip :offset="[10, 10]">
+                      Search against <a href="https://www.ebi.ac.uk/research/bateman/software/antifam-tool-identify-spurious-proteins">Antifam</a>, a database of profile-HMMs created from translations of commonly occurring non-coding RNAs
+                    </q-tooltip>
+                  </q-img>
+                  <q-img v-if="amp.quality.coordinates !== 'yellow'" class="col" :src="makeQualityBadge('coordinates', amp.quality.coordinates)" height="2rem" fit="scale-down">
+                    <q-tooltip :offset="[10, 10]">
+                      Mapping genes to their coordinates in the contigs, marking those at 5' terminal as suspicious
+                    </q-tooltip>
+                  </q-img>
+                  <q-img v-if="amp.quality.metaproteomes !== 'yellow'" class="col" :src="makeQualityBadge('metaproteomes', amp.quality.metaproteomes)" height="2rem" fit="scale-down">
+                    <q-tooltip :offset="[10, 10]">
+                      Mapping of exact matches in metaproteomic sets from <a href="https://www.ebi.ac.uk/pride/">PRIDE database</a>
+                    </q-tooltip>
+                  </q-img>
+                  <q-img v-if="amp.quality.RNAcode !== 'yellow'" class="col" :src="makeQualityBadge('RNAcode', amp.quality.RNAcode)" height="2rem" fit="scale-down">
+                    <q-tooltip :offset="[10, 10]">
+                      Identification of protein-coding regions with <a href="https://github.com/ViennaRNA/RNAcode">RNAcode</a> in alignments produced with nucleotide sequences from families of at least eight members. RNAcode assesses evolutionary signatures typical for protein genes
+                    </q-tooltip>
+                  </q-img>
                 </div>
               </div>
             </div>
