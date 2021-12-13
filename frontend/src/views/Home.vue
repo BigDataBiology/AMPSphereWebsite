@@ -69,7 +69,7 @@
           <div class="col-12 text-center subsection-title-center  q-mb-md">Search by sequence</div>
           <div class="col-12">
             <div class="main-text">
-              Paste (&leq; 10) peptide sequences here (fasta format). <br/>
+              Paste (&leq; 10) peptide sequences here (FASTA format). <br/>
               <span class="text-bold">Note</span>: For large queries and offline use, please download<a href="http://18.140.248.253/downloads"> our prebuilt indices</a>.
             </div>
           </div>

@@ -198,7 +198,7 @@ export default {
   setup(){
     const $q = useQuasar()
     $q.notify({
-      message: '<strong>Note</strong>: The filters may need tens of seconds to load. Please be patient.',
+      message: '<strong>Note</strong>: The filters may need &gt;10 seconds to load. Please be patient.',
       html: true,
       color: 'primary',
       position: 'top',
