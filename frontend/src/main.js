@@ -11,9 +11,10 @@ import VueAxios from 'vue-axios'
 import imageZoom from 'vue-image-zoomer'
 import { Download, More } from '@element-plus/icons'
 import JsonViewer from "vue3-json-viewer"
-import BootstrapIcon from '@dvuckovic/vue3-bootstrap-icons';
+import BootstrapIcon from '@dvuckovic/vue3-bootstrap-icons'
 import { Quasar, Notify } from 'quasar'
 import quasarUserOptions from './quasar-user-options'
+import VueGtag from "vue-gtag"
 
 
 router.beforeEach((to, from, next) => {
@@ -32,6 +33,11 @@ const app = createApp(
 
 
 app.use(router)
+app.use(VueGtag, {
+    config: {
+        id: "G-WXMZ531P7V",
+    },
+}, router)
 app.use(Quasar, {plugins: {Notify}, config: {notify: { /* look at QuasarConfOptions from the API card */ }}})
 app.use(Quasar, quasarUserOptions)
 app.use(ElementPLus, {locale})
