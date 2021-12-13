@@ -26,7 +26,7 @@ export default {
   name: "API",
   data (){
     return {
-      urlPrefix: "http://18.140.248.253:443/v1/",
+      urlPrefix: "http://ampsphere-api.big-data-biology.org:8000/v1/",
     }
   },
   computed: {
