@@ -6,7 +6,7 @@
         <div class="row justify-center">
           <div class="col-12 text-center">
             <p>AMPsphere is discussed in <a href="https://groups.google.com/g/ampsphere-users">a forum</a> where users can suggest improvements, issues, ongoing projects, etc: <a href="https://groups.google.com/g/ampsphere-users">https://groups.google.com/g/ampsphere-users</a>.</p>
-            <p>This is a project hosted by the <a href="https://big-data-biology.org/">Big Data Biology Research Group</a>, visit us at this link!</p>
+            <p>This is a project hosted by the <a href="https://big-data-biology.org/">Big Data Biology Research Group</a>.</p>
           </div>
         </div>
         <div class="row justify-center">
@@ -15,10 +15,11 @@
           </div>
         </div>
         <div class="row justify-center">
-          <div class="col-12 col-lg-4 text-center">
-            <p class="text-h6"><strong>To direct communication:</strong></p>
+          <div class="col-12 col-lg-4 text-left">
+            <p class="text-h6"><strong>Authors</strong></p>
             <a href="mailto:celio@big-data-biology.org">Célio Dias Santos Júnior</a><br/>
             <a href="mailto:hui@big-data-biology.org">Hui Chong</a><br/>
+            <a href="mailto:yiqian@big-data-biology.org">Yiqian Duan</a><br/>
             <a href="mailto:luispedro@big-data-biology.org">Luis Pedro Coelho</a><br/>
           </div>
           <div class="col-12 col-lg-8 text-center ">

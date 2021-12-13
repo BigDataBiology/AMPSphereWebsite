@@ -7,39 +7,54 @@
           <div class="col-12 col-md-6 q-pr-md">
             <h4>Overview</h4>
             <p>
-              Antimicrobial peptides (AMPs) are small proteins with 10 to 100 residues of amino acids.
-              The small proteins are able to disturb microbial growth and can be produced by a wide range
-              of organisms being found in all life domains. These peptides are ancient defense molecules
-              and some recently have shown activity against multi-resistant pathogens. Besides their potential
-              to clinical applications, AMPs also are widely used in food preservation and agriculture.
+              Antimicrobial peptides (AMPs) are small peptides (operationally
+              defined here as proteins with 10-100 amino acid residues). These
+              small proteins are able to disturb microbial growth and can be
+              produced by a wide range of organisms from all domains of life.
+              These peptides are ancient defense molecules and some recently
+              have shown activity against multi-resistant pathogens. Besides
+              their potential to clinical applications, AMPs also are widely
+              used in food preservation and agriculture.
             </p>
             <p>
-              Although small molecules, they have an immense diversity and cannot be detected with enough
-              confidence by the gene prediction methods. Because of that, AMPs are often discharged to reduce
-              the false discovery rate. Therefore, uncovering the diversity of AMPs is not just a matter of
-              homology-based function prediction, instead it involves complex patterns and feature discovery
-              with machine learning.
+              Because of their small size, AMPs cannot be detected with high
+              confidence by standard gene prediction methods. Therefore, AMPs
+              are often discarded (<a
+              href="https://peerj.com/articles/10555/">Santos-Júnior <i>et
+              al</i>; PeerJ 2020</a>).
             </p>
             <p>
-              Recently, the <a href="https://big-data-biology.org/">Big Data Biology Research Group</a> from the
-              <a href="https://istbi.fudan.edu.cn/">Institute of Science and Technology for Brain-inspired Intelligence (ISTBI / Fudan University)</a>
-              developed a method called <a href="https://big-data-biology.org/software/macrel/">Macrel</a>,
-              which differently from other methods, was developed to metagenomic approaches also handling a variety
-              of data formats (from reads to peptide sequences). By using Macrel, we started the Global Survey for AMPs
-              , a project which intends to collect all AMP sequences available in the publicly-available databases to
-              date.
-              Thus, motivated to develop a database-assisted platform that provides comprehensive functional and
-              physicochemical features of large-scale (meta)genomic-derived AMPs, we created AMPsphere!
+              Recently, <a href="https://big-data-biology.org/">we</a>
+              developed <a
+              href="https://big-data-biology.org/software/macrel/">Macrel</a>,
+              which unlike other methods, was developed for metagenomes. Using
+              Macrel, we started the Global Survey for AMPs, a project which
+              intends to collect all AMP sequences available in the
+              publicly-available databases to date.
+              Thus, motivated to develop a database-assisted platform that
+              provides comprehensive functional and physicochemical features of
+              large-scale (meta)genomic-derived AMPs, we created AMPsphere!
+
             </p>
             <p>
-              Just as the ecosphere is the worldwide sum of all ecosystems, the AMPsphere comprises the complexity of
-              prokaryotic AMPs assembled in one dataset. To this date, it was analyzed the 86k high-quality genomes in
-              <a href="https://progenomes.embl.de/">ProGenomes2</a>, and over 63k metagenomes from
-              <a href="https://www.ebi.ac.uk/ena/browser/">ENA</a>, <a href="https://ncbi.nlm.nih.gov/">NCBI</a> and
-              <a href="https://genome.jgi.doe.gov/portal/">JGI</a>. After redundancy removal, we produced a collection of AMPs from
-              the global microbiome, containing 863,498 distinct sequences, clustered into 10,715 AMP families with at
-              least 7 sequences each. AMPSphere is permanently deposited in Zenodo in the
-              <a href="https://doi.org/10.5281/zenodo.4574468">link</a>.
+              Just as the ecosphere is the worldwide sum of all ecosystems, the
+              AMPsphere comprises the complexity of prokaryotic AMPs assembled
+              in one dataset. To date, we analyzed the 86k high-quality genomes
+              in <a href="https://progenomes.embl.de/">proGenomes2</a>, and
+              over 63k metagenomes from <a
+              href="https://www.ebi.ac.uk/ena/browser/">ENA</a>, <a
+              href="https://ncbi.nlm.nih.gov/">NCBI</a> and
+              <a href="https://genome.jgi.doe.gov/portal/">JGI</a>. After
+              redundancy removal, we produced a collection of AMPs from the
+              global microbiome, containing 863,498 distinct sequences,
+              clustered into 10,715 AMP families with at
+              least 7 sequences each.
+
+           </p>
+           <p>
+              AMPSphere is permanently deposited in Zenodo under <a
+              href="https://doi.org/10.5281/zenodo.4574468">DOI:
+              10.5281/zenodo.4574468</a>.
             </p>
 
           </div>
@@ -63,22 +78,31 @@
             families also have pre-calculated phylogenetic trees, hidden Markov
             models (HMM), and alignments available.</p>
 
-            <div class="text-bold">Tools</div> <p>AMPSphere has two tools for sequence searching by homology direct alignment and HMM profiles of
-            families preloaded with our database.</p>
+            <div class="text-bold">Tools</div> <p>AMPSphere has two tools for
+            sequence searching by homology direct alignment and HMM profiles of
+            families preloaded with our database.
+
+            </p>
 
             <div class="text-bold">Getting more help</div>
-            <p>Users can interact in a
-            <a href="https://groups.google.com/g/ampsphere-users">mailing
-            list</a> dedicated to the resource. To enable local analyses, the
-            complete database is available for download</p>
+            <p>Questions can be sent to the <a
+            href="https://groups.google.com/g/ampsphere-users">mailing list</a>
+            dedicated to the project. To enable local analyses, the complete
+            database is available for download</p>
 
             <div class="text-bold">Downloads &amp; API</div>
             <p>Advanced users can <a href="/downloads">download all our data</a>
-            or query it using <a href="/api">an API</a>.</p>
+            or query it using <a href="/api">the API</a>.</p>
 
             <div class="text-bold">Acknowledgements</div>
-            <p>This project is conducted in collaboration with the <a href="https://www.embl.org/groups/bork/">Bork Group at EMBL</a> and the <a href="http://compgenomics.org/">Huerta-Cepas group at CPGB</a>.</p>
-            <p>We would like to acknowledge in special: T.S.B. Schmidt; A.N. Fullam; Y. Duan; P. Bork; X. Zhao and J. Huerta-Cepas.</p>
+            <p>This project is conducted in collaboration with the <a
+            href="https://www.embl.org/groups/bork/">Bork Group at EMBL</a> and
+            the <a href="http://compgenomics.org/">Huerta-Cepas group at
+            CPGB</a>.</p>
+
+            <p>We would like to acknowledge in particular: T.S.B. Schmidt; A.N.
+            Fullam; P. Bork; X. Zhao and J. Huerta-Cepas.</p>
+
           </div>
         </div>
       </div>
