@@ -1,11 +1,9 @@
 # AMPSphere website
 
-![](https://img.shields.io/badge/status-beta-yellow?style=flat-square&logo=appveyor) [![](https://img.shields.io/badge/DOI-10.5281/zenodo.4574468-brightgreen?style=flat-square&logo=appveyor)](https://doi.org/10.5281/zenodo.4574468)
+<img src="https://github.com/BigDataBiology/AMPSphereWebsite/blob/main/frontend/src/assets/logo.png" style="height: 30px; width: 30px" /> ![](https://img.shields.io/badge/status-beta-yellow?style=flat-square&logo=appveyor) [![](https://img.shields.io/badge/DOI-10.5281/zenodo.4574468-brightgreen?style=flat-square&logo=appveyor)](https://doi.org/10.5281/zenodo.4574468)
 
 Welcome to the AMPSphere website!
 
-
-<img src="https://github.com/BigDataBiology/AMPSphereWebsite/blob/main/frontend/src/assets/logo.png" style="height: 30px; width: 30px" />
 
 - Live website: http://ampsphere.big-data-biology.org/home.
 - Backend API: http://ampsphere-api.big-data-biology.org/
