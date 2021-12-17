@@ -208,6 +208,7 @@ def search_by_text(db: Session, text: str, page: int, page_size: int):
     :param db:
     :return:
     """
+    # TODO retrieve text search result using the command: sqlite-utils search ampsphere_main_db/AMPSphere_v.2021-03.sqlite Metadata {search text}
     query = db.query(distinct(models.AMP.accession)).outerjoin(models.Metadata)
     # Consider blank space as + for query text.
     query = query.filter(or_(
