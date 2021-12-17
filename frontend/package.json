@@ -30,7 +30,7 @@
     "spa-http-server": "^0.9.0",
     "vue": "^3.0.0",
     "vue-axios": "^3.2.4",
-    "vue-gtag": "1.16.1",
+    "vue-gtag": "^1.16.1",
     "vue-image-zoomer": "^1.2.1",
     "vue-leaflet": "^0.1.0",
     "vue-outline": "^4.0.4",
