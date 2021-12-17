@@ -14,7 +14,7 @@ import JsonViewer from "vue3-json-viewer"
 import BootstrapIcon from '@dvuckovic/vue3-bootstrap-icons'
 import { Quasar, Notify } from 'quasar'
 import quasarUserOptions from './quasar-user-options'
-import VueGtag from "vue-gtag"
+import VueGtag from "vue-gtag-next"
 
 
 router.beforeEach((to, from, next) => {
