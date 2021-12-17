@@ -49,5 +49,5 @@ app.component('image-zoom', ImageZoom)
 app.component(More.name, More)
 app.component(Download.name, Download)
 app.component('BootstrapIcon', BootstrapIcon);
-axios.defaults.baseURL = 'http://ampsphere-api.big-data-biology.org:8000/v1'
+axios.defaults.baseURL = 'https://ampsphere-api.big-data-biology.org/v1'
 app.mount('#app')
