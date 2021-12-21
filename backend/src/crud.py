@@ -283,8 +283,8 @@ def get_filters(db: Session):
         func.min(models.AMP.charge),
         func.max(models.AMP.charge),
     ).first()
-    round_floor = lambda x: Decimal(x).quantize(Decimal("0.000"), rounding=ROUND_FLOOR)
-    round_ceiling = lambda x: Decimal(x).quantize(Decimal("0.000"), rounding=ROUND_CEILING)
+    round_floor = lambda x: Decimal(x).quantize(Decimal("0."), rounding=ROUND_FLOOR)
+    round_ceiling = lambda x: Decimal(x).quantize(Decimal("0."), rounding=ROUND_CEILING)
     return dict(
         family=family,
         habitat=habitat,

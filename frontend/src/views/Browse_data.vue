@@ -147,16 +147,16 @@ export default {
         max: 98
       },
       molecular_weight: {
-        min: 813.0397,
-        max: 12285.954999999973
+        min: 813,
+        max: 12286
       },
       isoelectric_point: {
-        min: 4.0500284194946286,
-        max: 11.999967765808105
+        min: 4,
+        max: 12
       },
       charge_at_pH_7: {
-        min: -56.17037696904594,
-        max: 43.781710336808885
+        min: -57,
+        max: 44
       }
     }
     return {
@@ -179,16 +179,16 @@ export default {
           max: 99
         },
         molecular_weight: {
-          min: 813.039,
-          max: 12285.955
+          min: 813,
+          max: 12286
         },
         isoelectric_point: {
-          min: 4.05,
+          min: 4,
           max: 12
         },
         charge_at_pH_7: {
-          min: -56.171,
-          max: 43.782
+          min: -57,
+          max: 44
         }
       },
       avalOptionsFull: options_full,
