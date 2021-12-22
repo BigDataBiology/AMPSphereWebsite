@@ -9,5 +9,5 @@ pytest~=6.2.5
 datatable~=1.0.0
 biopython~=1.79
 uvicorn~=0.15
-living-tree~=0.0.5
+living-tree~=0.0.6
 requests~=2.26.0
