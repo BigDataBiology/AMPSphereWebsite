@@ -1,3 +1,0 @@
-__package__ = 'src'
-
-
